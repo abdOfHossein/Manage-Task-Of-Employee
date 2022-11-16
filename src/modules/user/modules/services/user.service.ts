@@ -27,22 +27,23 @@ export class UserService {
     }
   }
 
-  async loginUser(user: any) {
+  //_createJwt
+  async _createJwt(loginUserDto: LoginUserDto) {
     try {
-      return await this.userRepo.loginUser(user);
+      console.log(loginUserDto.username );
+
+      const user = await this.dataSource.getRepository(UserEnt).findOne({
+        where: { username: loginUserDto.username },
+        // relations: { role: true },
+      });
+      console.log(user);
+
+      return await this.userRepo._createJwt(user.id, user.role);
     } catch (e) {
+      console.log(e);
       throw e;
     }
   }
-
-  async validateUser(loginUserDto: LoginUserDto, options?: FindOneOptions) {
-    try {
-      return await this.userRepo.validateUser(loginUserDto, options);
-    } catch (e) {
-      throw e;
-    }
-  }
-
   async findOneUser(searchDto: string, options?: FindOneOptions) {
     return await this.userRepo.findOneUser(searchDto, options);
   }

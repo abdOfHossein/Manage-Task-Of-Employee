@@ -5,14 +5,13 @@ import {
   Post,
   Put,
   Query,
-  Request,
   UseGuards,
 } from '@nestjs/common';
 import { ApiBasicAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { PageDto } from 'src/common/dtos/page.dto';
-import { JwtAuthGuard } from '../../modules/auth/jwt-auth.guard';
-import { LocalAuthGuard } from '../../modules/auth/local-auth.guard';
+import { JwtStrategy } from '../../modules/auth/strategy/jwt.strategy';
 import { CreateUserDto } from '../../modules/dtos/create.user.dto';
+import { LoginUserDto } from '../../modules/dtos/login.user.dto';
 import { UpdateUserDto } from '../../modules/dtos/update.user.dto';
 import { UserEnt } from '../../modules/entities/User.entity';
 import { UserPageDto } from '../../modules/paginations/user.page.dto';
@@ -21,6 +20,7 @@ import { UserService } from '../../modules/services/User.service';
 @ApiTags('User')
 @Controller('User')
 export class UserController {
+  PREFIX_TOKEN_AUTH = 'prefix_auth_token_';
   constructor(private user: UserService) {}
 
   @Post('/register')
@@ -33,18 +33,17 @@ export class UserController {
     createUserDto.id_role = id_role;
     return this.user.createUser(createUserDto);
   }
-
-  @UseGuards(LocalAuthGuard)
-  @Post('loginUser')
-  login(@Request() req): Promise<{ access_token: string }> {
-    return this.user.loginUser(req.user);
+  //login
+  @Post('login')
+  login(@Body() loginUserDto: LoginUserDto): Promise<Object> {
+    return this.user._createJwt(loginUserDto);
   }
 
-  @UseGuards(JwtAuthGuard)
   @ApiBasicAuth()
+  @UseGuards(JwtStrategy)
   @Get('/protected')
-  sayHello(@Request() req): string {
-    return req.user;
+  sayHello(): string {
+    return 'ok';
   }
 
   @Put()

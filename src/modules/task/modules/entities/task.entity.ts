@@ -18,22 +18,22 @@ export class TaskEnt extends BasicEnt {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
+  @Column({nullable:true})
   priority: string;
 
-  @Column()
+  @Column({nullable:true})
   tittle: string;
 
-  @Column()
+  @Column({nullable:true})
   head_id: string;
 
-  @Column()
+  @Column({nullable:true})
   type: TypeTaskEnum;
 
-  @Column()
+  @Column({nullable:true})
   duration: Date;
 
-  @Column()
+  @Column({nullable:true})
   status: StatusTaskEnum;
 
   @ManyToOne(() => DepartmentRlEnt, (department_rl) => department_rl.tasks)

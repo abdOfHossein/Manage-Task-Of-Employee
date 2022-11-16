@@ -1,23 +1,57 @@
 import { BadGatewayException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt/dist';
 import { InjectRepository } from '@nestjs/typeorm';
+import { sha512 } from 'js-sha512';
 import { PageDto } from 'src/common/dtos/page.dto';
 import { PageMetaDto } from 'src/common/dtos/page.meta.dto';
 import { PublicFunc } from 'src/common/function/public.func';
+import { HashService } from 'src/modules/hash/hash.service';
+import { RedisService } from 'src/modules/redis/redis.service';
 import { DataSource, FindOneOptions, QueryRunner } from 'typeorm';
+import { JwtPayloadInterface } from '../auth/interface/jwt-payload.interface';
 import { CreateUserDto } from '../dtos/create.user.dto';
 import { LoginUserDto } from '../dtos/login.user.dto';
 import { UpdateUserDto } from '../dtos/update.user.dto';
 import { UserEnt } from '../entities/user.entity';
 import { UserMapperPagination } from '../mapper/user.mapper.pagination';
 import { UserPageDto } from '../paginations/user.page.dto';
+const randomstring = require('randomstring');
 
 export class UserRepo {
+  PREFIX_TOKEN_AUTH = 'prefix_auth_token_';
   constructor(
     @InjectRepository(UserEnt)
     private dataSource: DataSource,
+    private hashService: HashService,
+    private redisService: RedisService,
     private jwtService: JwtService,
   ) {}
+
+  //create Jwt
+  async _createJwt(data: string, roles: any) {
+    let jwtPayloadInterface: JwtPayloadInterface = {};
+    const encryptTextInterface = await this.hashService.encrypt(data);
+    const code = randomstring.generate({
+      length: 64,
+      charset: process.env.RANDOM_STRING_HASH_JWT,
+    });
+    jwtPayloadInterface.data = encryptTextInterface.text;
+    jwtPayloadInterface.key = encryptTextInterface.key;
+    jwtPayloadInterface.roles = roles;
+    jwtPayloadInterface.unq = sha512(code);
+    const dataRedis = {
+      data: encryptTextInterface.text,
+      iv: encryptTextInterface.iv,
+      roles: roles,
+    };
+    const result = this.jwtService.sign(jwtPayloadInterface);
+    await this.redisService.setKey(
+      `${this.PREFIX_TOKEN_AUTH}${jwtPayloadInterface.unq}`,
+      JSON.stringify(dataRedis),
+      3600,
+    );
+    return result;
+  }
 
   //register
   async createUser(
