@@ -1,0 +1,68 @@
+import { Injectable } from '@nestjs/common';
+import { DepartmentEnt } from 'src/modules/department/modules/entities/department.entity';
+import { RoleEnt } from 'src/modules/role/modules/entities/role.entity';
+import { DataSource, FindOneOptions, QueryRunner } from 'typeorm';
+import { CreateUserDto } from '../dtos/create.user.dto';
+import { LoginUserDto } from '../dtos/login.user.dto';
+import { UpdateUserDto } from '../dtos/update.user.dto';
+import { UserEnt } from '../entities/user.entity';
+import { UserPageDto } from '../paginations/user.page.dto';
+import { UserRepo } from '../repositories/user.repository';
+
+@Injectable()
+export class UserService {
+  constructor(private dataSource: DataSource, private userRepo: UserRepo) {}
+
+  async createUser(createDt: CreateUserDto, query?: QueryRunner) {
+    try {
+      createDt.departmentEnt = await this.dataSource
+        .getRepository(DepartmentEnt)
+        .findOne({ where: { id: createDt.id_department } });
+      createDt.roleEnt = await this.dataSource
+        .getRepository(RoleEnt)
+        .findOne({ where: { id: createDt.id_role } });
+      return await this.userRepo.createUser(createDt, query);
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  async loginUser(user: any) {
+    try {
+      return await this.userRepo.loginUser(user);
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  async validateUser(loginUserDto: LoginUserDto, options?: FindOneOptions) {
+    try {
+      return await this.userRepo.validateUser(loginUserDto, options);
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  async findOneUser(searchDto: string, options?: FindOneOptions) {
+    return await this.userRepo.findOneUser(searchDto, options);
+  }
+
+  async updateUser(
+    User_Id: string,
+    updateDt: UpdateUserDto,
+    query?: QueryRunner,
+  ) {
+    updateDt.departmentEnt = await this.dataSource
+      .getRepository(DepartmentEnt)
+      .findOne({ where: { id: updateDt.id_department } });
+    updateDt.roleEnt = await this.dataSource
+      .getRepository(RoleEnt)
+      .findOne({ where: { id: updateDt.id_role } });
+    const uerEnt = <UserEnt>await this.findOneUser(User_Id);
+    return await this.userRepo.updateUser(uerEnt, updateDt, query);
+  }
+
+  async paginationUser(pageDto: UserPageDto) {
+    return await this.userRepo.paginationUser(pageDto);
+  }
+}
