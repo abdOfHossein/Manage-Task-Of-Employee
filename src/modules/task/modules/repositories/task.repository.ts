@@ -8,6 +8,7 @@ import { CreateTaskDto } from '../dtos/create.task.dto';
 import { UpdateTaskDto } from '../dtos/update.task.dto';
 import { TaskEnt } from '../entities/task.entity';
 import { TaskMapperPagination } from '../mapper/task.mapper.pagination';
+import { ReportTaskPageDto } from '../paginations/report.page.dto';
 import { TaskPageDto } from '../paginations/task.page.dto';
 
 export class TaskRepo {
@@ -15,6 +16,64 @@ export class TaskRepo {
     @InjectRepository(TaskEnt)
     private dataSource: DataSource,
   ) {}
+
+  async getReportTask(
+    id_user: string,
+    reportPage: ReportTaskPageDto,
+    query: QueryRunner | undefined,
+  ): Promise<PageDto<TaskEnt>> {
+    console.log(id_user);
+    
+    const queryBuilder = this.dataSource.manager
+      .createQueryBuilder(TaskEnt, 'task')
+      .where('task.head_id = :head_id', { head_id: id_user })
+      .select([
+        'task.id',
+        'task.tittle',
+        'task.priority',
+        'task.head_id',
+        'task.type',
+        'task.status',
+      ]);
+    console.log(await queryBuilder.getMany());
+
+    if (reportPage.base) {
+      const row = reportPage.base.row;
+      const skip = PublicFunc.skipRow(
+        reportPage.base.page,
+        reportPage.base.row,
+      );
+      queryBuilder.skip(skip).take(row);
+    }
+    if (reportPage.filter) {
+      if (reportPage.filter.status)
+        queryBuilder.andWhere('Task.status LIKE :status', {
+          status: `%${reportPage.filter.status}%`,
+        });
+    }
+    if (reportPage.field) {
+      const mapper = TaskMapperPagination[reportPage.field];
+      if (!mapper)
+        throw new Error(
+          `${JSON.stringify({
+            section: 'public',
+            value: 'Column Not Exist',
+          })}`,
+        );
+      queryBuilder.addOrderBy(
+        `${TaskMapperPagination[reportPage.field]}`,
+        reportPage.base.order,
+      );
+    }
+    const result = await queryBuilder.getManyAndCount();
+    const pageMetaDto = new PageMetaDto({
+      baseOptionsDto: reportPage.base,
+      itemCount: result[1],
+    });
+    console.log(result[0]);
+
+    return new PageDto(result[0], pageMetaDto);
+  }
 
   async createTask(
     createDto: CreateTaskDto,

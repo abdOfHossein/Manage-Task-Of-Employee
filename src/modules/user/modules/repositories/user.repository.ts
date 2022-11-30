@@ -99,6 +99,8 @@ export class UserRepo {
     const result = await this.dataSource.manager.findOne(UserEnt, {
       where: { id: searchDto },
     });
+    console.log(result);
+    
     if (!result)
       throw new BadGatewayException({ message: 'user does not exits' });
     return result;

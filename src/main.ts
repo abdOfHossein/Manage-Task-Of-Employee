@@ -10,6 +10,8 @@ import { AppModule } from './modules/app/app.module';
 
 async function bootstrap() {
   const nestLogger = new NestLogger('Main_Logger');
+  console.log(process.env.DB_HOST);
+
   const app = await NestFactory.create(AppModule);
   app.enableCors();
   app.useGlobalFilters(new I18nValidationExceptionFilter());

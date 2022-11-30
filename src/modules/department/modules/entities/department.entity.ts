@@ -8,10 +8,10 @@ export class DepartmentEnt extends BasicEnt {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ unique: true })
+  @Column({ unique: true, nullable: true })
   header_id: string;
 
-  @Column({ unique: true })
+  @Column({ unique: true, nullable: true })
   name_department: string;
 
   @OneToMany(() => UserEnt, (users) => users.department)

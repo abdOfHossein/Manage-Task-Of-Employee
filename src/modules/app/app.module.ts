@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import appConfiguration from 'src/config/configs/app-configuration';
 import { SwaggerService } from 'src/config/swagger/service/swagger.service';
 import { DataSource } from 'typeorm';
 import { DepartmentRlCoreModule } from '../department-rl/department-rl-core/department-rl-core.module';
@@ -13,12 +15,19 @@ import { TaskCoreModule } from '../task/task-core/task-core.module';
 import { UserCoreModule } from '../user/user-core/user-core.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+
+
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      envFilePath: `.${process.env.NODE_ENV}.env`,
+      isGlobal: true,
+      load: [appConfiguration],
+    }),
     TypeOrmModule.forRootAsync({
       useFactory: () => ({
         // ...defaultDatabaseOptions,
-        name: 'connection_postgres',
+        // name: 'connection_postgres',
         type: 'postgres',
         host: process.env.DB_HOST || '127.0.0.1',
         port: Number(process.env.DB_PORT) || 5432,
@@ -28,6 +37,7 @@ import { AppService } from './app.service';
         entities: ['dist/**/*.entity.js', '**/*.entity.js'],
         migrations: ['dist/migrations/*{.ts,.js}'],
         synchronize: true,
+        autoLoadEntities:true
       }),
       dataSourceFactory: async (options) => {
         const dataSource = await new DataSource(options).initialize();
