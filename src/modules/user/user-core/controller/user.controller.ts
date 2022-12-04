@@ -31,11 +31,11 @@ export class UserController {
   @Post('/register')
   register(
     @Query('id_department') id_department: string,
-    @Query('id_role') id_role: string,
+    // @Query('id_role') id_role: string,
     @Body() createUserDto: CreateUserDto,
   ): Promise<UserEnt> {
     createUserDto.id_department = id_department;
-    createUserDto.id_role = id_role;
+    // createUserDto.id_role = id_role;
     return this.user.createUser(createUserDto);
   }
   //login

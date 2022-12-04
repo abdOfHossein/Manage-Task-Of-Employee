@@ -10,6 +10,9 @@ export class UpdateUserDto {
   id_department: string;
 
   @ApiHideProperty()
+  role_default_status: boolean;
+  
+  @ApiHideProperty()
   roleEnt: RoleEnt;
 
   @ApiHideProperty()

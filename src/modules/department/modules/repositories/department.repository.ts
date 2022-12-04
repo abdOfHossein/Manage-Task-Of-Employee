@@ -22,6 +22,7 @@ export class DepartmentRepo {
   ): Promise<DepartmentEnt> {
     const departmentEnt = new DepartmentEnt();
     departmentEnt.header_id = createDto.header_id;
+    departmentEnt.name_department = createDto.name_department;
     if (query) return await query.manager.save(departmentEnt);
     return await this.dataSource.manager.save(departmentEnt);
   }
@@ -53,7 +54,7 @@ export class DepartmentRepo {
   ): Promise<PageDto<DepartmentEnt>> {
     const queryBuilder = this.dataSource.manager
       .createQueryBuilder(DepartmentEnt, 'department')
-      .select(['department.id', 'department.header_id']);
+      .select(['department.id', 'department.header_id','department.name_department']);
     if (pageDto.base) {
       const row = pageDto.base.row;
       const skip = PublicFunc.skipRow(pageDto.base.page, pageDto.base.row);

@@ -31,7 +31,7 @@ export class TaskEnt extends BasicEnt {
   type: TypeTaskEnum;
 
   @Column({nullable:true})
-  duration: Date;
+  duration: number;
 
   @Column({nullable:true})
   status: StatusTaskEnum;

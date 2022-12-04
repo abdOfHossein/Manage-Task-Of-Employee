@@ -8,6 +8,7 @@ import { CreateTaskDto } from '../dtos/create.task.dto';
 import { UpdateTaskDto } from '../dtos/update.task.dto';
 import { TaskEnt } from '../entities/task.entity';
 import { TaskMapperPagination } from '../mapper/task.mapper.pagination';
+import { ExpiredTaskPageDto } from '../paginations/expired.task.page.dto';
 import { ReportTaskPageDto } from '../paginations/report.page.dto';
 import { TaskPageDto } from '../paginations/task.page.dto';
 
@@ -17,13 +18,73 @@ export class TaskRepo {
     private dataSource: DataSource,
   ) {}
 
+  async checkExpirationTask(
+    user_info: any,
+    expiredTaskPageDto: ExpiredTaskPageDto,
+    query: QueryRunner | undefined,
+  ): Promise<PageDto<TaskEnt>> {
+    const queryBuilder = this.dataSource.manager.createQueryBuilder(
+      TaskEnt,
+      'task',
+    );
+
+    if (user_info.roles.role_type == 'USER') {
+      console.log('here');
+      queryBuilder.where('task.head_id = :head_id', { head_id: user_info.id_User });
+    }
+    queryBuilder
+      // .where(`task.create_at > ( NOW() - new Date((task.create_at).setDate((task.create_at).getDay()+ task.duration))`)
+      .select([
+        'task.id',
+        'task.tittle',
+        'task.priority',
+        'task.head_id',
+        'task.type',
+        'task.status',
+      ]);
+    console.log(await queryBuilder.getMany());
+    
+    if (expiredTaskPageDto.base) {
+      const row = expiredTaskPageDto.base.row;
+      const skip = PublicFunc.skipRow(
+        expiredTaskPageDto.base.page,
+        expiredTaskPageDto.base.row,
+      );
+      queryBuilder.skip(skip).take(row);
+    }
+    if (expiredTaskPageDto.filter) {
+    }
+    if (expiredTaskPageDto.field) {
+      const mapper = TaskMapperPagination[expiredTaskPageDto.field];
+      if (!mapper)
+        throw new Error(
+          `${JSON.stringify({
+            section: 'public',
+            value: 'Column Not Exist',
+          })}`,
+        );
+      queryBuilder.addOrderBy(
+        `${TaskMapperPagination[expiredTaskPageDto.field]}`,
+        expiredTaskPageDto.base.order,
+      );
+    }
+    const result = await queryBuilder.getManyAndCount();
+    const pageMetaDto = new PageMetaDto({
+      baseOptionsDto: expiredTaskPageDto.base,
+      itemCount: result[1],
+    });
+    console.log(result[0]);
+
+    return new PageDto(result[0], pageMetaDto);
+  }
+
   async getReportTask(
     id_user: string,
     reportPage: ReportTaskPageDto,
     query: QueryRunner | undefined,
   ): Promise<PageDto<TaskEnt>> {
     console.log(id_user);
-    
+
     const queryBuilder = this.dataSource.manager
       .createQueryBuilder(TaskEnt, 'task')
       .where('task.head_id = :head_id', { head_id: id_user })

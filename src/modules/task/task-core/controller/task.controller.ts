@@ -14,6 +14,7 @@ import { JwtGuard } from 'src/modules/user/modules/auth/guards/jwt.guard';
 import { CreateTaskDto } from '../../modules/dtos/create.task.dto';
 import { UpdateTaskDto } from '../../modules/dtos/update.task.dto';
 import { TaskEnt } from '../../modules/entities/task.entity';
+import { ExpiredTaskPageDto } from '../../modules/paginations/expired.task.page.dto';
 import { ReportTaskPageDto } from '../../modules/paginations/report.page.dto';
 import { TaskPageDto } from '../../modules/paginations/task.page.dto';
 import { TaskService } from '../../modules/services/task.service';
@@ -22,6 +23,17 @@ import { TaskService } from '../../modules/services/task.service';
 @Controller('Task')
 export class TaskController {
   constructor(private task: TaskService) {}
+
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtGuard)
+  @Post('/checkExpirationTask')
+  checkExpirationTask(
+    @Body() expiredTaskPageDto: ExpiredTaskPageDto,
+    @Req() req: any,
+  ):  Promise<PageDto<TaskEnt>>  {
+    console.log(req.user);
+    return this.task.checkExpirationTask(req.user,expiredTaskPageDto);
+  }
 
   @Post()
   createTask(@Body() createTaskDto: CreateTaskDto): Promise<TaskEnt> {

@@ -1,6 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { DepartmentEnt } from 'src/modules/department/modules/entities/department.entity';
 import { RoleEnt } from 'src/modules/role/modules/entities/role.entity';
+import { RoleTypeEnum } from 'src/modules/role/modules/enum/role.enum';
 import { DataSource, FindOneOptions, QueryRunner } from 'typeorm';
 import { CreateUserDto } from '../dtos/create.user.dto';
 import { LoginUserDto } from '../dtos/login.user.dto';
@@ -18,11 +19,23 @@ export class UserService {
       createDt.departmentEnt = await this.dataSource
         .getRepository(DepartmentEnt)
         .findOne({ where: { id: createDt.id_department } });
-      createDt.roleEnt = await this.dataSource
-        .getRepository(RoleEnt)
-        .findOne({ where: { id: createDt.id_role } });
+      if (createDt.role_default_status === true) {
+        createDt.roleEnt = await this.dataSource
+          .getRepository(RoleEnt)
+          .findOne({ where: { role_type: RoleTypeEnum.USER } });
+      } else {
+        createDt.roleEnt = await this.dataSource
+          .getRepository(RoleEnt)
+          .findOne({ where: { role_type: RoleTypeEnum.ADMIN } });
+      }
       return await this.userRepo.createUser(createDt, query);
     } catch (e) {
+      console.log(e);
+      if (
+        e.message.indexOf('duplicate key value violates unique constraint') == 0
+      ) {
+        throw new BadRequestException({ message: 'you have a duplicate key' });
+      }
       throw e;
     }
   }
@@ -30,7 +43,7 @@ export class UserService {
   //_createJwt
   async _createJwt(loginUserDto: LoginUserDto) {
     try {
-      console.log(loginUserDto.username );
+      console.log(loginUserDto.username);
 
       const user = await this.dataSource.getRepository(UserEnt).findOne({
         where: { username: loginUserDto.username },

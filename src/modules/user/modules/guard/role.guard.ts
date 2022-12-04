@@ -12,16 +12,16 @@ export class RolesGuard implements CanActivate {
     try {
       const request = context.switchToHttp().getRequest();
       const user = request.user;
+      console.log('user', user);
+
       const role = await this.dataSource.getRepository(RoleEnt).findOne({
         where: {
           id: user.roles.id,
         },
       });
-      console.log(role);
 
       if (role.role_type == RoleTypeEnum.ADMIN) {
-        console.log('here');
-
+        user.role_default_status = false;
         return true;
       }
       return;

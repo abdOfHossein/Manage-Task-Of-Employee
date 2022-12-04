@@ -20,10 +20,10 @@ export class UserEnt extends BasicEnt {
   @Column({ nullable: true })
   password: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, unique: true })
   email: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, unique: true })
   phonenumber: string;
 
   @ManyToOne(() => DepartmentEnt, (department) => department.users)
@@ -31,4 +31,7 @@ export class UserEnt extends BasicEnt {
 
   @ManyToOne(() => RoleEnt, (role) => role.users)
   role: RoleEnt;
+
+  @Column({ nullable: true, default: true })
+  role_default_status: boolean;
 }

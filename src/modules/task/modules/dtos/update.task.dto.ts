@@ -10,7 +10,7 @@ export class UpdateTaskDto {
   tittle: string;
 
   @ApiProperty()
-  duration: Date;
+  duration: number;
 
   @ApiProperty()
   head_id: string;

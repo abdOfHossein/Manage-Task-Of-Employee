@@ -3,6 +3,7 @@ import { FindOneOptions, QueryRunner } from 'typeorm';
 import { CreateTaskDto } from '../dtos/create.task.dto';
 import { UpdateTaskDto } from '../dtos/update.task.dto';
 import { TaskEnt } from '../entities/task.entity';
+import { ExpiredTaskPageDto } from '../paginations/expired.task.page.dto';
 import { ReportTaskPageDto } from '../paginations/report.page.dto';
 import { TaskPageDto } from '../paginations/task.page.dto';
 import { TaskRepo } from '../repositories/task.repository';
@@ -11,13 +12,25 @@ import { TaskRepo } from '../repositories/task.repository';
 export class TaskService {
   constructor(private taskRepo: TaskRepo) {}
 
+  async checkExpirationTask(
+    user_info: any,
+    expiredTaskPageDto: ExpiredTaskPageDto,
+    query?: QueryRunner,
+  ) {
+    try {
+      return await this.taskRepo.checkExpirationTask(user_info, expiredTaskPageDto, query);
+    } catch (e) {
+      throw e;
+    }
+  }
+
   async getReportTask(
     id_user: string,
     reportPage: ReportTaskPageDto,
     query?: QueryRunner,
   ) {
     try {
-      return await this.taskRepo.getReportTask(id_user,reportPage, query);
+      return await this.taskRepo.getReportTask(id_user, reportPage, query);
     } catch (e) {
       throw e;
     }
