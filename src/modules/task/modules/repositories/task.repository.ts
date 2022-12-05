@@ -8,9 +8,11 @@ import { CreateTaskDto } from '../dtos/create.task.dto';
 import { UpdateTaskDto } from '../dtos/update.task.dto';
 import { TaskEnt } from '../entities/task.entity';
 import { TaskMapperPagination } from '../mapper/task.mapper.pagination';
+import { CalenderPageDto } from '../paginations/calender.page.dto';
 import { ExpiredTaskPageDto } from '../paginations/expired.task.page.dto';
 import { ReportTaskPageDto } from '../paginations/report.page.dto';
 import { TaskPageDto } from '../paginations/task.page.dto';
+import { TaskTypePageDto } from '../paginations/task.type.page.dto';
 
 export class TaskRepo {
   constructor(
@@ -30,7 +32,9 @@ export class TaskRepo {
 
     if (user_info.roles.role_type == 'USER') {
       console.log('here');
-      queryBuilder.where('task.head_id = :head_id', { head_id: user_info.id_User });
+      queryBuilder.where('task.head_id = :head_id', {
+        head_id: user_info.id_User,
+      });
     }
     queryBuilder
       // .where(`task.create_at > ( NOW() - new Date((task.create_at).setDate((task.create_at).getDay()+ task.duration))`)
@@ -43,7 +47,7 @@ export class TaskRepo {
         'task.status',
       ]);
     console.log(await queryBuilder.getMany());
-    
+
     if (expiredTaskPageDto.base) {
       const row = expiredTaskPageDto.base.row;
       const skip = PublicFunc.skipRow(
@@ -71,6 +75,129 @@ export class TaskRepo {
     const result = await queryBuilder.getManyAndCount();
     const pageMetaDto = new PageMetaDto({
       baseOptionsDto: expiredTaskPageDto.base,
+      itemCount: result[1],
+    });
+    console.log(result[0]);
+
+    return new PageDto(result[0], pageMetaDto);
+  }
+
+  async calender(
+    id_user: string,
+    calenderPageDto: CalenderPageDto,
+    query: QueryRunner | undefined,
+  ): Promise<PageDto<TaskEnt>> {
+    console.log(id_user);
+
+    const queryBuilder = this.dataSource.manager
+      .createQueryBuilder(TaskEnt, 'task')
+      .where('task.head_id = :head_id', { head_id: id_user })
+      .select([
+        'task.id',
+        'task.tittle',
+        'task.priority',
+        'task.head_id',
+        'task.type',
+        'task.status',
+      ]);
+    console.log(await queryBuilder.getMany());
+
+    if (calenderPageDto.base) {
+      const row = calenderPageDto.base.row;
+      const skip = PublicFunc.skipRow(
+        calenderPageDto.base.page,
+        calenderPageDto.base.row,
+      );
+      queryBuilder.skip(skip).take(row);
+    }
+    if (calenderPageDto.filter) {
+      if (
+        calenderPageDto.filter.first_time &&
+        calenderPageDto.filter.second_time
+      )
+        queryBuilder.andWhere(
+          'Task.create_at BETWEEN  :first_time AND :second_time',
+          {
+            first_time: `%${calenderPageDto.filter.first_time}%`,
+            second_time: `%${calenderPageDto.filter.second_time}%`,
+          },
+        );
+    }
+    if (calenderPageDto.field) {
+      const mapper = TaskMapperPagination[calenderPageDto.field];
+      if (!mapper)
+        throw new Error(
+          `${JSON.stringify({
+            section: 'public',
+            value: 'Column Not Exist',
+          })}`,
+        );
+      queryBuilder.addOrderBy(
+        `${TaskMapperPagination[calenderPageDto.field]}`,
+        calenderPageDto.base.order,
+      );
+    }
+    const result = await queryBuilder.getManyAndCount();
+    const pageMetaDto = new PageMetaDto({
+      baseOptionsDto: calenderPageDto.base,
+      itemCount: result[1],
+    });
+    console.log(result[0]);
+
+    return new PageDto(result[0], pageMetaDto);
+  }
+
+  async taskTypePagination(
+    id_user: string,
+    reportPage: TaskTypePageDto,
+    query: QueryRunner | undefined,
+  ): Promise<PageDto<TaskEnt>> {
+    console.log(id_user);
+
+    const queryBuilder = this.dataSource.manager
+      .createQueryBuilder(TaskEnt, 'task')
+      .where('task.head_id = :head_id', { head_id: id_user })
+      .select([
+        'task.id',
+        'task.tittle',
+        'task.priority',
+        'task.head_id',
+        'task.type',
+        'task.status',
+      ]);
+    console.log(await queryBuilder.getMany());
+
+    if (reportPage.base) {
+      const row = reportPage.base.row;
+      const skip = PublicFunc.skipRow(
+        reportPage.base.page,
+        reportPage.base.row,
+      );
+      queryBuilder.skip(skip).take(row);
+    }
+    if (reportPage.filter) {
+      if (reportPage.filter.type)
+        queryBuilder.andWhere('Task.type LIKE :type', {
+          type: `%${reportPage.filter.type}%`,
+        });
+    }
+    if (reportPage.field) {
+      const mapper = TaskMapperPagination[reportPage.field];
+      if (!mapper)
+        throw new Error(
+          `${JSON.stringify({
+            section: 'public',
+            value: 'Column Not Exist',
+          })}`,
+        );
+      queryBuilder.addOrderBy(
+        `${TaskMapperPagination[reportPage.field]}`,
+        reportPage.base.order,
+      );
+    }
+    const result = await queryBuilder.getManyAndCount();
+    const pageMetaDto = new PageMetaDto({
+      baseOptionsDto: reportPage.base,
       itemCount: result[1],
     });
     console.log(result[0]);

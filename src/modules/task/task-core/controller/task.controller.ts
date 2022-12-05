@@ -11,28 +11,31 @@ import {
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { PageDto } from 'src/common/dtos/page.dto';
 import { JwtGuard } from 'src/modules/user/modules/auth/guards/jwt.guard';
+import { CalenderDto } from '../../modules/dtos/calender.dto';
 import { CreateTaskDto } from '../../modules/dtos/create.task.dto';
 import { UpdateTaskDto } from '../../modules/dtos/update.task.dto';
 import { TaskEnt } from '../../modules/entities/task.entity';
+import { CalenderPageDto } from '../../modules/paginations/calender.page.dto';
 import { ExpiredTaskPageDto } from '../../modules/paginations/expired.task.page.dto';
 import { ReportTaskPageDto } from '../../modules/paginations/report.page.dto';
 import { TaskPageDto } from '../../modules/paginations/task.page.dto';
+import { TaskTypePageDto } from '../../modules/paginations/task.type.page.dto';
 import { TaskService } from '../../modules/services/task.service';
 
 @ApiTags('Task')
+@ApiBearerAuth('access-token')
+@UseGuards(JwtGuard)
 @Controller('Task')
 export class TaskController {
   constructor(private task: TaskService) {}
 
-  @ApiBearerAuth('access-token')
-  @UseGuards(JwtGuard)
   @Post('/checkExpirationTask')
   checkExpirationTask(
     @Body() expiredTaskPageDto: ExpiredTaskPageDto,
     @Req() req: any,
-  ):  Promise<PageDto<TaskEnt>>  {
+  ): Promise<PageDto<TaskEnt>> {
     console.log(req.user);
-    return this.task.checkExpirationTask(req.user,expiredTaskPageDto);
+    return this.task.checkExpirationTask(req.user, expiredTaskPageDto);
   }
 
   @Post()
@@ -40,14 +43,20 @@ export class TaskController {
     return this.task.createTask(createTaskDto);
   }
 
-  @ApiBearerAuth('access-token')
-  @UseGuards(JwtGuard)
   @Post('/report')
-  getReports(
+  reportsTaskStatus(
     @Body() reportDto: ReportTaskPageDto,
     @Req() req: any,
   ): Promise<PageDto<TaskEnt>> {
     return this.task.getReportTask(req.user.id_User, reportDto);
+  }
+
+  @Post('/taskTypeReport')
+  taskTypePagination(
+    @Body() reportDto: TaskTypePageDto,
+    @Req() req: any,
+  ): Promise<PageDto<TaskEnt>> {
+    return this.task.taskTypePagination(req.user.id_User, reportDto);
   }
 
   @Get()
@@ -67,5 +76,13 @@ export class TaskController {
   @Post('page')
   paginationTask(@Body() pageDto: TaskPageDto): Promise<PageDto<TaskEnt>> {
     return this.task.paginationTask(pageDto);
+  }
+
+  @Post('calender')
+  Calender(
+    @Req() req: any,
+    @Body() calenderPageDto: CalenderPageDto,
+  ): Promise<PageDto<TaskEnt>> {
+    return this.task.calender(req.user.id_User, calenderPageDto);
   }
 }
