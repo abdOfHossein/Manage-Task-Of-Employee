@@ -53,7 +53,12 @@ export class ProjectRepo {
   ): Promise<PageDto<ProjectEnt>> {
     const queryBuilder = this.dataSource.manager
       .createQueryBuilder(ProjectEnt, 'project')
-      .select(['Project.id', 'project.project_name']);
+      .innerJoin('project.reqs', 'req')
+      .innerJoin('req.department_rls', 'department_rl')
+      // .innerJoinAndSelect('department_rl.department', 'department')
+      // .innerJoinAndSelect('department.users', 'user')
+
+    console.log(await queryBuilder.getMany());
     if (pageDto.base) {
       const row = pageDto.base.row;
       const skip = PublicFunc.skipRow(pageDto.base.page, pageDto.base.row);

@@ -92,9 +92,9 @@ export class TaskService {
     }
   }
 
-  async paginationTask(pageDto: TaskPageDto) {
+  async paginationTask() {
     try {
-      return await this.taskRepo.paginationTask(pageDto);
+      return await this.taskRepo.paginationTask();
     } catch (e) {
       throw e;
     }

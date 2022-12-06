@@ -48,7 +48,7 @@ export class UserRepo {
     await this.redisService.setKey(
       `${this.PREFIX_TOKEN_AUTH}${jwtPayloadInterface.unq}`,
       JSON.stringify(dataRedis),
-      3600,
+      10000000,
     );
     return result;
   }

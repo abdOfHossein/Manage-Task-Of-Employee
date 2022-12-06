@@ -11,7 +11,6 @@ import { TaskMapperPagination } from '../mapper/task.mapper.pagination';
 import { CalenderPageDto } from '../paginations/calender.page.dto';
 import { ExpiredTaskPageDto } from '../paginations/expired.task.page.dto';
 import { ReportTaskPageDto } from '../paginations/report.page.dto';
-import { TaskPageDto } from '../paginations/task.page.dto';
 import { TaskTypePageDto } from '../paginations/task.type.page.dto';
 
 export class TaskRepo {
@@ -305,64 +304,7 @@ export class TaskRepo {
     return await this.dataSource.manager.save(entity);
   }
 
-  async paginationTask(pageDto: TaskPageDto): Promise<PageDto<TaskEnt>> {
-    const queryBuilder = this.dataSource.manager
-      .createQueryBuilder(TaskEnt, 'task')
-      .select([
-        'task.id',
-        'task.tittle',
-        'task.priority',
-        'task.head_id',
-        'task.type',
-        'task.status',
-      ]);
-    if (pageDto.base) {
-      const row = pageDto.base.row;
-      const skip = PublicFunc.skipRow(pageDto.base.page, pageDto.base.row);
-      queryBuilder.skip(skip).take(row);
-    }
-
-    if (pageDto.filter) {
-      if (pageDto.filter.tittle)
-        queryBuilder.andWhere('Task.tittle LIKE :tittle', {
-          tittle: `%${pageDto.filter.tittle}%`,
-        });
-      if (pageDto.filter.priority)
-        queryBuilder.andWhere('Task.priority LIKE :priority', {
-          priority: `%${pageDto.filter.priority}%`,
-        });
-      if (pageDto.filter.head_id)
-        queryBuilder.andWhere('Task.head_id LIKE :head_id', {
-          head_id: `%${pageDto.filter.head_id}%`,
-        });
-      if (pageDto.filter.type)
-        queryBuilder.andWhere('Task.type LIKE :type', {
-          type: `%${pageDto.filter.type}%`,
-        });
-      if (pageDto.filter.status)
-        queryBuilder.andWhere('Task.status LIKE :status', {
-          status: `%${pageDto.filter.status}%`,
-        });
-    }
-    if (pageDto.field) {
-      const mapper = TaskMapperPagination[pageDto.field];
-      if (!mapper)
-        throw new Error(
-          `${JSON.stringify({
-            section: 'public',
-            value: 'Column Not Exist',
-          })}`,
-        );
-      queryBuilder.addOrderBy(
-        `${TaskMapperPagination[pageDto.field]}`,
-        pageDto.base.order,
-      );
-    }
-    const result = await queryBuilder.getManyAndCount();
-    const pageMetaDto = new PageMetaDto({
-      baseOptionsDto: pageDto.base,
-      itemCount: result[1],
-    });
-    return new PageDto(result[0], pageMetaDto);
+  async paginationTask(): Promise<TaskEnt[]> {
+    return await this.dataSource.manager.find(TaskEnt,{})
   }
 }

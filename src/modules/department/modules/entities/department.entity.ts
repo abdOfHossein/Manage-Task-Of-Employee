@@ -22,4 +22,5 @@ export class DepartmentEnt extends BasicEnt {
     (department_rls) => department_rls.department,
   )
   department_rls: DepartmentRlEnt[];
+  
 }

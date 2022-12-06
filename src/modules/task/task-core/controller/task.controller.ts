@@ -73,9 +73,9 @@ export class TaskController {
   }
 
   @ApiOperation({ summary: 'pagination for Task' })
-  @Post('page')
-  paginationTask(@Body() pageDto: TaskPageDto): Promise<PageDto<TaskEnt>> {
-    return this.task.paginationTask(pageDto);
+  @Get('page')
+  paginationTask(): Promise<TaskEnt[]> {
+    return this.task.paginationTask();
   }
 
   @Post('calender')
