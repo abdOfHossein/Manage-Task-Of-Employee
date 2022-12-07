@@ -19,7 +19,8 @@ import { UserEnt } from '../../modules/entities/User.entity';
 import { RolesGuard } from '../../modules/guard/role.guard';
 import { UserPageDto } from '../../modules/paginations/user.page.dto';
 import { UserService } from '../../modules/services/User.service';
-import{Response} from 'express'
+import { Response } from 'express';
+
 @ApiTags('User')
 @Controller('User')
 export class UserController {
@@ -39,12 +40,11 @@ export class UserController {
     // createUserDto.id_role = id_role;
     return this.user.createUser(createUserDto);
   }
-  //login
-  @Post('login')
- async login(@Body() loginUserDto: LoginUserDto , @Res() res:Response ){
-    const result= await this.user._createJwt(loginUserDto);
-    res.status(200).send(result)
 
+  @Post('login')
+  async login(@Body() loginUserDto: LoginUserDto, @Res() res: Response) {
+    const result = await this.user._createJwt(loginUserDto);
+    res.status(200).send(result);
   }
 
   @UseGuards(RolesGuard)
@@ -66,7 +66,7 @@ export class UserController {
     updateUserDto.id_role = id_role;
     return this.user.updateUser(id_user, updateUserDto);
   }
-  
+
   @UseGuards(RolesGuard)
   @ApiBearerAuth('access-token')
   @UseGuards(JwtGuard)

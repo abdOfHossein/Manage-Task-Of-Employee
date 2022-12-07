@@ -100,7 +100,7 @@ export class UserRepo {
       where: { id: searchDto },
     });
     console.log(result);
-    
+
     if (!result)
       throw new BadGatewayException({ message: 'user does not exits' });
     return result;
@@ -126,12 +126,11 @@ export class UserRepo {
   async paginationUser(pageDto: UserPageDto): Promise<PageDto<UserEnt>> {
     const queryBuilder = this.dataSource.manager
       .createQueryBuilder(UserEnt, 'user')
-      .select([
-        'user.id',
-        'user.username',
-        'user.first_name',
-        'user.last_name',
-      ]);
+      .innerJoinAndSelect('user.department', 'department')
+      .innerJoinAndSelect('department.department_rls', 'department_rls')
+      .innerJoinAndSelect('department_rls.tasks', 'tasks');
+    console.log(await queryBuilder.getMany());
+
     if (pageDto.base) {
       const row = pageDto.base.row;
       const skip = PublicFunc.skipRow(pageDto.base.page, pageDto.base.row);

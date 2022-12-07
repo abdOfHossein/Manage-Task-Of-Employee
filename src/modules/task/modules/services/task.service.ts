@@ -1,31 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { FindOneOptions, QueryRunner } from 'typeorm';
-import { CalenderDto } from '../dtos/calender.dto';
 import { CreateTaskDto } from '../dtos/create.task.dto';
 import { UpdateTaskDto } from '../dtos/update.task.dto';
 import { TaskEnt } from '../entities/task.entity';
-import { CalenderPageDto } from '../paginations/calender.page.dto';
 import { ExpiredTaskPageDto } from '../paginations/expired.task.page.dto';
 import { ReportTaskPageDto } from '../paginations/report.page.dto';
-import { TaskPageDto } from '../paginations/task.page.dto';
 import { TaskTypePageDto } from '../paginations/task.type.page.dto';
 import { TaskRepo } from '../repositories/task.repository';
 
 @Injectable()
 export class TaskService {
   constructor(private taskRepo: TaskRepo) {}
-
-  async calender(
-    id_user: string,
-    calenderPageDto: CalenderPageDto,
-    query?: QueryRunner,
-  ) {
-    try {
-      return await this.taskRepo.calender(id_user, calenderPageDto, query);
-    } catch (e) {
-      throw e;
-    }
-  }
 
   async taskTypePagination(
     id_user: string,
@@ -45,7 +30,11 @@ export class TaskService {
     query?: QueryRunner,
   ) {
     try {
-      return await this.taskRepo.checkExpirationTask(user_info, expiredTaskPageDto, query);
+      return await this.taskRepo.checkExpirationTask(
+        user_info,
+        expiredTaskPageDto,
+        query,
+      );
     } catch (e) {
       throw e;
     }

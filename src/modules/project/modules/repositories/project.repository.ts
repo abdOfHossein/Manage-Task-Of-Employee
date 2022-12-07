@@ -53,10 +53,10 @@ export class ProjectRepo {
   ): Promise<PageDto<ProjectEnt>> {
     const queryBuilder = this.dataSource.manager
       .createQueryBuilder(ProjectEnt, 'project')
-      .innerJoin('project.reqs', 'req')
-      .innerJoin('req.department_rls', 'department_rl')
-      // .innerJoinAndSelect('department_rl.department', 'department')
-      // .innerJoinAndSelect('department.users', 'user')
+      .innerJoinAndSelect('project.reqs', 'req')
+      .innerJoinAndSelect('req.department_rls', 'department_rl')
+      .innerJoinAndSelect('department_rl.department', 'department')
+      .innerJoinAndSelect('department.users', 'user')
 
     console.log(await queryBuilder.getMany());
     if (pageDto.base) {

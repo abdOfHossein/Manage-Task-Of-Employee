@@ -8,7 +8,6 @@ import { CreateTaskDto } from '../dtos/create.task.dto';
 import { UpdateTaskDto } from '../dtos/update.task.dto';
 import { TaskEnt } from '../entities/task.entity';
 import { TaskMapperPagination } from '../mapper/task.mapper.pagination';
-import { CalenderPageDto } from '../paginations/calender.page.dto';
 import { ExpiredTaskPageDto } from '../paginations/expired.task.page.dto';
 import { ReportTaskPageDto } from '../paginations/report.page.dto';
 import { TaskTypePageDto } from '../paginations/task.type.page.dto';
@@ -74,71 +73,6 @@ export class TaskRepo {
     const result = await queryBuilder.getManyAndCount();
     const pageMetaDto = new PageMetaDto({
       baseOptionsDto: expiredTaskPageDto.base,
-      itemCount: result[1],
-    });
-    console.log(result[0]);
-
-    return new PageDto(result[0], pageMetaDto);
-  }
-
-  async calender(
-    id_user: string,
-    calenderPageDto: CalenderPageDto,
-    query: QueryRunner | undefined,
-  ): Promise<PageDto<TaskEnt>> {
-    console.log(id_user);
-
-    const queryBuilder = this.dataSource.manager
-      .createQueryBuilder(TaskEnt, 'task')
-      .where('task.head_id = :head_id', { head_id: id_user })
-      .select([
-        'task.id',
-        'task.tittle',
-        'task.priority',
-        'task.head_id',
-        'task.type',
-        'task.status',
-      ]);
-    console.log(await queryBuilder.getMany());
-
-    if (calenderPageDto.base) {
-      const row = calenderPageDto.base.row;
-      const skip = PublicFunc.skipRow(
-        calenderPageDto.base.page,
-        calenderPageDto.base.row,
-      );
-      queryBuilder.skip(skip).take(row);
-    }
-    if (calenderPageDto.filter) {
-      if (
-        calenderPageDto.filter.first_time &&
-        calenderPageDto.filter.second_time
-      )
-        queryBuilder.andWhere(
-          'Task.create_at BETWEEN  :first_time AND :second_time',
-          {
-            first_time: `%${calenderPageDto.filter.first_time}%`,
-            second_time: `%${calenderPageDto.filter.second_time}%`,
-          },
-        );
-    }
-    if (calenderPageDto.field) {
-      const mapper = TaskMapperPagination[calenderPageDto.field];
-      if (!mapper)
-        throw new Error(
-          `${JSON.stringify({
-            section: 'public',
-            value: 'Column Not Exist',
-          })}`,
-        );
-      queryBuilder.addOrderBy(
-        `${TaskMapperPagination[calenderPageDto.field]}`,
-        calenderPageDto.base.order,
-      );
-    }
-    const result = await queryBuilder.getManyAndCount();
-    const pageMetaDto = new PageMetaDto({
-      baseOptionsDto: calenderPageDto.base,
       itemCount: result[1],
     });
     console.log(result[0]);
@@ -305,6 +239,6 @@ export class TaskRepo {
   }
 
   async paginationTask(): Promise<TaskEnt[]> {
-    return await this.dataSource.manager.find(TaskEnt,{})
+    return await this.dataSource.manager.find(TaskEnt, {});
   }
 }

@@ -6,10 +6,13 @@ import { SwaggerService } from 'src/config/swagger/service/swagger.service';
 import { DataSource } from 'typeorm';
 import { DepartmentRlCoreModule } from '../department-rl/department-rl-core/department-rl-core.module';
 import { DepartmentCoreModule } from '../department/department-core/department-core.module';
-import { ProjectCoreModule } from '../project/task-core/project-core.module';
+import { EventCoreModule } from '../event/event-core/event-core.module';
+import { EventModule } from '../event/modules/event.module';
+import { FileCoreModule } from '../file/file-core/file-core.module';
+import { ProjectCoreModule } from '../project/project-core/project-core.module';
 import { RelTaskCoreModule } from '../rel-task/task-core/rel-task-core.module';
 import { ReqCoreModule } from '../req/task-core/req-core.module';
-import { RoleCoreModule } from '../role/user-core/role-core.module';
+import { RoleCoreModule } from '../role/role-core/role-core.module';
 import { TaskBlockOperationCoreModule } from '../task-cblock-operation/task-core/task-block-operation-core.module';
 import { TaskCoreModule } from '../task/task-core/task-core.module';
 import { UserCoreModule } from '../user/user-core/user-core.module';
@@ -36,7 +39,7 @@ import { AppService } from './app.service';
         password: process.env.DB_PASSWORD || '774936188',
         entities: ['dist/**/*.entity.js', '**/*.entity.js'],
         migrations: ['dist/migrations/*{.ts,.js}'],
-        synchronize: false,
+        synchronize: false
       }),
       dataSourceFactory: async (options) => {
         const dataSource = await new DataSource(options).initialize();
@@ -52,6 +55,8 @@ import { AppService } from './app.service';
     ReqCoreModule,
     RoleCoreModule,
     DepartmentRlCoreModule,
+    // FileCoreModule
+    // EventCoreModule
   ],
   controllers: [AppController],
   providers: [AppService, SwaggerService],
