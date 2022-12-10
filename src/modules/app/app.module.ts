@@ -37,8 +37,7 @@ import { AppService } from './app.service';
         password: process.env.DB_PASSWORD || '774936188',
         entities: ['dist/**/*.entity.js', '**/*.entity.js'],
         migrations: ['dist/migrations/*{.ts,.js}'],
-        synchronize: true,
-        autoLoadEntities: true,
+        synchronize: false,
       }),
       dataSourceFactory: async (options) => {
         const dataSource = await new DataSource(options).initialize();
@@ -54,8 +53,8 @@ import { AppService } from './app.service';
     ReqCoreModule,
     RoleCoreModule,
     DepartmentRlCoreModule,
+    EventCoreModule,
     FileCoreModule,
-    // EventCoreModule,
   ],
   controllers: [AppController],
   providers: [AppService, SwaggerService],

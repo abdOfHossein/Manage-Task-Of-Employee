@@ -1,13 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { InjectRepository } from '@nestjs/typeorm';
 import mv from 'mv';
 import path from 'path';
 import { UserResponseJWTDto } from 'src/common/dtos/user.dto';
 import { TypeResultFunctionEnum } from 'src/common/enums/type.result.function.enum';
 import { CreateFileDto } from '../dtos/create.file.dto';
 import { FindFileDto } from '../dtos/find.file.dto';
-import { FileEnt } from '../entities/file.entity';
 import { StatusFileEnum } from '../enums/status.file.enum';
 import { FileRepo } from '../repositories/file.repository';
 import { FileCuResult } from '../response/file.cu.result';
@@ -66,8 +64,9 @@ export class FileService {
     languageInfo: string,
   ): Promise<any> {
     try {
-      const fileEntity =(
-        await this.getOneFilePublic(id_unq_file, TypeResultFunctionEnum.ENTITY)
+      const fileEntity = await this.getOneFilePublic(
+        id_unq_file,
+        TypeResultFunctionEnum.ENTITY,
       );
       let tree;
       if (fileEntity.created_by) tree = fileEntity.created_by;

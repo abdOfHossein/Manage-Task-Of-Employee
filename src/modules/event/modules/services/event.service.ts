@@ -8,7 +8,6 @@ import { EventRepo } from '../repositories/Event.repository';
 @Injectable()
 export class EventService {
   constructor(private eventRepo: EventRepo) {}
-
   async createEvent(createDt: CreateEventDto, query?: QueryRunner) {
     try {
       return await this.eventRepo.createEvent(createDt, query);
