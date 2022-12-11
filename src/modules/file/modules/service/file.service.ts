@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import mv from 'mv';
-import path from 'path';
-import { UserResponseJWTDto } from 'src/common/dtos/user.dto';
+import * as mv from 'mv'
+import { join } from 'path';
 import { TypeResultFunctionEnum } from 'src/common/enums/type.result.function.enum';
 import { CreateFileDto } from '../dtos/create.file.dto';
 import { FindFileDto } from '../dtos/find.file.dto';
@@ -39,45 +38,39 @@ export class FileService {
     }
   }
 
-  async uploadFilePublic(
-    user: UserResponseJWTDto,
-    fileMulter: Express.Multer.File,
-  ) {
+  async uploadFilePublic(fileMulter: Express.Multer.File) {
     try {
+      console.log('000000');
+
       const createFileDto: CreateFileDto = {
         file: fileMulter.filename,
         type_file: fileMulter['type_file'],
         size: fileMulter.size,
         mime_type: fileMulter['mimetype'],
-        created_by: user.uid,
         original: `${fileMulter.originalname}`,
         file_path: fileMulter['path'],
       };
+      console.log(1111);
+
       const fileEnt = await this.fileRepo.createEntity(createFileDto);
+      console.log('fileEnt', fileEnt);
+      console.log(6666666);
+
       return new FileCuResult(fileEnt);
     } catch (e) {}
   }
 
   async downloadFile(
     res: any,
-    id_unq_file: string,
+    unq_file: string,
     languageInfo: string,
   ): Promise<any> {
     try {
       const fileEntity = await this.getOneFilePublic(
-        id_unq_file,
+        unq_file,
         TypeResultFunctionEnum.ENTITY,
       );
-      let tree;
-      if (fileEntity.created_by) tree = fileEntity.created_by;
-      if (fileEntity.user) tree = fileEntity.user;
-      let filePath = path.join(
-        process.cwd(),
-        'master',
-        fileEntity.type_file,
-        tree,
-        `${fileEntity.original}`,
-      );
+      let filePath = join(process.cwd(), 'master', `${fileEntity.original}`);
       res.sendFile(filePath);
     } catch (error) {}
   }
@@ -88,20 +81,19 @@ export class FileService {
       const repository = this.fileRepo;
       const files = await repository.getAllFile();
       for (const file of files) {
-        const oldFile = path.join(process.cwd(), file.file_path);
-        let tree;
-        if (file.created_by) tree = file.created_by;
-        if (file.user) tree = file.user;
-        let newFile = path.join(
-          process.cwd(),
-          'master',
-          file.type_file,
-          tree,
-          `${file.original}`,
-        );
+        const oldFile = join(process.cwd(), file.file_path);
+        console.log(oldFile);
+        let newFile = join(process.cwd(), 'master', `${file.original}`);
+        console.log(newFile);
         mv(oldFile, newFile, { mkdirp: true }, async function (err) {
           if (err) {
-          } else {
+            console.log('here');
+            
+            console.log(err);
+          } 
+          else {
+            console.log('in else');
+            
             file.status = StatusFileEnum.MASTER;
             await repository.updateFileStatus(file);
           }

@@ -17,18 +17,30 @@ export class FileRepo {
     createDto: CreateFileDto,
     query?: QueryRunner,
   ): Promise<FileEnt> {
-    const fileEnt = new FileEnt();
-    fileEnt.file = createDto.file;
-    fileEnt.user = createDto.user;
-    fileEnt.type_file = TypeFileEnum[createDto.type_file.toString()];
-    fileEnt.mime_type = createDto.mime_type;
-    fileEnt.created_by = createDto.created_by;
-    fileEnt.file_path = createDto.file_path;
-    fileEnt.size = createDto.size;
-    fileEnt.original = createDto.original;
-    fileEnt.status = StatusFileEnum.SUSPEND;
-    if (query) return await query.manager.save(fileEnt);
-    return await this.dataSource.manager.save(fileEnt);
+    try {
+      console.log(333333333333);
+
+      const fileEnt = new FileEnt();
+      fileEnt.file = createDto.file;
+      fileEnt.user = createDto.user;
+      fileEnt.type_file = TypeFileEnum[createDto.type_file.toString()];
+      fileEnt.mime_type = createDto.mime_type;
+      fileEnt.file_path = createDto.file_path;
+      fileEnt.size = createDto.size;
+      fileEnt.original = createDto.original;
+      fileEnt.status = StatusFileEnum.SUSPEND;
+      console.log(4444444);
+      console.log('fileEnt', fileEnt);
+      if (query) return await query.manager.save(fileEnt);
+      console.log(5555555555);
+      const result = await this.dataSource.manager.save(fileEnt);
+      console.log(666666666);
+      console.log('result', result);
+      return result;
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
   }
 
   deleteEntity(deleteEntity: any, query?: QueryRunner): Promise<any> {

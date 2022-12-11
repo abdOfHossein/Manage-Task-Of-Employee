@@ -1,7 +1,14 @@
 import { BasicEnt } from 'src/common/entities/basic.entity';
 import { DepartmentEnt } from 'src/modules/department/modules/entities/department.entity';
+import { FileEnt } from 'src/modules/file/modules/entities/file.entity';
 import { RoleEnt } from 'src/modules/role/modules/entities/role.entity';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity({ name: 'user' })
 export class UserEnt extends BasicEnt {
@@ -34,4 +41,7 @@ export class UserEnt extends BasicEnt {
 
   @Column({ nullable: true, default: true })
   role_default_status: boolean;
+
+  @OneToMany(() => FileEnt, (files) => files.user)
+  files: FileEnt[];
 }

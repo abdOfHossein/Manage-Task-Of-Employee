@@ -27,17 +27,17 @@ export class UserController {
   PREFIX_TOKEN_AUTH = 'prefix_auth_token_';
   constructor(private user: UserService) {}
 
-  @UseGuards(RolesGuard)
-  @ApiBearerAuth('access-token')
-  @UseGuards(JwtGuard)
+  // @UseGuards(RolesGuard)
+  // @ApiBearerAuth('access-token')
+  // @UseGuards(JwtGuard)
   @Post('/register')
   register(
     @Query('id_department') id_department: string,
-    // @Query('id_role') id_role: string,
+    @Query('unq_file') unq_file: string,
     @Body() createUserDto: CreateUserDto,
   ): Promise<UserEnt> {
     createUserDto.id_department = id_department;
-    // createUserDto.id_role = id_role;
+    createUserDto.unq_file = unq_file;
     return this.user.createUser(createUserDto);
   }
 
@@ -59,11 +59,11 @@ export class UserController {
   updateUser(
     @Query('id_user') id_user: string,
     @Query('id_department') id_department: string,
-    @Query('id_role') id_role: string,
+    @Query('unq_file') unq_file: string,
     @Body() updateUserDto: UpdateUserDto,
   ): Promise<UserEnt> {
     updateUserDto.id_department = id_department;
-    updateUserDto.id_role = id_role;
+    updateUserDto.unq_file = unq_file;
     return this.user.updateUser(id_user, updateUserDto);
   }
 

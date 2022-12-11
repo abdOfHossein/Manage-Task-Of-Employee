@@ -1,5 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { DepartmentEnt } from 'src/modules/department/modules/entities/department.entity';
+import { FileEnt } from 'src/modules/file/modules/entities/file.entity';
 import { RoleEnt } from 'src/modules/role/modules/entities/role.entity';
 import { RoleTypeEnum } from 'src/modules/role/modules/enum/role.enum';
 import { DataSource, FindOneOptions, QueryRunner } from 'typeorm';
@@ -16,6 +17,8 @@ export class UserService {
 
   async createUser(createDt: CreateUserDto, query?: QueryRunner) {
     try {
+      const file=await this.dataSource.getRepository(FileEnt).findOne({where:{unq_file:createDt.unq_file}})
+      createDt.file=file
       createDt.departmentEnt = await this.dataSource
         .getRepository(DepartmentEnt)
         .findOne({ where: { id: createDt.id_department } });
@@ -66,6 +69,8 @@ export class UserService {
     updateDt: UpdateUserDto,
     query?: QueryRunner,
   ) {
+    const file=await this.dataSource.getRepository(FileEnt).findOne({where:{unq_file:updateDt.unq_file}})
+    updateDt.file=file
     updateDt.departmentEnt = await this.dataSource
       .getRepository(DepartmentEnt)
       .findOne({ where: { id: updateDt.id_department } });

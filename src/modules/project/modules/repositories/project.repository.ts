@@ -22,6 +22,7 @@ export class ProjectRepo {
   ): Promise<ProjectEnt> {
     const projectEnt = new ProjectEnt();
     projectEnt.project_name = createDto.project_name;
+    projectEnt.file = createDto.file;
     if (query) return await query.manager.save(projectEnt);
     return await this.dataSource.manager.save(projectEnt);
   }
@@ -44,6 +45,7 @@ export class ProjectRepo {
     query?: QueryRunner,
   ): Promise<ProjectEnt> {
     entity.project_name = updateDto.project_name;
+    entity.file = updateDto.file;
     if (query) return await query.manager.save(entity);
     return await this.dataSource.manager.save(entity);
   }
@@ -53,10 +55,10 @@ export class ProjectRepo {
   ): Promise<PageDto<ProjectEnt>> {
     const queryBuilder = this.dataSource.manager
       .createQueryBuilder(ProjectEnt, 'project')
-      .innerJoinAndSelect('project.reqs', 'req')
-      .innerJoinAndSelect('req.department_rls', 'department_rl')
-      .innerJoinAndSelect('department_rl.department', 'department')
-      .innerJoinAndSelect('department.users', 'user')
+      .leftJoinAndSelect('project.reqs', 'req')
+      .leftJoinAndSelect('req.department_rls', 'department_rl')
+      .leftJoinAndSelect('department_rl.department', 'department')
+      .leftJoinAndSelect('department.users', 'user');
 
     console.log(await queryBuilder.getMany());
     if (pageDto.base) {

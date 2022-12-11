@@ -1,6 +1,14 @@
 import { BasicEnt } from 'src/common/entities/basic.entity';
+import { FileEnt } from 'src/modules/file/modules/entities/file.entity';
 import { ReqEnt } from 'src/modules/req/modules/entities/req.entity';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity({ name: 'Project' })
 export class ProjectEnt extends BasicEnt {
@@ -12,4 +20,8 @@ export class ProjectEnt extends BasicEnt {
 
   @OneToMany(() => ReqEnt, (reqs) => reqs.project)
   reqs: ReqEnt[];
+
+  @OneToOne(() => FileEnt, (file) => file.project)
+  @JoinColumn({ name: 'fileId' })
+  file: FileEnt;
 }

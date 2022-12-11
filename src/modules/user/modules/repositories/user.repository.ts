@@ -67,6 +67,7 @@ export class UserRepo {
     userEnt.phonenumber = createDto.phonenumber;
     userEnt.username = createDto.username;
     userEnt.department = createDto.departmentEnt;
+    userEnt.files = [createDto.file];
     if (query) return await query.manager.save(userEnt);
     return await this.dataSource.manager.save(userEnt);
   }
@@ -119,6 +120,7 @@ export class UserRepo {
     entity.role = updateDto.roleEnt;
     entity.phonenumber = updateDto.phonenumber;
     entity.username = updateDto.username;
+    entity.files = [updateDto.file];
     if (query) return await query.manager.save(entity);
     return await this.dataSource.manager.save(entity);
   }

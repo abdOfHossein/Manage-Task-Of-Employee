@@ -15,7 +15,9 @@ export class ProjectController {
   @Post()
   createProject(
     @Body() createProjectDto: CreateProjectDto,
+    @Query('unq_file') unq_file: string,
   ): Promise<ProjectEnt> {
+    createProjectDto.unq_file=unq_file
     return this.project.createProject(createProjectDto);
   }
 
@@ -27,8 +29,10 @@ export class ProjectController {
   @Put()
   updateProject(
     @Query('id_project') id_project: string,
+    @Query('unq_file') unq_file: string,
     @Body() updateProjectDto: UpdateProjectDto,
-  ): Promise<ProjectEnt> {
+  ): Promise<ProjectEnt> { 
+    updateProjectDto.unq_file=unq_file
     return this.project.updateProject(id_project, updateProjectDto);
   }
 

@@ -24,9 +24,9 @@ export class FileController {
   constructor(private fileService: FileService) {
   }
 
-  @Post('/upload/private')
+  @Post('/upload')
   @UseInterceptors(FileInterceptors)
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(FileInterceptor('file', { dest: 'uploads/' }))
   @ApiOperation({ summary: 'Upload File' })
   @ApiBody({
     schema: {
@@ -34,7 +34,7 @@ export class FileController {
       properties: {
         type_file: {
           type: 'enum',
-          enum: [TypeFileEnum.PROFILE],
+          enum: [TypeFileEnum.PROFILE,TypeFileEnum.PROJET],
         },
         file: {
           type: 'string',
@@ -43,53 +43,22 @@ export class FileController {
       },
     },
   })
-  @ApiConsumes('multipart/form-data')
-
-
-  @Post('/upload/public')
-  @UseInterceptors(FileInterceptors)
-  @UseInterceptors(FileInterceptor('file'))
-  @ApiOperation({ summary: 'Upload File' })
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        type_file: {
-          type: 'enum',
-          enum: [TypeFileEnum.PROFILE],
-        },
-        file: {
-          type: 'string',
-          format: 'binary',
-        },
-      },
-    },
-  })
-  // @Public()
-  @PublicRole()
-
   @ApiConsumes('multipart/form-data')
   async uploadFilePublic(
     @UploadedFile('file') file: Express.Multer.File,
-    @GetUser() user: UserResponseJWTDto
   ) {
-    return await this.fileService.uploadFilePublic(user, file);
+ 
+    return await this.fileService.uploadFilePublic(file);
   }
-
-
-
-
-
   @ApiOperation({ summary: 'download Files' })
   @Get('stream-file/:id_unq_file')
   @Public()
   @PublicRole()
   async getFile(
     @Res() res: Response,
-    @Param('id_unq_file') id_unq_file: string,
+    @Param('unq_file') unq_file: string,
   ): Promise<any> {
     const languageInfo = 'FA';
-    return await this.fileService.downloadFile(res, id_unq_file, languageInfo)
-
+    return await this.fileService.downloadFile(res, unq_file, languageInfo)
   }
 }

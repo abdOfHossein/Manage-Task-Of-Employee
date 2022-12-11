@@ -21,9 +21,6 @@ export class FileGResult {
   file: string;
 
   @ApiProperty()
-  created_by: string;
-
-  @ApiProperty()
   file_path: string;
 
   @ApiProperty()
@@ -43,7 +40,6 @@ export class FileGResult {
     this.mime_type = init.mime_type;
     this.size = init.size;
     this.file = init.file;
-    this.created_by = init.created_by;
     this.file_path = init.file_path;
     this.original = init.original;
     this.type_file = init.type_file;

@@ -3,12 +3,14 @@ import {
   Column,
   Entity,
   ManyToOne,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { BasicEnt } from 'src/common/entities/basic.entity'; 
 import { UserEnt } from 'src/modules/user/modules/entities/user.entity';  
 import { StatusFileEnum } from '../enums/status.file.enum';
 import { TypeFileEnum } from '../enums/type.file.enum';
+import { ProjectEnt } from 'src/modules/project/modules/entities/project.entity';
 var randomstring = require('randomstring');
 
 @Entity({ schema: 'public', name: 'file_manager' })
@@ -27,10 +29,7 @@ export class FileEnt extends BasicEnt {
 
   @Column()
   file: string;
-
-  @Column()
-  created_by: string;
-
+  
   @Column()
   file_path: string;
 
@@ -47,9 +46,12 @@ export class FileEnt extends BasicEnt {
   })
   status: StatusFileEnum;
 
-  @ManyToOne(() => UserEnt, (user) => user.id)
+  @ManyToOne(() => UserEnt, (user) => user.files)
   user: UserEnt;
 
+  @OneToOne(() =>ProjectEnt, (project) => project.file)
+  project:ProjectEnt
+  
   @BeforeInsert()
   fillInsert() {
     this.unq_file =
