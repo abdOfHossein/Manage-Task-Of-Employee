@@ -3,6 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { PageDto } from 'src/common/dtos/page.dto';
 import { PageMetaDto } from 'src/common/dtos/page.meta.dto';
 import { PublicFunc } from 'src/common/function/public.func';
+import { DepartmentRlEnt } from 'src/modules/department-rl/modules/entities/department-rl.entity';
+import { DepartmentEnt } from 'src/modules/department/modules/entities/department.entity';
 import { DataSource, FindOneOptions, QueryRunner } from 'typeorm';
 import { CreateReqDto } from '../dtos/create.req.dto';
 import { UpdateReqDto } from '../dtos/update.req.dto';
@@ -23,8 +25,39 @@ export class ReqRepo {
     const reqEnt = new ReqEnt();
     reqEnt.status = createDto.status;
     reqEnt.project = createDto.projectEnt;
+
     if (query) return await query.manager.save(reqEnt);
-    return await this.dataSource.manager.save(reqEnt);
+    const result = await this.dataSource.manager.save(reqEnt);
+
+    if (createDto.id_departments.length == 0) {
+      let departments = await this.dataSource
+        .getRepository(DepartmentEnt)
+        .find({});
+      for (const department of departments) {
+        const departmentRl = this.dataSource
+          .getRepository(DepartmentRlEnt)
+          .create({
+            department,
+            req: result,
+          });
+        await this.dataSource.getRepository(DepartmentRlEnt).save(departmentRl);
+      }
+    }
+    for (const id_department of createDto.id_departments) {
+      const department = await this.dataSource
+        .getRepository(DepartmentEnt)
+        .findOne({ where: { id: id_department } });
+      const departmentRl = this.dataSource
+        .getRepository(DepartmentRlEnt)
+        .create({
+          department,
+          req: result,
+        });
+      await this.dataSource
+        .getRepository(DepartmentRlEnt)
+        .save(DepartmentRlEnt);
+    }
+    return result;
   }
 
   async findOneReq(

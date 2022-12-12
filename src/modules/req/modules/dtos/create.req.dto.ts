@@ -3,6 +3,9 @@ import { ProjectEnt } from 'src/modules/project/modules/entities/project.entity'
 import { StatusReqEnum } from '../enums/req.enum';
 
 export class CreateReqDto {
+  @ApiProperty()
+  id_departments: Array<any | string>;
+
   @ApiProperty({ default: StatusReqEnum.OPEN })
   status: StatusReqEnum;
 

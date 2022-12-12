@@ -28,12 +28,6 @@ export class ProjectService {
         isDefault: true,
       });
       await this.dataSource.getRepository(ReqEnt).save(req);
-      const departmentRlEnt = await this.dataSource
-        .getRepository(DepartmentRlEnt)
-        .find({ where: { req: null } });
-      departmentRlEnt.map((elem) => {
-        elem.req = req;
-      });
       return await this.projectRepo.createProject(createDt, query);
     } catch (e) {
       throw e;
