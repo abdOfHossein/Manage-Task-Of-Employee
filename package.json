@@ -20,7 +20,7 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "migration:create": "npm run typeorm migration:create ./src/migrations/create-post-table",
-    "typeorm:migrate": "npx typeorm-ts-node-esm migration:generate ./src/migrations/update-post-table -d ./src/config/database/app.dataSource.ts",
+    "typeorm:migrate": "cross-env NODE_ENV=debug npx typeorm-ts-node-esm migration:generate ./src/migrations/update-post-table -d ./src/config/database/app.dataSource.ts",
     "migrations-run": "npx typeorm-ts-node-commonjs migration:run -d ./src/config/database/app.dataSource.ts",
     "migrations-revert": "npm run typeorm:cli -- migration:revert"
   },
