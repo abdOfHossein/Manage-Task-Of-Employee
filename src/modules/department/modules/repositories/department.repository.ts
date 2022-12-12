@@ -3,6 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { PageDto } from 'src/common/dtos/page.dto';
 import { PageMetaDto } from 'src/common/dtos/page.meta.dto';
 import { PublicFunc } from 'src/common/function/public.func';
+import { DepartmentRlEnt } from 'src/modules/department-rl/modules/entities/department-rl.entity';
+import { ReqEnt } from 'src/modules/req/modules/entities/req.entity';
 import { DataSource, FindOneOptions, QueryRunner } from 'typeorm';
 import { CreateDepartmentDto } from '../dtos/create.department.dto';
 import { UpdateDepartmentDto } from '../dtos/update.department.dto';
@@ -13,6 +15,8 @@ import { DepartmentPageDto } from '../paginations/department.page.dto';
 export class DepartmentRepo {
   constructor(
     @InjectRepository(DepartmentEnt)
+    @InjectRepository(DepartmentRlEnt)
+    @InjectRepository(ReqEnt)
     private dataSource: DataSource,
   ) {}
 
@@ -24,7 +28,20 @@ export class DepartmentRepo {
     departmentEnt.header_id = createDto.header_id;
     departmentEnt.name_department = createDto.name_department;
     if (query) return await query.manager.save(departmentEnt);
-    return await this.dataSource.manager.save(departmentEnt);
+    const result = await this.dataSource.manager.save(departmentEnt);
+    const reqs = await this.dataSource.manager.find(ReqEnt,{});
+    console.log(reqs);
+    
+    for (const req of reqs) {
+      const departmentRl = this.dataSource
+        .manager
+        .create(DepartmentRlEnt,{
+          req,
+          department: result,
+        });
+      await this.dataSource.manager.save(departmentRl);
+    }
+    return result;
   }
 
   async findOneDepartment(
@@ -54,7 +71,11 @@ export class DepartmentRepo {
   ): Promise<PageDto<DepartmentEnt>> {
     const queryBuilder = this.dataSource.manager
       .createQueryBuilder(DepartmentEnt, 'department')
-      .select(['department.id', 'department.header_id','department.name_department']);
+      .select([
+        'department.id',
+        'department.header_id',
+        'department.name_department',
+      ]);
     if (pageDto.base) {
       const row = pageDto.base.row;
       const skip = PublicFunc.skipRow(pageDto.base.page, pageDto.base.row);

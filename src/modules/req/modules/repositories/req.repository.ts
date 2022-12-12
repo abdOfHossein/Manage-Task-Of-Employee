@@ -31,25 +31,25 @@ export class ReqRepo {
 
     if (createDto.id_departments.length == 0) {
       let departments = await this.dataSource
-        .getRepository(DepartmentEnt)
-        .find({});
+        .manager
+        .find(DepartmentEnt,{});
       for (const department of departments) {
         const departmentRl = this.dataSource
-          .getRepository(DepartmentRlEnt)
-          .create({
+          .manager
+          .create(DepartmentRlEnt,{
             department,
             req: result,
           });
-        await this.dataSource.getRepository(DepartmentRlEnt).save(departmentRl);
+        await this.dataSource.manager.save(departmentRl);
       }
     }
     for (const id_department of createDto.id_departments) {
       const department = await this.dataSource
-        .getRepository(DepartmentEnt)
-        .findOne({ where: { id: id_department } });
+        .manager
+        .findOne(DepartmentEnt,{ where: { id: id_department } });
       const departmentRl = this.dataSource
-        .getRepository(DepartmentRlEnt)
-        .create({
+        .manager
+        .create(DepartmentRlEnt,{
           department,
           req: result,
         });
