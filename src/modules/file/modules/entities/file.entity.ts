@@ -29,7 +29,7 @@ export class FileEnt extends BasicEnt {
 
   @Column()
   file: string;
-  
+
   @Column()
   file_path: string;
 
