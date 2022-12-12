@@ -18,9 +18,13 @@ export class ReqEnt extends BasicEnt {
   @Column()
   status: StatusReqEnum;
 
+  @Column({ default: true })
+  isDefault: boolean;
+
   @ManyToOne(() => ProjectEnt, (project) => project.reqs)
   project: ProjectEnt;
 
   @OneToMany(() => DepartmentRlEnt, (department_rls) => department_rls.req)
   department_rls: DepartmentRlEnt[];
+  
 }

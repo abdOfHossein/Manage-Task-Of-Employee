@@ -1,7 +1,7 @@
 import { BasicEnt } from 'src/common/entities/basic.entity';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity({ schema: 'public', name: 'backend' })
+@Entity({ name: 'backend' })
 export class BackendEnt extends BasicEnt {
   @PrimaryGeneratedColumn('uuid')
   id: string;

@@ -8,7 +8,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-@Entity({ name: 'task' })
+@Entity({ name: 'rel_task' })
 export class RelTaskEnt extends BasicEnt {
   @PrimaryGeneratedColumn('uuid')
   id: string;

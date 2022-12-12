@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { FileEnt } from 'src/modules/file/modules/entities/file.entity';
+import { ReqEnt } from 'src/modules/req/modules/entities/req.entity';
 import { DataSource, FindOneOptions, QueryRunner } from 'typeorm';
 import { CreateProjectDto } from '../dtos/create.project.dto';
 import { UpdateProjectDto } from '../dtos/update.project.dto';
@@ -20,6 +21,7 @@ export class ProjectService {
         .getRepository(FileEnt)
         .findOne({ where: { unq_file: createDt.unq_file } });
       createDt.file = file;
+      const req=await this.dataSource.getRepository(ReqEnt).create({})
       return await this.projectRepo.createProject(createDt, query);
     } catch (e) {
       throw e;

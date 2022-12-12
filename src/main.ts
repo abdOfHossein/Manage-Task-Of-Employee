@@ -23,7 +23,7 @@ async function bootstrap() {
   app.use(I18nMiddleware);
   const swaggerConfig = app.get<SwaggerService>(SwaggerService);
   swaggerConfig.init(app);
-  const port = process.env.APP_PORT || 4000;
+  const port = process.env.APP_PORT || 5000;
 
   await app.listen(port).then(async () => {
     nestLogger.log(`Running`, 'Swagger');
