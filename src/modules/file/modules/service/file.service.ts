@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import * as mv from 'mv'
+import * as mv from 'mv';
 import { join } from 'path';
 import { TypeResultFunctionEnum } from 'src/common/enums/type.result.function.enum';
 import { CreateFileDto } from '../dtos/create.file.dto';
@@ -70,6 +70,7 @@ export class FileService {
         unq_file,
         TypeResultFunctionEnum.ENTITY,
       );
+
       let filePath = join(process.cwd(), 'master', `${fileEntity.original}`);
       res.sendFile(filePath);
     } catch (error) {}
@@ -88,12 +89,11 @@ export class FileService {
         mv(oldFile, newFile, { mkdirp: true }, async function (err) {
           if (err) {
             console.log('here');
-            
+
             console.log(err);
-          } 
-          else {
+          } else {
             console.log('in else');
-            
+
             file.status = StatusFileEnum.MASTER;
             await repository.updateFileStatus(file);
           }
