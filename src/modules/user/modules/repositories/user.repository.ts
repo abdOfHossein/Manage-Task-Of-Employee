@@ -128,9 +128,10 @@ export class UserRepo {
   async paginationUser(pageDto: UserPageDto): Promise<PageDto<UserEnt>> {
     const queryBuilder = this.dataSource.manager
       .createQueryBuilder(UserEnt, 'user')
-      .innerJoinAndSelect('user.department', 'department')
-      .innerJoinAndSelect('department.department_rls', 'department_rls')
-      .innerJoinAndSelect('department_rls.tasks', 'tasks');
+      // .select(['user.first_name','user.last_name'])
+      .leftJoinAndSelect('user.department', 'department')
+      .leftJoinAndSelect('department.department_rls', 'department_rls')
+      .leftJoinAndSelect('department_rls.tasks', 'tasks');
     console.log(await queryBuilder.getMany());
 
     if (pageDto.base) {

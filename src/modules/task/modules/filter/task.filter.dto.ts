@@ -14,10 +14,6 @@ export class TaskFilterDto {
 
   @ApiProperty()
   @Allow()
-  head_id: string;
-
-  @ApiProperty()
-  @Allow()
   type: TypeTaskEnum;
 
   @ApiProperty()

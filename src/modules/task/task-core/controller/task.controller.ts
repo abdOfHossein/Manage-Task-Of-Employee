@@ -16,6 +16,7 @@ import { UpdateTaskDto } from '../../modules/dtos/update.task.dto';
 import { TaskEnt } from '../../modules/entities/task.entity';
 import { ExpiredTaskPageDto } from '../../modules/paginations/expired.task.page.dto';
 import { ReportTaskPageDto } from '../../modules/paginations/report.page.dto';
+import { TaskPageDto } from '../../modules/paginations/task.page.dto';
 import { TaskTypePageDto } from '../../modules/paginations/task.type.page.dto';
 import { TaskService } from '../../modules/services/task.service';
 
@@ -40,7 +41,7 @@ export class TaskController {
     return this.task.createTask(createTaskDto);
   }
 
-  @Post('/report')
+  @Post('/taskStatusReport')
   reportsTaskStatus(
     @Body() reportDto: ReportTaskPageDto,
     @Req() req: any,
@@ -70,7 +71,15 @@ export class TaskController {
   }
 
   @Get('all')
-  paginationTask(): Promise<TaskEnt[]> {
-    return this.task.paginationTask();
+  getAll(): Promise<TaskEnt[]> {
+    return this.task.getAll();
+  }
+
+  @Post('page')
+  paginationRole(
+    @Body() pageDto: TaskPageDto,
+    @Req() req: any,
+  ): Promise<PageDto<TaskEnt>> {
+    return this.task.paginationTask(req.user.id_User, pageDto);
   }
 }

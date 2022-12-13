@@ -10,6 +10,7 @@ import { TaskEnt } from '../entities/task.entity';
 import { TaskMapperPagination } from '../mapper/task.mapper.pagination';
 import { ExpiredTaskPageDto } from '../paginations/expired.task.page.dto';
 import { ReportTaskPageDto } from '../paginations/report.page.dto';
+import { TaskPageDto } from '../paginations/task.page.dto';
 import { TaskTypePageDto } from '../paginations/task.type.page.dto';
 
 export class TaskRepo {
@@ -28,7 +29,7 @@ export class TaskRepo {
       'task',
     );
 
-    if (user_info.roles.role_type == 'USER') {
+    if (user_info.Tasks.Task_type == 'USER') {
       console.log('here');
       queryBuilder.where('task.head_id = :head_id', {
         head_id: user_info.id_User,
@@ -238,7 +239,72 @@ export class TaskRepo {
     return await this.dataSource.manager.save(entity);
   }
 
-  async paginationTask(): Promise<TaskEnt[]> {
+  async getAll(): Promise<TaskEnt[]> {
     return await this.dataSource.manager.find(TaskEnt, {});
+  }
+
+  async paginationTask(
+    id_user: string,
+    pageDto: TaskPageDto,
+  ): Promise<PageDto<TaskEnt>> {
+    const queryBuilder = this.dataSource.manager
+      .createQueryBuilder(TaskEnt, 'task')
+      .where('task.head_id = :head_id', { head_id: id_user })
+      .select([
+        'task.id',
+        'task.priority',
+        'task.tittle',
+        'task.head_id',
+        'task.type',
+        'task.duration',
+        'task.status',
+      ]);
+    if (pageDto.base) {
+      const row = pageDto.base.row;
+      const skip = PublicFunc.skipRow(pageDto.base.page, pageDto.base.row);
+      queryBuilder.skip(skip).take(row);
+    }
+    if (pageDto.filter) {
+      if (pageDto.filter.priority) {
+        queryBuilder.andWhere('task.priority LIKE :priority', {
+          priority: `%${pageDto.filter.priority}%`,
+        });
+      }
+      if (pageDto.filter.tittle) {
+        queryBuilder.andWhere('task.tittle LIKE :tittle', {
+          tittle: `%${pageDto.filter.tittle}%`,
+        });
+      }
+      if (pageDto.filter.type) {
+        queryBuilder.andWhere('task.type LIKE :type', {
+          type: `%${pageDto.filter.type}%`,
+        });
+      }
+      if (pageDto.filter.status) {
+        queryBuilder.andWhere('task.status LIKE :status', {
+          status: `%${pageDto.filter.status}%`,
+        });
+      }
+    }
+    if (pageDto.field) {
+      const mapper = TaskMapperPagination[pageDto.field];
+      if (!mapper)
+        throw new Error(
+          `${JSON.stringify({
+            section: 'public',
+            value: 'Column Not Exist',
+          })}`,
+        );
+      queryBuilder.addOrderBy(
+        `${TaskMapperPagination[pageDto.field]}`,
+        pageDto.base.order,
+      );
+    }
+    const result = await queryBuilder.getManyAndCount();
+    const pageMetaDto = new PageMetaDto({
+      baseOptionsDto: pageDto.base,
+      itemCount: result[1],
+    });
+    return new PageDto(result[0], pageMetaDto);
   }
 }
