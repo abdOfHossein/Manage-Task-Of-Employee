@@ -15,9 +15,7 @@ export class ProjectController {
   @Post()
   createProject(
     @Body() createProjectDto: CreateProjectDto,
-    @Query('unq_file') unq_file: string,
   ): Promise<ProjectEnt> {
-    createProjectDto.unq_file=unq_file
     return this.project.createProject(createProjectDto);
   }
 

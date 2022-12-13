@@ -19,10 +19,6 @@ export class ProjectService {
 
   async createProject(createDt: CreateProjectDto, query?: QueryRunner) {
     try {
-      const file = await this.dataSource
-        .getRepository(FileEnt)
-        .findOne({ where: { unq_file: createDt.unq_file } });
-      createDt.file = file;
       const req = this.dataSource.getRepository(ReqEnt).create({
         status: StatusReqEnum.OPEN,
         isDefault: true,

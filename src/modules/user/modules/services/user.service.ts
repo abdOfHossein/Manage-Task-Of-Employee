@@ -1,15 +1,18 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { DepartmentEnt } from 'src/modules/department/modules/entities/department.entity';
-import { FileEnt } from 'src/modules/file/modules/entities/file.entity';
-import { RoleEnt } from 'src/modules/role/modules/entities/role.entity';
-import { RoleTypeEnum } from 'src/modules/role/modules/enum/role.enum';
-import { DataSource, FindOneOptions, QueryRunner } from 'typeorm';
-import { CreateUserDto } from '../dtos/create.user.dto';
-import { LoginUserDto } from '../dtos/login.user.dto';
-import { UpdateUserDto } from '../dtos/update.user.dto';
-import { UserEnt } from '../entities/user.entity';
-import { UserPageDto } from '../paginations/user.page.dto';
-import { UserRepo } from '../repositories/user.repository';
+import { BadRequestException, Injectable } from "@nestjs/common";
+import { DepartmentEnt } from "src/modules/department/modules/entities/department.entity";
+import { FileEnt } from "src/modules/file/modules/entities/file.entity";
+import { RoleEnt } from "src/modules/role/modules/entities/role.entity";
+import { RoleTypeEnum } from "src/modules/role/modules/enum/role.enum";
+import { DataSource, FindOneOptions, QueryRunner } from "typeorm";
+import { CreateUserDto } from "../dtos/create.user.dto";
+import { LoginUserDto } from "../dtos/login.user.dto";
+import { UpdateUserDto } from "../dtos/update.user.dto";
+import { UserEnt } from "../entities/user.entity";
+import { UserPageDto } from "../paginations/user.page.dto";
+import { UserRepo } from "../repositories/user.repository";
+import { ChangePasswordUserDto } from "../dtos/change-password.user.dto";
+import { UserResponseJWTDto } from "../../../../common/dtos/user.dto";
+import { UserStatus } from "../enum/user.status";
 
 @Injectable()
 export class UserService {
@@ -52,7 +55,9 @@ export class UserService {
         where: { username: loginUserDto.username },
         // relations: { role: true },
       });
-      console.log(user);
+      if (!user || !(await user.validatePassword(loginUserDto.password)) || user.status == UserStatus.BLOCK) {
+        throw new BadRequestException('User does not exist')
+      }
 
       return await this.userRepo._createJwt(user.id, user.role);
     } catch (e) {
@@ -60,6 +65,7 @@ export class UserService {
       throw e;
     }
   }
+
   async findOneUser(searchDto: string, options?: FindOneOptions) {
     return await this.userRepo.findOneUser(searchDto, options);
   }
@@ -83,5 +89,18 @@ export class UserService {
 
   async paginationUser(pageDto: UserPageDto) {
     return await this.userRepo.paginationUser(pageDto);
+  }
+
+  async blockUser(id_user: string): Promise<UserEnt> {
+    try {
+      return await this.userRepo.blockUser(id_user);
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  async changePassword(id_user: UserResponseJWTDto,changePasswordUserDto: ChangePasswordUserDto) : Promise<UserEnt> {
+    console.log('x');
+    return await this.userRepo.changePassword(id_user, changePasswordUserDto);
   }
 }
