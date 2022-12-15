@@ -12,6 +12,7 @@ import {
 } from 'typeorm';
 import { StatusTaskEnum } from '../enums/status-task.enum';
 import { TypeTaskEnum } from '../enums/type-task.enum';
+import { UserEnt } from "../../../user/modules/entities/user.entity";
 
 @Entity({ name: 'task' })
 export class TaskEnt extends BasicEnt {
@@ -38,6 +39,9 @@ export class TaskEnt extends BasicEnt {
 
   @ManyToOne(() => DepartmentRlEnt, (department_rl) => department_rl.tasks)
   department_rl: DepartmentRlEnt;
+
+  @ManyToOne(() => UserEnt, (user) => user.task)
+  user: UserEnt;
 
   @OneToMany(
     () => TaskBlockOperationEnt,

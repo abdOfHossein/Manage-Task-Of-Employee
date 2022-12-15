@@ -9,6 +9,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { TaskEnt } from "../../../task/modules/entities/task.entity";
 
 @Entity({ name: 'user' })
 export class UserEnt extends BasicEnt {
@@ -44,4 +45,7 @@ export class UserEnt extends BasicEnt {
 
   @OneToMany(() => FileEnt, (files) => files.user)
   files: FileEnt[];
+
+  @OneToMany(() => TaskEnt, (task) => task.user)
+  task: TaskEnt[];
 }

@@ -98,7 +98,7 @@ export class UserRepo {
     options?: FindOneOptions,
   ): Promise<UserEnt> {
     const result = await this.dataSource.manager.findOne(UserEnt, {
-      where: { id: searchDto },
+      where: { id: searchDto },relations: ['department']
     });
     console.log(result);
 

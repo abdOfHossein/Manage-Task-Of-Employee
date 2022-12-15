@@ -18,6 +18,8 @@ import { ExpiredTaskPageDto } from '../../modules/paginations/expired.task.page.
 import { ReportTaskPageDto } from '../../modules/paginations/report.page.dto';
 import { TaskTypePageDto } from '../../modules/paginations/task.type.page.dto';
 import { TaskService } from '../../modules/services/task.service';
+import { GetUser } from "../../../../common/decorates/get.user.decorator";
+import { UserResponseJWTDto } from "../../../../common/dtos/user.dto";
 
 @ApiTags('Task')
 @ApiBearerAuth('access-token')
@@ -38,6 +40,17 @@ export class TaskController {
   @Post()
   createTask(@Body() createTaskDto: CreateTaskDto): Promise<TaskEnt> {
     return this.task.createTask(createTaskDto);
+  }
+
+  @Post('/project')
+  createTaskByProject(
+    @Body() createTaskDto: CreateTaskDto,
+    @GetUser() user:UserResponseJWTDto,
+    @Query('id_project') id_project: string,
+  ): Promise<TaskEnt> {
+    createTaskDto.id_project = id_project;
+    createTaskDto.id_user = user;
+    return this.task.createTaskByProject(createTaskDto);
   }
 
   @Post('/report')

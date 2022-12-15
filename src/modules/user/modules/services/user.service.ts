@@ -13,7 +13,7 @@ import { UserRepo } from '../repositories/user.repository';
 
 @Injectable()
 export class UserService {
-  constructor(private dataSource: DataSource, private userRepo: UserRepo) {}
+  constructor(private userRepo: UserRepo, private dataSource: DataSource) {}
 
   async createUser(createDt: CreateUserDto, query?: QueryRunner) {
     try {

@@ -7,10 +7,19 @@ import { ExpiredTaskPageDto } from '../paginations/expired.task.page.dto';
 import { ReportTaskPageDto } from '../paginations/report.page.dto';
 import { TaskTypePageDto } from '../paginations/task.type.page.dto';
 import { TaskRepo } from '../repositories/task.repository';
+import { ProjectService } from "../../../project/modules/services/project.service";
+import { UserService } from "../../../user/modules/services/user.service";
+import { ReqService } from "../../../req/modules/services/req.service";
+import { DepartmentRlService } from "../../../department-rl/modules/services/department-rl.service";
 
 @Injectable()
 export class TaskService {
-  constructor(private taskRepo: TaskRepo) {}
+  constructor(
+    private taskRepo: TaskRepo,
+    private projectService: ProjectService,
+    private reqService: ReqService,
+    private departmentRlService: DepartmentRlService
+  ) {}
 
   async taskTypePagination(
     id_user: string,
@@ -55,6 +64,18 @@ export class TaskService {
   async createTask(createDt: CreateTaskDto, query?: QueryRunner) {
     try {
       return await this.taskRepo.createTask(createDt, query);
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  async createTaskByProject(createDt: CreateTaskDto, query?: QueryRunner) {
+    try {
+      createDt.projectEnt = await this.projectService.findOneProject(createDt.id_project);
+      if (!createDt.id_req) createDt.reqEnt = await this.reqService.findDefaultReq();
+      else createDt.reqEnt = await this.reqService.findOneReq(createDt.id_req);
+      createDt.departmentRlEnt = await this.departmentRlService.findByDepartmentRequest(createDt.id_req, createDt.id_user.uid)
+      return await this.taskRepo.createTaskByProject(createDt, query);
     } catch (e) {
       throw e;
     }

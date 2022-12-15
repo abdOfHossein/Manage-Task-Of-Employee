@@ -211,6 +211,20 @@ export class TaskRepo {
     return await this.dataSource.manager.save(taskEnt);
   }
 
+  async createTaskByProject(createDto: CreateTaskDto, query: QueryRunner | undefined,) {
+    const taskEnt = new TaskEnt();
+    taskEnt.head_id = createDto.head_id;
+    taskEnt.user = createDto.userEnt;
+    taskEnt.department_rl = createDto.departmentRlEnt;
+    taskEnt.priority = createDto.priority;
+    taskEnt.tittle = createDto.tittle;
+    taskEnt.duration = createDto.duration;
+    taskEnt.status = createDto.status;
+    taskEnt.type = createDto.type;
+    if (query) return await query.manager.save(taskEnt);
+    return await this.dataSource.manager.save(taskEnt);
+  }
+
   async findOneTask(
     searchDto: string,
     options?: FindOneOptions,

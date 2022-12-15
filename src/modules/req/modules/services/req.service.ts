@@ -30,6 +30,14 @@ export class ReqService {
     }
   }
 
+  async findDefaultReq() {
+    try {
+      return await this.reqRepo.findDefaultReq();
+    } catch (e) {
+
+    }
+  }
+
   async updateReq(Req_Id: string, updateDt: UpdateReqDto, query?: QueryRunner) {
     try {
       updateDt.projectEnt = await this.dataSource

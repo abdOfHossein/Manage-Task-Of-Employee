@@ -1,4 +1,4 @@
-import { BadGatewayException } from '@nestjs/common';
+import { BadGatewayException, BadRequestException } from "@nestjs/common";
 import { InjectRepository } from '@nestjs/typeorm';
 import { PageDto } from 'src/common/dtos/page.dto';
 import { PageMetaDto } from 'src/common/dtos/page.meta.dto';
@@ -71,6 +71,17 @@ export class ReqRepo {
       },
     });
     if (!req) throw new BadGatewayException({ message: 'Req does not exits' });
+    return req;
+  }
+
+  async findDefaultReq(): Promise<ReqEnt> {
+    const req = await this.dataSource.manager.findOne(ReqEnt, {
+      where: { isDefault: true },
+      relations: {
+        project: true,
+      },
+    });
+    if (!req) throw new BadRequestException({ message: 'Req does not exits' });
     return req;
   }
 

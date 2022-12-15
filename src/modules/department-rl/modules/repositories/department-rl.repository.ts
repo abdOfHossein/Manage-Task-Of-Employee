@@ -42,6 +42,24 @@ export class DepartmentRlRepo {
     return DepartmentRl;
   }
 
+  async findByDepartmentRequest(
+    id_req: string,
+    id_department: string,
+    options?: FindOneOptions,
+  ): Promise<DepartmentRlEnt> {
+    const queryBuilder = await this.dataSource.manager.createQueryBuilder(DepartmentRlEnt,'departmentRl')
+      .innerJoinAndSelect('departmentRl.department', 'department')
+      .innerJoinAndSelect('department.user', 'user')
+      .innerJoinAndSelect('departmentRl.req', 'req')
+      .where('user.id = : id_user AND req.id = :id_req', {
+        id_req,
+        id_department
+      }).getOne()
+    if (!queryBuilder)
+      throw new BadGatewayException({ message: 'DepartmentRl does not exits' });
+    return queryBuilder;
+  }
+
   async updateDepartmentRl(
     entity: DepartmentRlEnt,
     updateDto: UpdateDepartmentRlDto,
