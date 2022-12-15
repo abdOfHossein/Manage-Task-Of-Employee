@@ -93,4 +93,8 @@ export class TaskService {
   async paginationTask(id_user: string,pageDto: TaskPageDto) {
     return await this.taskRepo.paginationTask(id_user,pageDto);
   }
+  
+  async createDepartmentRl(id_department: string,createDto:CreateTaskDto, query?: QueryRunner) {
+    return await this.taskRepo.createDepartmentRl(id_department,createDto,query);
+  }
 }

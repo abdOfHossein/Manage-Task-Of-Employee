@@ -3,6 +3,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { PageDto } from 'src/common/dtos/page.dto';
 import { PageMetaDto } from 'src/common/dtos/page.meta.dto';
 import { PublicFunc } from 'src/common/function/public.func';
+import { DepartmentRlEnt } from 'src/modules/department-rl/modules/entities/department-rl.entity';
+import { DepartmentEnt } from 'src/modules/department/modules/entities/department.entity';
+import { ReqEnt } from 'src/modules/req/modules/entities/req.entity';
 import { DataSource, FindOneOptions, QueryRunner } from 'typeorm';
 import { CreateTaskDto } from '../dtos/create.task.dto';
 import { UpdateTaskDto } from '../dtos/update.task.dto';
@@ -306,5 +309,41 @@ export class TaskRepo {
       itemCount: result[1],
     });
     return new PageDto(result[0], pageMetaDto);
+  }
+
+  async createDepartmentRl(
+    id_department: string,
+    createDto: CreateTaskDto,
+    query: QueryRunner | undefined,
+  ): Promise<TaskEnt> {
+    const req = await this.dataSource.manager.findOne(ReqEnt, {
+      where: { isDefault: true },
+    });
+    console.log(req);
+    
+    const department = await this.dataSource.manager.findOne(DepartmentEnt, {
+      where: { id: id_department },
+    });
+    console.log(department);
+    
+    const department_rl = await this.dataSource.manager
+      .createQueryBuilder(DepartmentRlEnt, 'department_rl_ent')
+      .where(
+        'department_rl_ent.department = :department AND department_rl_ent.req = :req',
+        { department:department.id, req:req.id },
+      )
+      .getOne();
+
+    console.log('department_rl in repo', department_rl);
+
+    const taskEnt = new TaskEnt();
+    taskEnt.head_id = createDto.head_id;
+    taskEnt.priority = createDto.priority;
+    taskEnt.tittle = createDto.tittle;
+    taskEnt.duration = createDto.duration;
+    taskEnt.status = createDto.status;
+    taskEnt.type = createDto.type;
+    if (query) return await query.manager.save(taskEnt);
+    return await this.dataSource.manager.save(taskEnt);
   }
 }

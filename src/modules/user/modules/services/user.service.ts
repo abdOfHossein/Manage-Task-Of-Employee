@@ -1,4 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
+import { UnauthorizedException } from '@nestjs/common/exceptions/unauthorized.exception';
 import { DepartmentEnt } from 'src/modules/department/modules/entities/department.entity';
 import { FileEnt } from 'src/modules/file/modules/entities/file.entity';
 import { RoleEnt } from 'src/modules/role/modules/entities/role.entity';
@@ -17,8 +18,10 @@ export class UserService {
 
   async createUser(createDt: CreateUserDto, query?: QueryRunner) {
     try {
-      const file=await this.dataSource.getRepository(FileEnt).findOne({where:{unq_file:createDt.unq_file}})
-      createDt.file=file
+      const file = await this.dataSource
+        .getRepository(FileEnt)
+        .findOne({ where: { unq_file: createDt.unq_file } });
+      createDt.file = file;
       createDt.departmentEnt = await this.dataSource
         .getRepository(DepartmentEnt)
         .findOne({ where: { id: createDt.id_department } });
@@ -50,11 +53,11 @@ export class UserService {
 
       const user = await this.dataSource.getRepository(UserEnt).findOne({
         where: { username: loginUserDto.username },
-        // relations: { role: true },
       });
-      console.log(user);
-
-      return await this.userRepo._createJwt(user.id, user.role);
+      if (user && user.password === loginUserDto.password) {
+        return await this.userRepo._createJwt(user.id, user.role);
+      }
+      throw new UnauthorizedException({message:'username or pass is wrong !!!'})
     } catch (e) {
       console.log(e);
       throw e;
@@ -69,8 +72,10 @@ export class UserService {
     updateDt: UpdateUserDto,
     query?: QueryRunner,
   ) {
-    const file=await this.dataSource.getRepository(FileEnt).findOne({where:{unq_file:updateDt.unq_file}})
-    updateDt.file=file
+    const file = await this.dataSource
+      .getRepository(FileEnt)
+      .findOne({ where: { unq_file: updateDt.unq_file } });
+    updateDt.file = file;
     updateDt.departmentEnt = await this.dataSource
       .getRepository(DepartmentEnt)
       .findOne({ where: { id: updateDt.id_department } });

@@ -30,6 +30,14 @@ export class ReqService {
     }
   }
 
+  async findAllReq(): Promise<ReqEnt[]> {
+    try {
+      return await this.reqRepo.findAllReq();
+    } catch (e) {
+      throw e;
+    }
+  }
+
   async updateReq(Req_Id: string, updateDt: UpdateReqDto, query?: QueryRunner) {
     try {
       updateDt.projectEnt = await this.dataSource

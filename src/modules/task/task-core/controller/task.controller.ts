@@ -82,4 +82,12 @@ export class TaskController {
   ): Promise<PageDto<TaskEnt>> {
     return this.task.paginationTask(req.user.id_User, pageDto);
   }
+
+  @Post('createDepartmentRl')
+  createDepartmentRl(
+    @Query('id_department') id_department:string,
+    @Body() createDto:CreateTaskDto
+  ): Promise<TaskEnt> {
+    return this.task.createDepartmentRl(id_department,createDto);
+  }
 }
