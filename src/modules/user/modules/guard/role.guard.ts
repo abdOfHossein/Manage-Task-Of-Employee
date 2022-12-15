@@ -16,7 +16,7 @@ export class RolesGuard implements CanActivate {
 
       const role = await this.dataSource.getRepository(RoleEnt).findOne({
         where: {
-          id: user.roles.id,
+          id: user.roles,
         },
       });
 
