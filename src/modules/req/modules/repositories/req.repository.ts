@@ -30,29 +30,23 @@ export class ReqRepo {
     const result = await this.dataSource.manager.save(reqEnt);
 
     if (createDto.id_departments.length == 0) {
-      let departments = await this.dataSource
-        .getRepository(DepartmentEnt)
-        .find({});
+      let departments = await this.dataSource.manager.find(DepartmentEnt, {});
       for (const department of departments) {
-        const departmentRl = this.dataSource
-          .getRepository(DepartmentRlEnt)
-          .create({
-            department,
-            req: result,
-          });
-        await this.dataSource.getRepository(DepartmentRlEnt).save(departmentRl);
-      }
-    }
-    for (const id_department of createDto.id_departments) {
-      const department = await this.dataSource
-        .getRepository(DepartmentEnt)
-        .findOne({ where: { id: id_department } });
-      const departmentRl = this.dataSource
-        .getRepository(DepartmentRlEnt)
-        .create({
+        const departmentRl = this.dataSource.manager.create(DepartmentRlEnt, {
           department,
           req: result,
         });
+        await this.dataSource.manager.save(departmentRl);
+      }
+    }
+    for (const id_department of createDto.id_departments) {
+      const department = await this.dataSource.manager.findOne(DepartmentEnt, {
+        where: { id: id_department },
+      });
+      const departmentRl = this.dataSource.manager.create(DepartmentRlEnt, {
+        department,
+        req: result,
+      });
       await this.dataSource
         .getRepository(DepartmentRlEnt)
         .save(DepartmentRlEnt);
@@ -83,6 +77,9 @@ export class ReqRepo {
     });
     if (!req) throw new BadRequestException({ message: 'Req does not exits' });
     return req;
+  }
+  async findAllReq(): Promise<ReqEnt[]> {
+    return await this.dataSource.manager.find(ReqEnt, {});
   }
 
   async updateReq(

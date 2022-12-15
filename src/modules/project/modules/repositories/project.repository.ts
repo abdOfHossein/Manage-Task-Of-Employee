@@ -9,6 +9,9 @@ import { UpdateProjectDto } from '../dtos/update.project.dto';
 import { ProjectEnt } from '../entities/project.entity';
 import { ProjectMapperPagination } from '../mapper/project.mapper.pagination';
 import { ProjectPageDto } from '../paginations/project.page.dto';
+import { TaskEnt } from "../../../task/modules/entities/task.entity";
+import { DepartmentRlEnt } from "../../../department-rl/modules/entities/department-rl.entity";
+import { ReqEnt } from "../../../req/modules/entities/req.entity";
 
 export class ProjectRepo {
   constructor(
@@ -22,7 +25,6 @@ export class ProjectRepo {
   ): Promise<ProjectEnt> {
     const projectEnt = new ProjectEnt();
     projectEnt.project_name = createDto.project_name;
-    projectEnt.file = createDto.file;
     if (query) return await query.manager.save(projectEnt);
     return await this.dataSource.manager.save(projectEnt);
   }
@@ -55,12 +57,14 @@ export class ProjectRepo {
   ): Promise<PageDto<ProjectEnt>> {
     const queryBuilder = this.dataSource.manager
       .createQueryBuilder(ProjectEnt, 'project')
-      .leftJoinAndSelect('project.reqs', 'req')
-      .leftJoinAndSelect('req.department_rls', 'department_rl')
-      .leftJoinAndSelect('department_rl.department', 'department')
-      .leftJoinAndSelect('department.users', 'user');
-
-    console.log(await queryBuilder.getMany());
+      .leftJoin('project.reqs', 'req')
+      .leftJoin('req.department_rls', 'department_rls')
+      .leftJoin('department_rls.tasks', 'tasks')
+      .select(['project.id', 'project_name'])
+      .addSelect('COUNT(DISTINCT(req.id))', 'req')
+      .addSelect('COUNT(DISTINCT(tasks.id))', 'tasks')
+      .groupBy('project.id')
+    console.log(await queryBuilder.getRawAndEntities());
     if (pageDto.base) {
       const row = pageDto.base.row;
       const skip = PublicFunc.skipRow(pageDto.base.page, pageDto.base.row);
@@ -87,11 +91,11 @@ export class ProjectRepo {
         pageDto.base.order,
       );
     }
-    const result = await queryBuilder.getManyAndCount();
+    const result = await queryBuilder.getRawAndEntities();
     const pageMetaDto = new PageMetaDto({
       baseOptionsDto: pageDto.base,
-      itemCount: result[1],
+      itemCount: result.entities.length,
     });
-    return new PageDto(result[0], pageMetaDto);
+    return new PageDto(result.raw, pageMetaDto);
   }
 }

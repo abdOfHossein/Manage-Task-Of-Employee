@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import appConfiguration from 'src/config/configs/app-configuration';
+import { AppDataSource } from 'src/config/database/app.dataSource';
 import { SwaggerService } from 'src/config/swagger/service/swagger.service';
 import { DataSource } from 'typeorm';
 import { DepartmentRlCoreModule } from '../department-rl/department-rl-core/department-rl-core.module';

@@ -34,7 +34,14 @@ export class ReqService {
     try {
       return await this.reqRepo.findDefaultReq();
     } catch (e) {
-
+      console.log(e);
+    }
+  }
+  async findAllReq(): Promise<ReqEnt[]> {
+    try {
+      return await this.reqRepo.findAllReq();
+    } catch (e) {
+      throw e;
     }
   }
 

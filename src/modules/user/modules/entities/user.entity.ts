@@ -3,6 +3,7 @@ import { DepartmentEnt } from 'src/modules/department/modules/entities/departmen
 import { FileEnt } from 'src/modules/file/modules/entities/file.entity';
 import { RoleEnt } from 'src/modules/role/modules/entities/role.entity';
 import {
+  BeforeInsert,
   Column,
   Entity,
   ManyToOne,
@@ -10,6 +11,8 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { TaskEnt } from "../../../task/modules/entities/task.entity";
+import { UserStatus } from "../enum/user.status";
+import { sha512 } from "js-sha512";
 
 @Entity({ name: 'user' })
 export class UserEnt extends BasicEnt {
@@ -34,6 +37,9 @@ export class UserEnt extends BasicEnt {
   @Column({ nullable: true, unique: true })
   phonenumber: string;
 
+  @Column({ type: 'enum', enum: UserStatus, default: UserStatus.ACTIVE})
+  status: UserStatus;
+
   @ManyToOne(() => DepartmentEnt, (department) => department.users)
   department: DepartmentEnt;
 
@@ -48,4 +54,14 @@ export class UserEnt extends BasicEnt {
 
   @OneToMany(() => TaskEnt, (task) => task.user)
   task: TaskEnt[];
+  
+  @BeforeInsert()
+  async hashPassword() {
+    if (this.password) {
+      this.password = sha512(this.password);
+    }
+  }
+  async validatePassword(password: string) {
+    return this.password === sha512(password);
+  }
 }

@@ -5,6 +5,7 @@ import { UpdateTaskDto } from '../dtos/update.task.dto';
 import { TaskEnt } from '../entities/task.entity';
 import { ExpiredTaskPageDto } from '../paginations/expired.task.page.dto';
 import { ReportTaskPageDto } from '../paginations/report.page.dto';
+import { TaskPageDto } from '../paginations/task.page.dto';
 import { TaskTypePageDto } from '../paginations/task.type.page.dto';
 import { TaskRepo } from '../repositories/task.repository';
 import { ProjectService } from "../../../project/modules/services/project.service";
@@ -102,11 +103,19 @@ export class TaskService {
     }
   }
 
-  async paginationTask() {
+  async getAll() {
     try {
-      return await this.taskRepo.paginationTask();
+      return await this.taskRepo.getAll();
     } catch (e) {
       throw e;
     }
+  }
+
+  async paginationTask(id_user: string,pageDto: TaskPageDto) {
+    return await this.taskRepo.paginationTask(id_user,pageDto);
+  }
+  
+  async createDepartmentRl(id_department: string,createDto:CreateTaskDto, query?: QueryRunner) {
+    return await this.taskRepo.createDepartmentRl(id_department,createDto,query);
   }
 }

@@ -16,6 +16,7 @@ import { UpdateTaskDto } from '../../modules/dtos/update.task.dto';
 import { TaskEnt } from '../../modules/entities/task.entity';
 import { ExpiredTaskPageDto } from '../../modules/paginations/expired.task.page.dto';
 import { ReportTaskPageDto } from '../../modules/paginations/report.page.dto';
+import { TaskPageDto } from '../../modules/paginations/task.page.dto';
 import { TaskTypePageDto } from '../../modules/paginations/task.type.page.dto';
 import { TaskService } from '../../modules/services/task.service';
 import { GetUser } from "../../../../common/decorates/get.user.decorator";
@@ -53,7 +54,7 @@ export class TaskController {
     return this.task.createTaskByProject(createTaskDto);
   }
 
-  @Post('/report')
+  @Post('/taskStatusReport')
   reportsTaskStatus(
     @Body() reportDto: ReportTaskPageDto,
     @Req() req: any,
@@ -83,7 +84,23 @@ export class TaskController {
   }
 
   @Get('all')
-  paginationTask(): Promise<TaskEnt[]> {
-    return this.task.paginationTask();
+  getAll(): Promise<TaskEnt[]> {
+    return this.task.getAll();
+  }
+
+  @Post('page')
+  paginationRole(
+    @Body() pageDto: TaskPageDto,
+    @Req() req: any,
+  ): Promise<PageDto<TaskEnt>> {
+    return this.task.paginationTask(req.user.id_User, pageDto);
+  }
+
+  @Post('createDepartmentRl')
+  createDepartmentRl(
+    @Query('id_department') id_department:string,
+    @Body() createDto:CreateTaskDto
+  ): Promise<TaskEnt> {
+    return this.task.createDepartmentRl(id_department,createDto);
   }
 }

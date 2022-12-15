@@ -1,4 +1,4 @@
-import { BadGatewayException } from '@nestjs/common';
+import { BadGatewayException, BadRequestException } from "@nestjs/common";
 import { JwtService } from '@nestjs/jwt/dist';
 import { InjectRepository } from '@nestjs/typeorm';
 import { sha512 } from 'js-sha512';
@@ -15,6 +15,9 @@ import { UpdateUserDto } from '../dtos/update.user.dto';
 import { UserEnt } from '../entities/user.entity';
 import { UserMapperPagination } from '../mapper/user.mapper.pagination';
 import { UserPageDto } from '../paginations/user.page.dto';
+import { UserStatus } from "../enum/user.status";
+import { ChangePasswordUserDto } from "../dtos/change-password.user.dto";
+import { UserResponseJWTDto } from "../../../../common/dtos/user.dto";
 const randomstring = require('randomstring');
 
 export class UserRepo {
@@ -125,13 +128,41 @@ export class UserRepo {
     return await this.dataSource.manager.save(entity);
   }
 
+  async changePassword(id_user: UserResponseJWTDto, changePasswordUserDto: ChangePasswordUserDto): Promise<UserEnt> {
+    if (changePasswordUserDto.confirm_password != changePasswordUserDto.password)
+      throw new BadRequestException({ message: 'confirm password does not match password' });
+    const userEntity = await this.dataSource.manager.findOne(UserEnt, {
+      where: { id: id_user.uid },
+    });
+    console.log(userEntity);
+    if (!userEntity) throw new BadRequestException({ message: 'user does not exits' });
+    userEntity.password = sha512(changePasswordUserDto.new_password);
+    return await this.dataSource.manager.save(userEntity);
+  }
+
+  async blockUser(id_user:string): Promise<UserEnt> {
+    const userEntity = await this.dataSource.manager.findOne(UserEnt, {
+      where: { id: id_user },
+    });
+    if (!userEntity) throw new BadGatewayException({ message: 'user does not exits' });
+    userEntity.status = UserStatus.BLOCK;
+    return await this.dataSource.manager.save(userEntity);
+  }
+
   async paginationUser(pageDto: UserPageDto): Promise<PageDto<UserEnt>> {
     const queryBuilder = this.dataSource.manager
       .createQueryBuilder(UserEnt, 'user')
-      .innerJoinAndSelect('user.department', 'department')
-      .innerJoinAndSelect('department.department_rls', 'department_rls')
-      .innerJoinAndSelect('department_rls.tasks', 'tasks');
-    console.log(await queryBuilder.getMany());
+      .leftJoinAndSelect('user.department', 'department')
+      .leftJoinAndSelect('department.department_rls', 'department_rls')
+      .leftJoinAndSelect('department_rls.tasks', 'tasks')
+      .select([
+        'user.id',
+        'user.first_name',
+        'user.last_name',
+        'user.username',
+        'user.email',
+        'user.phonenumber',
+      ])
 
     if (pageDto.base) {
       const row = pageDto.base.row;
