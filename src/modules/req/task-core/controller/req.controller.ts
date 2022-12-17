@@ -1,6 +1,7 @@
 import { Body, Controller, Get, Post, Put, Query } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { PageDto } from 'src/common/dtos/page.dto';
+import { ProjectEnt } from 'src/modules/project/modules/entities/project.entity';
 import { CreateReqDto } from '../../modules/dtos/create.req.dto';
 import { UpdateReqDto } from '../../modules/dtos/update.req.dto';
 import { ReqEnt } from '../../modules/entities/req.entity';
@@ -45,5 +46,10 @@ export class ReqController {
   @Post('page')
   paginationReq(@Body() pageDto: ReqPageDto): Promise<PageDto<ReqEnt>> {
     return this.req.paginationReq(pageDto);
+  }
+
+  @Post('page/id_project')
+  getAllReqAndTask(@Query('id_project') id_project:string,@Body() pageDto: ReqPageDto): Promise<PageDto<ProjectEnt>> {
+    return this.req.getAllReqAndTask(id_project,pageDto);
   }
 }

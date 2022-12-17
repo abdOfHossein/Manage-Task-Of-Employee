@@ -13,6 +13,7 @@ import {
 import { TaskEnt } from "../../../task/modules/entities/task.entity";
 import { UserStatus } from "../enum/user.status";
 import { sha512 } from "js-sha512";
+import { MessageEnt } from 'src/modules/message/modules/entities/message.entity';
 
 @Entity({ name: 'user' })
 export class UserEnt extends BasicEnt {
@@ -54,6 +55,9 @@ export class UserEnt extends BasicEnt {
 
   @OneToMany(() => TaskEnt, (task) => task.user)
   task: TaskEnt[];
+  
+  @OneToMany(() => MessageEnt, (messages) => messages.user)
+  messages: MessageEnt[];
   
   @BeforeInsert()
   async hashPassword() {

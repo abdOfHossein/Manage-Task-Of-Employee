@@ -15,14 +15,14 @@ import { RelTaskEnt } from 'src/modules/rel-task/modules/entities/rel-task.entit
 import { JwtGuard } from 'src/modules/user/modules/auth/guards/jwt.guard';
 import { GetUser } from '../../../../common/decorates/get.user.decorator';
 import { UserResponseJWTDto } from '../../../../common/dtos/user.dto';
-import { CreateTaskDto } from '../../modules/dtos/create.task.dto';
-import { UpdateTaskDto } from '../../modules/dtos/update.task.dto';
-import { TaskEnt } from '../../modules/entities/task.entity';
+import { CreateTaskDto } from '../../modules/dtos/create.message.dto';
+import { UpdateTaskDto } from '../../modules/dtos/update.message.dto';
+import { TaskEnt } from '../../modules/entities/message.entity';
 import { ExpiredTaskPageDto } from '../../modules/paginations/expired.task.page.dto';
 import { ReportTaskPageDto } from '../../modules/paginations/report.page.dto';
-import { TaskPageDto } from '../../modules/paginations/task.page.dto';
+import { TaskPageDto } from '../../modules/paginations/message.page.dto';
 import { TaskTypePageDto } from '../../modules/paginations/task.type.page.dto';
-import { TaskService } from '../../modules/services/task.service';
+import { TaskService } from '../../modules/services/message.service';
 
 @ApiTags('Task')
 @ApiBearerAuth('access-token')

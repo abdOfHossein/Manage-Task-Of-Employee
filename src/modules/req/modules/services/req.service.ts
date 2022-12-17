@@ -64,4 +64,12 @@ export class ReqService {
       throw e;
     }
   }
+  
+  async getAllReqAndTask(id_project:string,pageDto:ReqPageDto) {
+    try {
+      return await this.reqRepo.getAllReqAndTask(id_project,pageDto);
+    } catch (e) {
+      throw e;
+    }
+  }
 }

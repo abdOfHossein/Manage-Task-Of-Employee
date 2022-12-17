@@ -1,10 +1,12 @@
-import { BadGatewayException, BadRequestException } from "@nestjs/common";
+import { BadGatewayException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PageDto } from 'src/common/dtos/page.dto';
 import { PageMetaDto } from 'src/common/dtos/page.meta.dto';
 import { PublicFunc } from 'src/common/function/public.func';
 import { DepartmentRlEnt } from 'src/modules/department-rl/modules/entities/department-rl.entity';
 import { DepartmentEnt } from 'src/modules/department/modules/entities/department.entity';
+import { ProjectEnt } from 'src/modules/project/modules/entities/project.entity';
+import { ProjectMapperPagination } from 'src/modules/project/modules/mapper/project.mapper.pagination';
 import { DataSource, FindOneOptions, QueryRunner } from 'typeorm';
 import { CreateReqDto } from '../dtos/create.req.dto';
 import { UpdateReqDto } from '../dtos/update.req.dto';
@@ -15,6 +17,7 @@ import { ReqPageDto } from '../paginations/req.page.dto';
 export class ReqRepo {
   constructor(
     @InjectRepository(ReqEnt)
+    @InjectRepository(ProjectEnt)
     private dataSource: DataSource,
   ) {}
 
@@ -123,6 +126,53 @@ export class ReqRepo {
         pageDto.base.order,
       );
     }
+    const result = await queryBuilder.getManyAndCount();
+    const pageMetaDto = new PageMetaDto({
+      baseOptionsDto: pageDto.base,
+      itemCount: result[1],
+    });
+    return new PageDto(result[0], pageMetaDto);
+  }
+
+  async getAllReqAndTask(
+    id_req: string,
+    pageDto: ReqPageDto,
+  ): Promise<PageDto<ProjectEnt>> {
+
+    const queryBuilder = this.dataSource.manager
+      .createQueryBuilder(ProjectEnt, 'project')
+      .where('project.id = :id', { id: id_req })
+      .leftJoinAndSelect('project.reqs', 'reqs')
+      .leftJoinAndSelect('reqs.department_rls', 'department_rls')
+      .leftJoinAndSelect('department_rls.tasks', 'tasks');
+
+      console.log(await queryBuilder.getMany());
+      
+    if (pageDto.base) {
+      const row = pageDto.base.row;
+      const skip = PublicFunc.skipRow(pageDto.base.page, pageDto.base.row);
+      queryBuilder.skip(skip).take(row);
+    }
+
+    if (pageDto.filter) {
+
+    }
+
+    if (pageDto.field) {
+      const mapper = ProjectMapperPagination[pageDto.field];
+      if (!mapper)
+        throw new Error(
+          `${JSON.stringify({
+            section: 'public',
+            value: 'Column Not Exist',
+          })}`,
+        );
+      queryBuilder.addOrderBy(
+        `${ProjectMapperPagination[pageDto.field]}`,
+        pageDto.base.order,
+      );
+    }
+
     const result = await queryBuilder.getManyAndCount();
     const pageMetaDto = new PageMetaDto({
       baseOptionsDto: pageDto.base,

@@ -9,14 +9,14 @@ import { CreateRelTaskDto } from 'src/modules/rel-task/modules/dtos/create.rel-t
 import { RelTaskEnt } from 'src/modules/rel-task/modules/entities/rel-task.entity';
 import { ReqEnt } from 'src/modules/req/modules/entities/req.entity';
 import { DataSource, FindOneOptions, QueryRunner } from 'typeorm';
-import { CreateTaskDto } from '../dtos/create.task.dto';
-import { UpdateTaskDto } from '../dtos/update.task.dto';
-import { TaskEnt } from '../entities/task.entity';
-import { StatusTaskEnum } from '../enums/status-task.enum';
-import { TaskMapperPagination } from '../mapper/task.mapper.pagination';
+import { CreateTaskDto } from '../dtos/create.message.dto';
+import { UpdateTaskDto } from '../dtos/update.message.dto';
+import { TaskEnt } from '../entities/message.entity';
+import { StatusTaskEnum } from '../enums/status-message.enum';
+import { TaskMapperPagination } from '../mapper/message.mapper.pagination';
 import { ExpiredTaskPageDto } from '../paginations/expired.task.page.dto';
 import { ReportTaskPageDto } from '../paginations/report.page.dto';
-import { TaskPageDto } from '../paginations/task.page.dto';
+import { TaskPageDto } from '../paginations/message.page.dto';
 import { TaskTypePageDto } from '../paginations/task.type.page.dto';
 
 export class TaskRepo {

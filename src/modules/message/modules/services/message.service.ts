@@ -4,16 +4,16 @@ import { FindOneOptions, QueryRunner } from 'typeorm';
 import { DepartmentRlService } from '../../../department-rl/modules/services/department-rl.service';
 import { ProjectService } from '../../../project/modules/services/project.service';
 import { ReqService } from '../../../req/modules/services/req.service';
-import { CreateTaskDto } from '../dtos/create.task.dto';
-import { UpdateTaskDto } from '../dtos/update.task.dto';
-import { TaskEnt } from '../entities/task.entity';
-import { StatusTaskEnum } from '../enums/status-task.enum';
+import { CreateTaskDto } from '../dtos/create.message.dto';
+import { UpdateTaskDto } from '../dtos/update.message.dto';
+import { TaskEnt } from '../entities/message.entity';
+import { StatusTaskEnum } from '../enums/status-message.enum';
 import { TypeTaskEnum } from '../enums/type-task.enum';
 import { ExpiredTaskPageDto } from '../paginations/expired.task.page.dto';
 import { ReportTaskPageDto } from '../paginations/report.page.dto';
-import { TaskPageDto } from '../paginations/task.page.dto';
+import { TaskPageDto } from '../paginations/message.page.dto';
 import { TaskTypePageDto } from '../paginations/task.type.page.dto';
-import { TaskRepo } from '../repositories/task.repository';
+import { TaskRepo } from '../repositories/message.repository';
 
 @Injectable()
 export class TaskService {
