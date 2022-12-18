@@ -8,6 +8,7 @@ import { DepartmentEnt } from 'src/modules/department/modules/entities/departmen
 import { CreateRelTaskDto } from 'src/modules/rel-task/modules/dtos/create.rel-task.dto';
 import { RelTaskEnt } from 'src/modules/rel-task/modules/entities/rel-task.entity';
 import { ReqEnt } from 'src/modules/req/modules/entities/req.entity';
+import { UserEnt } from 'src/modules/user/modules/entities/user.entity';
 import { DataSource, FindOneOptions, QueryRunner } from 'typeorm';
 import { CreateTaskDto } from '../dtos/create.task.dto';
 import { UpdateTaskDto } from '../dtos/update.task.dto';
@@ -207,6 +208,16 @@ export class TaskRepo {
     createDto: CreateTaskDto,
     query: QueryRunner | undefined,
   ): Promise<TaskEnt> {
+    const department_rl = await this.dataSource.manager.findOne(
+      DepartmentRlEnt,
+      { where: { id: createDto.id_department_rl } },
+    );
+    console.log(department_rl);
+
+    const user = await this.dataSource.manager.findOne(UserEnt, {
+      where: { id: createDto.id_user },
+    });
+    console.log(user);
     const taskEnt = new TaskEnt();
     taskEnt.head_id = createDto.head_id;
     taskEnt.priority = createDto.priority;
@@ -214,6 +225,8 @@ export class TaskRepo {
     taskEnt.duration = createDto.duration;
     taskEnt.status = createDto.status;
     taskEnt.type = createDto.type;
+    taskEnt.department_rl = department_rl;
+    taskEnt.user = user;
     if (query) return await query.manager.save(taskEnt);
     return await this.dataSource.manager.save(taskEnt);
   }

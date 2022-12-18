@@ -40,8 +40,23 @@ export class TaskController {
     return this.task.checkExpirationTask(req.user, expiredTaskPageDto);
   }
 
+  @ApiQuery({
+    name: 'id_user',
+    required: false,
+  })
   @Post()
-  createTask(@Body() createTaskDto: CreateTaskDto): Promise<TaskEnt> {
+  createTask(
+    @Query('id_user') id_user: string,
+    @Query('id_department_rl') id_department_rl: string,
+    @Body() createTaskDto: CreateTaskDto,
+    @Req() req: any,
+  ): Promise<TaskEnt> {
+    if (id_user) {
+      createTaskDto.id_user = id_user;
+    }
+    createTaskDto.id_user = req.user.id_User;
+    console.log('req.user.id_User', req.user.id_User);
+    createTaskDto.id_department_rl = id_department_rl;
     return this.task.createTask(createTaskDto);
   }
 
@@ -116,7 +131,11 @@ export class TaskController {
     @Query('id_req') id_req: string,
     @Body() createDto: CreateTaskDto,
   ): Promise<TaskEnt> {
-    return this.task.createTaskWithIdDepartmentAndIdReq(id_req,id_department,createDto);
+    return this.task.createTaskWithIdDepartmentAndIdReq(
+      id_req,
+      id_department,
+      createDto,
+    );
   }
 
   @Post('createTask/forward')
@@ -124,6 +143,6 @@ export class TaskController {
     @Query('id_prevoise_task') id_prevoise_task: string,
     @Body() createDto: CreateRelTaskDto,
   ): Promise<RelTaskEnt> {
-    return this.task.forwardTask(id_prevoise_task,createDto);
+    return this.task.forwardTask(id_prevoise_task, createDto);
   }
 }

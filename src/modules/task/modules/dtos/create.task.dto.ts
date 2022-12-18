@@ -37,7 +37,10 @@ export class CreateTaskDto {
   departmentRlEnt: DepartmentRlEnt;
 
   @ApiHideProperty()
-  id_user?: UserResponseJWTDto;
+  id_department_rl: string;
+
+  @ApiHideProperty()
+  id_user?: UserResponseJWTDto | any;
 
   @ApiHideProperty()
   userEnt?: UserEnt;
