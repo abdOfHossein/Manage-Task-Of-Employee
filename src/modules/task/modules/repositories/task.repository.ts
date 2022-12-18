@@ -5,11 +5,15 @@ import { PageMetaDto } from 'src/common/dtos/page.meta.dto';
 import { PublicFunc } from 'src/common/function/public.func';
 import { DepartmentRlEnt } from 'src/modules/department-rl/modules/entities/department-rl.entity';
 import { DepartmentEnt } from 'src/modules/department/modules/entities/department.entity';
+import { CreateRelTaskDto } from 'src/modules/rel-task/modules/dtos/create.rel-task.dto';
+import { RelTaskEnt } from 'src/modules/rel-task/modules/entities/rel-task.entity';
 import { ReqEnt } from 'src/modules/req/modules/entities/req.entity';
+import { UserEnt } from 'src/modules/user/modules/entities/user.entity';
 import { DataSource, FindOneOptions, QueryRunner } from 'typeorm';
 import { CreateTaskDto } from '../dtos/create.task.dto';
 import { UpdateTaskDto } from '../dtos/update.task.dto';
 import { TaskEnt } from '../entities/task.entity';
+import { StatusTaskEnum } from '../enums/status-task.enum';
 import { TaskMapperPagination } from '../mapper/task.mapper.pagination';
 import { ExpiredTaskPageDto } from '../paginations/expired.task.page.dto';
 import { ReportTaskPageDto } from '../paginations/report.page.dto';
@@ -208,6 +212,12 @@ export class TaskRepo {
       DepartmentRlEnt,
       { where: { id: createDto.id_department_rl } },
     );
+    console.log(department_rl);
+
+    const user = await this.dataSource.manager.findOne(UserEnt, {
+      where: { id: createDto.id_user },
+    });
+    console.log(user);
     const taskEnt = new TaskEnt();
     taskEnt.head_id = createDto.head_id;
     taskEnt.priority = createDto.priority;
@@ -215,7 +225,26 @@ export class TaskRepo {
     taskEnt.duration = createDto.duration;
     taskEnt.status = createDto.status;
     taskEnt.type = createDto.type;
-    taskEnt.department_rl = department_rl;
+    taskEnt.department_rl = department_rl
+
+    taskEnt.user = user;
+    if (query) return await query.manager.save(taskEnt);
+    return await this.dataSource.manager.save(taskEnt);
+  }
+
+  async createTaskByProject(
+    createDto: CreateTaskDto,
+    query: QueryRunner | undefined,
+  ) {
+    const taskEnt = new TaskEnt();
+    taskEnt.head_id = createDto.head_id;
+    taskEnt.user = createDto.userEnt;
+    taskEnt.department_rl = createDto.departmentRlEnt;
+    taskEnt.priority = createDto.priority;
+    taskEnt.tittle = createDto.tittle;
+    taskEnt.duration = createDto.duration;
+    taskEnt.status = createDto.status;
+    taskEnt.type = createDto.type;
     if (query) return await query.manager.save(taskEnt);
     return await this.dataSource.manager.save(taskEnt);
   }
@@ -316,7 +345,7 @@ export class TaskRepo {
     return new PageDto(result[0], pageMetaDto);
   }
 
-  async createDepartmentRl(
+  async createTaskWithIdDepartment(
     id_department: string,
     createDto: CreateTaskDto,
     query: QueryRunner | undefined,
@@ -336,6 +365,115 @@ export class TaskRepo {
       .where(
         'department_rl_ent.department = :department AND department_rl_ent.req = :req',
         { department: department.id, req: req.id },
+      )
+      .getOne();
+
+    console.log('department_rl in repo', department_rl);
+
+    const taskEnt = new TaskEnt();
+    taskEnt.head_id = createDto.head_id;
+    taskEnt.priority = createDto.priority;
+    taskEnt.tittle = createDto.tittle;
+    taskEnt.duration = createDto.duration;
+    taskEnt.status = createDto.status;
+    taskEnt.type = createDto.type;
+    if (query) return await query.manager.save(taskEnt);
+    return await this.dataSource.manager.save(taskEnt);
+  }
+
+  async createTaskWithIdDepartmentAndIdReq(
+    id_req: string,
+    id_department: string,
+    createDto: CreateTaskDto,
+    query: QueryRunner | undefined,
+  ): Promise<TaskEnt> {
+    console.log(id_req);
+
+    let req: ReqEnt;
+    if (!id_req) {
+      req = await this.dataSource.manager.findOne(ReqEnt, {
+        where: { isDefault: true },
+      });
+      console.log('req1', req);
+    }
+    req = await this.dataSource.manager.findOne(ReqEnt, {
+      where: { id: id_req },
+    });
+    console.log('req2', req);
+    const department = await this.dataSource.manager.findOne(DepartmentEnt, {
+      where: { id: id_department },
+    });
+    console.log(department);
+
+    const department_rl = await this.dataSource.manager
+      .createQueryBuilder(DepartmentRlEnt, 'department_rl_ent')
+      .where(
+        'department_rl_ent.department = :department AND department_rl_ent.req = :req',
+        { department: department.id, req: req.id },
+      )
+      .getOne();
+
+    console.log('department_rl in repo', department_rl);
+
+    const taskEnt = new TaskEnt();
+    taskEnt.head_id = createDto.head_id;
+    taskEnt.priority = createDto.priority;
+    taskEnt.tittle = createDto.tittle;
+    taskEnt.duration = createDto.duration;
+    taskEnt.status = createDto.status;
+    taskEnt.type = createDto.type;
+    if (query) return await query.manager.save(taskEnt);
+    return await this.dataSource.manager.save(taskEnt);
+  }
+
+  async forwardTask(
+    id_prevoise_task: string,
+    createDto: CreateRelTaskDto,
+    query: QueryRunner | undefined,
+  ) {
+    await this.dataSource.manager.update(
+      TaskEnt,
+      { id: id_prevoise_task },
+      { status: StatusTaskEnum.FORWARD },
+    );
+
+    const srcTask = await this.dataSource.manager.findOne(TaskEnt, {
+      where: { id: id_prevoise_task },
+    });
+
+    const refTask = new TaskEnt();
+    refTask.head_id = createDto.head_id;
+    refTask.priority = createDto.priority;
+    refTask.tittle = createDto.tittle;
+    refTask.duration = createDto.duration;
+    refTask.status = createDto.status;
+    refTask.type = createDto.type;
+    if (query) await query.manager.save(refTask);
+    await this.dataSource.manager.save(refTask);
+
+    const taskRlEnt = new RelTaskEnt();
+    taskRlEnt.src = srcTask;
+    taskRlEnt.ref = refTask;
+    taskRlEnt.comment = createDto.comment;
+    if (query) return await query.manager.save(taskRlEnt);
+    return await this.dataSource.manager.save(taskRlEnt);
+  }
+
+  async createTaskWithIdReqAnddUser(
+    id_user: string,
+    id_req: string,
+    createDto: CreateTaskDto,
+    query: QueryRunner | undefined,
+  ): Promise<TaskEnt> {
+    const user = await this.dataSource.manager.findOne(UserEnt, {
+      where: { id: id_user },
+    });
+
+    const department_rl = await this.dataSource.manager
+      .createQueryBuilder(DepartmentRlEnt, 'department_rl')
+      .where(
+        'department_rl.req = :req',
+        { req:id_req },
       )
       .getOne();
 

@@ -30,6 +30,13 @@ export class ReqService {
     }
   }
 
+  async findDefaultReq() {
+    try {
+      return await this.reqRepo.findDefaultReq();
+    } catch (e) {
+      console.log(e);
+    }
+  }
   async findAllReq(): Promise<ReqEnt[]> {
     try {
       return await this.reqRepo.findAllReq();
@@ -37,7 +44,14 @@ export class ReqService {
       throw e;
     }
   }
-
+  
+  async findAllReqWithIdProject(id_project:string): Promise<ReqEnt[]> {
+    try {
+      return await this.reqRepo.findAllReqWithIdProject(id_project);
+    } catch (e) {
+      throw e;
+    }
+  }
   async updateReq(Req_Id: string, updateDt: UpdateReqDto, query?: QueryRunner) {
     try {
       updateDt.projectEnt = await this.dataSource
@@ -53,6 +67,14 @@ export class ReqService {
   async paginationReq(pageDto: ReqPageDto) {
     try {
       return await this.reqRepo.paginationReq(pageDto);
+    } catch (e) {
+      throw e;
+    }
+  }
+  
+  async getAllReqAndTask(id_project:string,pageDto:ReqPageDto) {
+    try {
+      return await this.reqRepo.getAllReqAndTask(id_project,pageDto);
     } catch (e) {
       throw e;
     }

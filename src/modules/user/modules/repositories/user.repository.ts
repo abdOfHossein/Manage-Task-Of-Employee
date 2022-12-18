@@ -1,4 +1,4 @@
-import { BadGatewayException, BadRequestException } from "@nestjs/common";
+import { BadGatewayException, BadRequestException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt/dist';
 import { InjectRepository } from '@nestjs/typeorm';
 import { sha512 } from 'js-sha512';
@@ -7,18 +7,21 @@ import { PageMetaDto } from 'src/common/dtos/page.meta.dto';
 import { PublicFunc } from 'src/common/function/public.func';
 import { HashService } from 'src/modules/hash/hash.service';
 import { RedisService } from 'src/modules/redis/redis.service';
+import { TaskEnt } from 'src/modules/task/modules/entities/task.entity';
+import { TypeTaskEnum } from 'src/modules/task/modules/enums/type-task.enum';
+import { TaskMapperPagination } from 'src/modules/task/modules/mapper/task.mapper.pagination';
+import { TaskPageDto } from 'src/modules/task/modules/paginations/task.page.dto';
 import { DataSource, FindOneOptions, QueryRunner } from 'typeorm';
+import { UserResponseJWTDto } from '../../../../common/dtos/user.dto';
 import { JwtPayloadInterface } from '../auth/interface/jwt-payload.interface';
+import { ChangePasswordUserDto } from '../dtos/change-password.user.dto';
 import { CreateUserDto } from '../dtos/create.user.dto';
 import { LoginUserDto } from '../dtos/login.user.dto';
 import { UpdateUserDto } from '../dtos/update.user.dto';
 import { UserEnt } from '../entities/user.entity';
+import { UserStatus } from '../enum/user.status';
 import { UserMapperPagination } from '../mapper/user.mapper.pagination';
 import { UserPageDto } from '../paginations/user.page.dto';
-import { UserStatus } from "../enum/user.status";
-import { ChangePasswordUserDto } from "../dtos/change-password.user.dto";
-import { UserResponseJWTDto } from "../../../../common/dtos/user.dto";
-import { ChangePasswordAdmin } from "../dtos/password-admin.dto";
 const randomstring = require('randomstring');
 
 export class UserRepo {
@@ -103,6 +106,7 @@ export class UserRepo {
   ): Promise<UserEnt> {
     const result = await this.dataSource.manager.findOne(UserEnt, {
       where: { id: searchDto },
+      relations: ['department'],
     });
     console.log(result);
 
@@ -129,42 +133,46 @@ export class UserRepo {
     return await this.dataSource.manager.save(entity);
   }
 
-  async changePassword(id_user: UserResponseJWTDto, changePasswordUserDto: ChangePasswordUserDto): Promise<UserEnt> {
-    if (changePasswordUserDto.confirm_password != changePasswordUserDto.password)
-      throw new BadRequestException({ message: 'confirm password does not match password' });
+  async changePassword(
+    id_user: UserResponseJWTDto,
+    changePasswordUserDto: ChangePasswordUserDto,
+  ): Promise<UserEnt> {
+    if (
+      changePasswordUserDto.confirm_password != changePasswordUserDto.password
+    )
+      throw new BadRequestException({
+        message: 'confirm password does not match password',
+      });
     const userEntity = await this.dataSource.manager.findOne(UserEnt, {
       where: { id: id_user.uid },
     });
     console.log(userEntity);
-    if (!userEntity) throw new BadRequestException({ message: 'user does not exits' });
+    if (!userEntity)
+      throw new BadRequestException({ message: 'user does not exits' });
     userEntity.password = sha512(changePasswordUserDto.new_password);
     return await this.dataSource.manager.save(userEntity);
   }
 
   async changePasswordAdmin(
     id_user: UserResponseJWTDto,
-    changePasswordUserDto: ChangePasswordAdmin,
+    changePasswordUserDto: ChangePasswordUserDto,
   ): Promise<UserEnt> {
     const userEntity = await this.dataSource.manager.findOne(UserEnt, {
       where: { id: id_user.uid },
     });
     if (!userEntity)
       throw new BadRequestException({ message: 'user does not exits' });
-    userEntity.password = sha512(changePasswordUserDto.password);
-    const user =  await this.dataSource.manager.save(userEntity);
-    console.log("repo");
-    console.log(user);
-    return user;
-    
+    userEntity.password = sha512(changePasswordUserDto.new_password);
+    return await this.dataSource.manager.save(userEntity);
   }
 
-
-  async blockUser(id_user:string): Promise<UserEnt> {
+  async blockUser(id_user: string): Promise<UserEnt> {
     const userEntity = await this.dataSource.manager.findOne(UserEnt, {
       where: { id: id_user },
     });
-    if (!userEntity) throw new BadGatewayException({ message: 'user does not exits' });
-    // userEntity.status = UserStatus.BLOCK;
+    if (!userEntity)
+      throw new BadGatewayException({ message: 'user does not exits' });
+    userEntity.status = UserStatus.BLOCK;
     return await this.dataSource.manager.save(userEntity);
   }
 
@@ -181,7 +189,7 @@ export class UserRepo {
         'user.username',
         'user.email',
         'user.phonenumber',
-      ])
+      ]);
 
     if (pageDto.base) {
       const row = pageDto.base.row;
@@ -225,4 +233,66 @@ export class UserRepo {
     return new PageDto(result[0], pageMetaDto);
   }
 
+  async paginationTask(
+    id_user: string,
+    pageDto: TaskPageDto,
+  ): Promise<PageDto<TaskEnt>> {
+    const queryBuilder = this.dataSource.manager
+      .createQueryBuilder(UserEnt, 'user')
+      .where('user.id = : id_user', { id_user })
+      .leftJoinAndSelect('user.department', 'department')
+      .leftJoinAndSelect('department.department_rls', 'department_rls')
+      .leftJoinAndSelect('department_rls.tasks', 'tasks')
+      .subQuery()
+      .select('task.id')
+      .from(TaskEnt, 'task')
+      .where('task.type = :type', {
+        type: TypeTaskEnum.CANCELE || TypeTaskEnum.DONE || TypeTaskEnum.PUBLISH,
+      });
+
+    if (pageDto.base) {
+      const row = pageDto.base.row;
+      const skip = PublicFunc.skipRow(pageDto.base.page, pageDto.base.row);
+      queryBuilder.skip(skip).take(row);
+    }
+
+    if (pageDto.filter) {
+      if (pageDto.filter.priority)
+        queryBuilder.andWhere('user.priority LIKE :priority', {
+          priority: `%${pageDto.filter.priority}%`,
+        });
+      if (pageDto.filter.tittle)
+        queryBuilder.andWhere('user.tittle LIKE :tittle', {
+          tittle: `%${pageDto.filter.tittle}%`,
+        });
+      if (pageDto.filter.type)
+        queryBuilder.andWhere('user.type LIKE :type', {
+          type: `%${pageDto.filter.type}%`,
+        });
+      if (pageDto.filter.status)
+        queryBuilder.andWhere('user.status LIKE :status', {
+          status: `%${pageDto.filter.status}%`,
+        });
+    }
+    if (pageDto.field) {
+      const mapper = TaskMapperPagination[pageDto.field];
+      if (!mapper)
+        throw new Error(
+          `${JSON.stringify({
+            section: 'public',
+            value: 'Column Not Exist',
+          })}`,
+        );
+      queryBuilder.addOrderBy(
+        `${TaskMapperPagination[pageDto.field]}`,
+        pageDto.base.order,
+      );
+    }
+    const result = await queryBuilder.getManyAndCount();
+    const pageMetaDto = new PageMetaDto({
+      baseOptionsDto: pageDto.base,
+      itemCount: result[1],
+    });
+    return new PageDto(result[0], pageMetaDto);
+  }
 }

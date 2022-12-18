@@ -37,6 +37,10 @@ export class DepartmentRlService {
     }
   }
 
+  async findByDepartmentRequest(id_req: string, id_department: string) {
+    return await this.DepartmentRlRepo.findByDepartmentRequest(id_req, id_department)
+  }
+
   async updateDepartmentRl(
     DepartmentRl_Id: string,
     updateDt: UpdateDepartmentRlDto,

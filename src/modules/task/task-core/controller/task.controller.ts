@@ -8,9 +8,13 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { PageDto } from 'src/common/dtos/page.dto';
+import { CreateRelTaskDto } from 'src/modules/rel-task/modules/dtos/create.rel-task.dto';
+import { RelTaskEnt } from 'src/modules/rel-task/modules/entities/rel-task.entity';
 import { JwtGuard } from 'src/modules/user/modules/auth/guards/jwt.guard';
+import { GetUser } from '../../../../common/decorates/get.user.decorator';
+import { UserResponseJWTDto } from '../../../../common/dtos/user.dto';
 import { CreateTaskDto } from '../../modules/dtos/create.task.dto';
 import { UpdateTaskDto } from '../../modules/dtos/update.task.dto';
 import { TaskEnt } from '../../modules/entities/task.entity';
@@ -36,13 +40,36 @@ export class TaskController {
     return this.task.checkExpirationTask(req.user, expiredTaskPageDto);
   }
 
+  @ApiQuery({
+    name: 'id_user',
+    required: false,
+  })
   @Post()
   createTask(
+    @Query('id_user') id_user: string,
     @Query('id_department_rl') id_department_rl: string,
     @Body() createTaskDto: CreateTaskDto,
+    @Req() req: any,
   ): Promise<TaskEnt> {
+    if (id_user) {
+      createTaskDto.id_user = id_user;
+    }
+    createTaskDto.id_user = req.user.id_User;
+    console.log('req.user.id_User', req.user.id_User);
+
     createTaskDto.id_department_rl = id_department_rl;
     return this.task.createTask(createTaskDto);
+  }
+
+  @Post('/project')
+  createTaskByProject(
+    @Body() createTaskDto: CreateTaskDto,
+    @GetUser() user: UserResponseJWTDto,
+    @Query('id_project') id_project: string,
+  ): Promise<TaskEnt> {
+    createTaskDto.id_project = id_project;
+    createTaskDto.id_user = user;
+    return this.task.createTaskByProject(createTaskDto);
   }
 
   @Post('/taskStatusReport')
@@ -87,11 +114,46 @@ export class TaskController {
     return this.task.paginationTask(req.user.id_User, pageDto);
   }
 
-  @Post('createDepartmentRl')
+  @Post('createTask/id_department')
   createDepartmentRl(
     @Query('id_department') id_department: string,
     @Body() createDto: CreateTaskDto,
   ): Promise<TaskEnt> {
-    return this.task.createDepartmentRl(id_department, createDto);
+    return this.task.createTaskWithIdDepartment(id_department, createDto);
+  }
+
+  @ApiQuery({
+    name: 'id_req',
+    required: false,
+  })
+  @Post('createTask/id_department/id_req')
+  createTaskWithIdDepartmentAndIdReq(
+    @Query('id_department') id_department: string,
+    @Query('id_req') id_req: string,
+    @Body() createDto: CreateTaskDto,
+  ): Promise<TaskEnt> {
+    return this.task.createTaskWithIdDepartmentAndIdReq(
+      id_req,
+      id_department,
+      createDto,
+    );
+  }
+
+  @Post('createTask/forward')
+  forwardTask(
+    @Query('id_prevoise_task') id_prevoise_task: string,
+    @Body() createDto: CreateRelTaskDto,
+  ): Promise<RelTaskEnt> {
+    return this.task.forwardTask(id_prevoise_task, createDto);
+  }
+
+  @Post('createTask/id_req/id_user')
+  createTaskWithIdReqAnddUser(
+    @Query('id_user') id_user: string,
+    @Query('id_req') id_req: string,
+    @Body() createDto: CreateTaskDto,
+  ): Promise<TaskEnt> {
+    return this.task.createTaskWithIdReqAnddUser(id_user,id_req, createDto);
+
   }
 }

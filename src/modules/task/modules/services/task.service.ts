@@ -1,8 +1,14 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { CreateRelTaskDto } from 'src/modules/rel-task/modules/dtos/create.rel-task.dto';
 import { FindOneOptions, QueryRunner } from 'typeorm';
+import { DepartmentRlService } from '../../../department-rl/modules/services/department-rl.service';
+import { ProjectService } from '../../../project/modules/services/project.service';
+import { ReqService } from '../../../req/modules/services/req.service';
 import { CreateTaskDto } from '../dtos/create.task.dto';
 import { UpdateTaskDto } from '../dtos/update.task.dto';
 import { TaskEnt } from '../entities/task.entity';
+import { StatusTaskEnum } from '../enums/status-task.enum';
+import { TypeTaskEnum } from '../enums/type-task.enum';
 import { ExpiredTaskPageDto } from '../paginations/expired.task.page.dto';
 import { ReportTaskPageDto } from '../paginations/report.page.dto';
 import { TaskPageDto } from '../paginations/task.page.dto';
@@ -11,7 +17,12 @@ import { TaskRepo } from '../repositories/task.repository';
 
 @Injectable()
 export class TaskService {
-  constructor(private taskRepo: TaskRepo) {}
+  constructor(
+    private taskRepo: TaskRepo,
+    private projectService: ProjectService,
+    private reqService: ReqService,
+    private departmentRlService: DepartmentRlService,
+  ) {}
 
   async taskTypePagination(
     id_user: string,
@@ -55,7 +66,27 @@ export class TaskService {
 
   async createTask(createDt: CreateTaskDto, query?: QueryRunner) {
     try {
+
       return await this.taskRepo.createTask(createDt, query);
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  async createTaskByProject(createDt: CreateTaskDto, query?: QueryRunner) {
+    try {
+      createDt.projectEnt = await this.projectService.findOneProject(
+        createDt.id_project,
+      );
+      if (!createDt.id_req)
+        createDt.reqEnt = await this.reqService.findDefaultReq();
+      else createDt.reqEnt = await this.reqService.findOneReq(createDt.id_req);
+      createDt.departmentRlEnt =
+        await this.departmentRlService.findByDepartmentRequest(
+          createDt.id_req,
+          createDt.id_user.uid,
+        );
+      return await this.taskRepo.createTaskByProject(createDt, query);
     } catch (e) {
       throw e;
     }
@@ -90,11 +121,89 @@ export class TaskService {
     }
   }
 
-  async paginationTask(id_user: string,pageDto: TaskPageDto) {
-    return await this.taskRepo.paginationTask(id_user,pageDto);
+  async paginationTask(id_user: string, pageDto: TaskPageDto) {
+    try {
+      return await this.taskRepo.paginationTask(id_user, pageDto);
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  }
+
+  async createTaskWithIdDepartment(
+    id_department: string,
+    createDto: CreateTaskDto,
+    query?: QueryRunner,
+  ) {
+    try {
+      return await this.taskRepo.createTaskWithIdDepartment(
+        id_department,
+        createDto,
+        query,
+      );
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  }
+
+  async createTaskWithIdDepartmentAndIdReq(
+    id_user: string,
+    id_req: string,
+    createDto: CreateTaskDto,
+    query?: QueryRunner,
+  ) {
+    try {
+      return await this.taskRepo.createTaskWithIdDepartmentAndIdReq(
+        id_user,
+        id_req,
+        createDto,
+        query,
+      );
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  }
+
+  async forwardTask(
+    id_prevoise_task: string,
+    createDto: CreateRelTaskDto,
+    query?: QueryRunner,
+  ) {
+    try {
+      if(createDto.status !== StatusTaskEnum.FORWARD){
+        throw new BadRequestException({message:"Status must be FORWARD"})
+      }
+      return await this.taskRepo.forwardTask(
+        id_prevoise_task,
+        createDto,
+        query,
+      );
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  }
+
+  async createTaskWithIdReqAnddUser(
+    id_user: string,
+    id_req: string,
+    createDto: CreateTaskDto,
+    query?: QueryRunner,
+  ) {
+    try {
+
+      return await this.taskRepo.createTaskWithIdReqAnddUser(
+        id_user,
+        id_req,
+        createDto,
+        query
+      );
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
   }
   
-  async createDepartmentRl(id_department: string,createDto:CreateTaskDto, query?: QueryRunner) {
-    return await this.taskRepo.createDepartmentRl(id_department,createDto,query);
-  }
 }
