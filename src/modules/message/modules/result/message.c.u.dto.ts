@@ -1,30 +1,36 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { TaskEnt } from '../entities/message.entity';
-import { StatusTaskEnum } from '../enums/status-message.enum';
-import { TypeTaskEnum } from '../enums/type-task.enum';
-export class TaskCUDto {
+import { MessageEnt } from '../entities/message.entity';
+import { MessageTypeEnum } from '../enum/message.type.enum';
+import { RecieveTypeMessageEnum } from '../enum/recieve.type.message.enum';
+export class MessageCUDto {
   @ApiProperty()
-  id_task: string;
+  id_message: string;
 
   @ApiProperty()
-  priority: string;
+  to: string;
 
   @ApiProperty()
-  tittle: string;
+  title: string;
 
   @ApiProperty()
-  head_id: string;
+  content: string;
 
   @ApiProperty()
-  type: TypeTaskEnum;
+  recieve_type: RecieveTypeMessageEnum;
 
   @ApiProperty()
-  status: StatusTaskEnum;
-  constructor(init?: Partial<TaskEnt>) {
-    this.id_task = init.id;
-    this.priority = init.priority;
-    this.tittle = init.tittle;
-    this.head_id = init.head_id;
-    this.type = init.type;
+  message_type: MessageTypeEnum;
+
+  @ApiProperty()
+  publish_date: Date;
+
+  constructor(init?: Partial<MessageEnt>) {
+    this.id_message = init.id;
+    this.to = init.to;
+    this.title = init.title;
+    this.content = init.content;
+    this.recieve_type = init.recieve_type;
+    this.message_type = init.message_type;
+    this.publish_date = init.publish_date;
   }
 }

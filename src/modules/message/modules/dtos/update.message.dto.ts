@@ -1,23 +1,30 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { StatusTaskEnum } from '../enums/status-message.enum';
-import { TypeTaskEnum } from '../enums/type-task.enum';
+import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
+import { UserEnt } from 'src/modules/user/modules/entities/user.entity';
+import { MessageTypeEnum } from '../enum/message.type.enum';
+import { RecieveTypeMessageEnum } from '../enum/recieve.type.message.enum';
 
-export class UpdateTaskDto {
+export class UpdateMessageDto {
   @ApiProperty()
-  priority: string;
-
-  @ApiProperty()
-  tittle: string;
+  to: string;
 
   @ApiProperty()
-  duration: number;
+  title: string;
 
   @ApiProperty()
-  head_id: string;
+  content: string;
 
-  @ApiProperty({ default: TypeTaskEnum.DOING })
-  type: TypeTaskEnum;
+  @ApiProperty()
+  recieve_type: RecieveTypeMessageEnum;
 
-  @ApiProperty({ default: StatusTaskEnum.NEWTASK })
-  status: StatusTaskEnum;
+  @ApiProperty()
+  message_type: MessageTypeEnum;
+
+  @ApiProperty()
+  publish_date: Date;
+
+  @ApiHideProperty()
+  id_user: string;
+
+  @ApiHideProperty()
+  users: UserEnt;
 }

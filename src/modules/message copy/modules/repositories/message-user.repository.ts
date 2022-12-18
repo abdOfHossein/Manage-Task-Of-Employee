@@ -1,10 +1,10 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
-import { MessageEnt } from '../entities/message.entity';
+import { MessageUserEnt } from '../entities/message-user.entity';
 
-export class MessageRepo {
+export class MessageUserRepo {
   constructor(
-    @InjectRepository(MessageEnt)
+    @InjectRepository(MessageUserEnt)
     private dataSource: DataSource,
   ) {}
 

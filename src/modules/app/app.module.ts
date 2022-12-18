@@ -2,13 +2,14 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import appConfiguration from 'src/config/configs/app-configuration';
-import { AppDataSource } from 'src/config/database/app.dataSource';
 import { SwaggerService } from 'src/config/swagger/service/swagger.service';
 import { DataSource } from 'typeorm';
 import { DepartmentRlCoreModule } from '../department-rl/department-rl-core/department-rl-core.module';
 import { DepartmentCoreModule } from '../department/department-core/department-core.module';
 import { EventCoreModule } from '../event/event-core/event-core.module';
 import { FileCoreModule } from '../file/file-core/file-core.module';
+import { MessageUserCoreModule } from '../message copy/message-core/message-user-core.module';
+import { MessageCoreModule } from '../message/message-core/message-core.module';
 import { ProjectCoreModule } from '../project/project-core/project-core.module';
 import { RelTaskCoreModule } from '../rel-task/task-core/rel-task-core.module';
 import { ReqCoreModule } from '../req/task-core/req-core.module';
@@ -56,6 +57,8 @@ import { AppService } from './app.service';
     DepartmentRlCoreModule,
     EventCoreModule,
     FileCoreModule,
+    MessageCoreModule,
+    MessageUserCoreModule,
   ],
   controllers: [AppController],
   providers: [AppService, SwaggerService],

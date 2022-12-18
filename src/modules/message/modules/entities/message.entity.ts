@@ -1,11 +1,17 @@
 import { BasicEnt } from 'src/common/entities/basic.entity';
-import { DepartmentRlEnt } from 'src/modules/department-rl/modules/entities/department-rl.entity';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { MessageUserEnt } from 'src/modules/message copy/modules/entities/message-user.entity';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { UserEnt } from '../../../user/modules/entities/user.entity';
-import { StatusTaskEnum } from '../enums/status-message.enum';
-import { TypeTaskEnum } from '../enums/type-task.enum';
+import { MessageTypeEnum } from '../enum/message.type.enum';
+import { RecieveTypeMessageEnum } from '../enum/recieve.type.message.enum';
 
-@Entity({ name: 'task' })
+@Entity({ name: 'message' })
 export class MessageEnt extends BasicEnt {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -14,20 +20,23 @@ export class MessageEnt extends BasicEnt {
   to: string;
 
   @Column({ nullable: true })
-  tittle: string;
+  title: string;
 
   @Column({ nullable: true })
-  head_id: string;
+  content: string;
 
   @Column({ nullable: true })
-  type: TypeTaskEnum;
+  recieve_type: RecieveTypeMessageEnum;
 
   @Column({ nullable: true })
-  duration: number;
+  message_type: MessageTypeEnum;
 
   @Column({ nullable: true })
-  status: StatusTaskEnum;
+  publish_date: Date;
 
   @ManyToOne(() => UserEnt, (user) => user.messages)
-  users: UserEnt;
+  user: UserEnt;
+
+  @OneToMany(() => MessageUserEnt, (messages_user) => messages_user.message)
+  messages_user: MessageUserEnt[];
 }

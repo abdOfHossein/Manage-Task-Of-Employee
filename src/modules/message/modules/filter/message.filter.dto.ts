@@ -1,22 +1,26 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Allow } from 'class-validator';
-import { StatusTaskEnum } from '../enums/status-message.enum';
-import { TypeTaskEnum } from '../enums/type-task.enum';
+import { MessageTypeEnum } from '../enum/message.type.enum';
+import { RecieveTypeMessageEnum } from '../enum/recieve.type.message.enum';
 
-export class TaskFilterDto {
+export class MessageFilterDto {
   @ApiProperty()
   @Allow()
-  priority: string;
-
-  @ApiProperty()
-  @Allow()
-  tittle: string;
+  title: string;
 
   @ApiProperty()
   @Allow()
-  type: TypeTaskEnum;
+  content: string;
 
   @ApiProperty()
   @Allow()
-  status: StatusTaskEnum;
+  recieve_type: RecieveTypeMessageEnum;
+
+  @ApiProperty()
+  @Allow()
+  message_type: MessageTypeEnum;
+
+  @ApiProperty()
+  @Allow()
+  publish_date: Date;
 }

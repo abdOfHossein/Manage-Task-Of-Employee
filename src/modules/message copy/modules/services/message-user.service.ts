@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { MessageRepo } from '../repositories/message.repository';
+import { MessageUserRepo } from '../repositories/message-user.repository';
 
 @Injectable()
-export class MessageService {
-  constructor(private MessageRepo: MessageRepo) {}
+export class MessageUserService {
+  constructor(private MessageUserRepo: MessageUserRepo) {}
 
   // async MessageTypePagination(
   //   id_user: string,

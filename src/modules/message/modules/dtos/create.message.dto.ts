@@ -1,56 +1,30 @@
-import { ApiHideProperty, ApiProperty } from "@nestjs/swagger";
-import { StatusMessageEnum } from '../enums/status-message.enum';
-import { TypeMessageEnum } from '../enums/type-Message.enum';
-import { ProjectEnt } from "../../../project/modules/entities/project.entity";
-import { ReqEnt } from "../../../req/modules/entities/req.entity";
-import { UserEnt } from "../../../user/modules/entities/user.entity";
-import { UserResponseJWTDto } from "../../../../common/dtos/user.dto";
-import { DepartmentEnt } from "../../../department/modules/entities/department.entity";
-import { DepartmentRlEnt } from "../../../department-rl/modules/entities/department-rl.entity";
+import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
+import { UserEnt } from '../../../user/modules/entities/user.entity';
+import { MessageTypeEnum } from '../enum/message.type.enum';
+import { RecieveTypeMessageEnum } from '../enum/recieve.type.message.enum';
 
 export class CreateMessageDto {
   @ApiProperty()
-  priority: string;
+  to: string;
 
   @ApiProperty()
-  tittle: string;
+  title: string;
 
   @ApiProperty()
-  duration: number;
+  content: string;
 
   @ApiProperty()
-  head_id: string;
+  recieve_type: RecieveTypeMessageEnum;
+
+  @ApiProperty()
+  message_type: MessageTypeEnum;
+
+  @ApiProperty()
+  publish_date: Date;
 
   @ApiHideProperty()
-  id_project?: string;
+  id_user: string;
 
   @ApiHideProperty()
-  id_req?: string;
-
-  @ApiHideProperty()
-  id_department?: string;
-
-  @ApiHideProperty()
-  departmentEnt: DepartmentEnt;
-
-  @ApiHideProperty()
-  departmentRlEnt: DepartmentRlEnt;
-
-  @ApiHideProperty()
-  id_user?: UserResponseJWTDto;
-
-  @ApiHideProperty()
-  userEnt?: UserEnt;
-
-  @ApiHideProperty()
-  projectEnt?: ProjectEnt;
-
-  @ApiHideProperty()
-  reqEnt?: ReqEnt;
-
-  @ApiProperty({ default: TypeMessageEnum.DOING })
-  type: TypeMessageEnum;
-
-  @ApiProperty({ default: StatusMessageEnum.NEWMessage })
-  status: StatusMessageEnum;
+  users: UserEnt;
 }

@@ -1,31 +1,37 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { TaskEnt } from '../entities/message.entity';
-import { StatusTaskEnum } from '../enums/status-message.enum';
-import { TypeTaskEnum } from '../enums/type-task.enum';
+import { MessageEnt } from '../entities/message.entity';
+import { MessageTypeEnum } from '../enum/message.type.enum';
+import { RecieveTypeMessageEnum } from '../enum/recieve.type.message.enum';
 
-export class TaskGDto {
+export class MessageGDto {
   @ApiProperty()
-  id_task: string;
-
-  @ApiProperty()
-  priority: string;
+  id_message: string;
 
   @ApiProperty()
-  tittle: string;
+  to: string;
 
   @ApiProperty()
-  head_id: string;
+  title: string;
 
   @ApiProperty()
-  type: TypeTaskEnum;
+  content: string;
 
   @ApiProperty()
-  status: StatusTaskEnum;
-  constructor(init?: Partial<TaskEnt>) {
-    this.id_task = init.id;
-    this.priority = init.priority;
-    this.tittle = init.tittle;
-    this.head_id = init.head_id;
-    this.type = init.type;
+  recieve_type: RecieveTypeMessageEnum;
+
+  @ApiProperty()
+  message_type: MessageTypeEnum;
+
+  @ApiProperty()
+  publish_date: Date;
+
+  constructor(init?: Partial<MessageEnt>) {
+    this.id_message = init.id;
+    this.to = init.to;
+    this.title = init.title;
+    this.content = init.content;
+    this.recieve_type = init.recieve_type;
+    this.message_type = init.message_type;
+    this.publish_date = init.publish_date;
   }
 }
