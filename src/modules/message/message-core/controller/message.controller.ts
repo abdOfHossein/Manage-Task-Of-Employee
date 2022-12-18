@@ -1,6 +1,8 @@
-import { Controller, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post, UseGuards,Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtGuard } from 'src/modules/user/modules/auth/guards/jwt.guard';
+import { CreateMessageDto } from '../../modules/dtos/create.message.dto';
+import { MessageEnt } from '../../modules/entities/message.entity';
 import { MessageService } from '../../modules/services/message.service';
 
 @ApiTags('Message')
@@ -8,7 +10,7 @@ import { MessageService } from '../../modules/services/message.service';
 @UseGuards(JwtGuard)
 @Controller('Message')
 export class MessageController {
-  constructor(private Message: MessageService) {}
+  constructor(private message: MessageService) {}
 
   // @Post('/checkExpirationMessage')
   // checkExpirationMessage(
@@ -19,11 +21,20 @@ export class MessageController {
   //   return this.Message.checkExpirationMessage(req.user, expiredMessagePageDto);
   // }
 
-  // @Post()
-  // createMessage(@Body() createMessageDto: CreateMessageDto): Promise<MessageEnt> {
-  //   return this.Message.createMessage(createMessageDto);
-  // }
+  @Post()
+  createMessage(@Body() createMessageDto: CreateMessageDto): Promise<MessageEnt> {
+    return this.message.createMessage(createMessageDto);
+  }
 
+  @Delete()
+  delelteMessage(@Query('id_message') id_message:string ) {
+    return this.message.delelteMessage(id_message);
+  }
+
+  @Get()
+  getUsers(): Promise<MessageEnt[]> {
+    return this.message.getUsers();
+  }
   // @Post('/project')
   // createMessageByProject(
   //   @Body() createMessageDto: CreateMessageDto,

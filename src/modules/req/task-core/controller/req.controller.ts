@@ -32,6 +32,10 @@ export class ReqController {
     return this.req.findAllReq();
   }
 
+  @Get('all/id_project')
+  findAllReqWithIdProject(@Query('id_project') id_project:string): Promise<ReqEnt[]> {
+    return this.req.findAllReqWithIdProject(id_project);
+  }
   @Put()
   updateReq(
     @Query('id_req') id_req: string,

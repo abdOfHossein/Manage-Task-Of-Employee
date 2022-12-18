@@ -5,7 +5,7 @@ import { RecieveTypeMessageEnum } from '../enum/recieve.type.message.enum';
 
 export class CreateMessageDto {
   @ApiProperty()
-  to: string;
+  to: string[];
 
   @ApiProperty()
   title: string;
@@ -13,10 +13,10 @@ export class CreateMessageDto {
   @ApiProperty()
   content: string;
 
-  @ApiProperty()
+  @ApiProperty({default:RecieveTypeMessageEnum.ALL})
   recieve_type: RecieveTypeMessageEnum;
 
-  @ApiProperty()
+  @ApiProperty({default:MessageTypeEnum.SUCCESS})
   message_type: MessageTypeEnum;
 
   @ApiProperty()

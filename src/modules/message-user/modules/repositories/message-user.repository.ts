@@ -1,5 +1,5 @@
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource } from 'typeorm';
+import { DataSource, QueryRunner } from 'typeorm';
 import { MessageUserEnt } from '../entities/message-user.entity';
 
 export class MessageUserRepo {
@@ -245,9 +245,9 @@ export class MessageUserRepo {
   //   return await this.dataSource.manager.save(entity);
   // }
 
-  // async getAll(): Promise<MessageEnt[]> {
-  //   return await this.dataSource.manager.find(MessageEnt, {});
-  // }
+  async deleteMessageUser(id_message_user:string,query?: QueryRunner) {
+    return await this.dataSource.manager.update(MessageUserEnt,{id:id_message_user},{delete_at:new Date(Date.now())})
+  }
 
   // async paginationMessage(
   //   id_user: string,

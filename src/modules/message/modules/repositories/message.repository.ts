@@ -1,6 +1,11 @@
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource } from 'typeorm';
+import { DepartmentEnt } from 'src/modules/department/modules/entities/department.entity';
+import { MessageUserEnt } from 'src/modules/message-user/modules/entities/message-user.entity';
+import { UserEnt } from 'src/modules/user/modules/entities/user.entity';
+import { DataSource, FindOneOptions, QueryRunner } from 'typeorm';
+import { CreateMessageDto } from '../dtos/create.message.dto';
 import { MessageEnt } from '../entities/message.entity';
+import { RecieveTypeMessageEnum } from '../enum/recieve.type.message.enum';
 
 export class MessageRepo {
   constructor(
@@ -186,20 +191,55 @@ export class MessageRepo {
   //   return new PageDto(result[0], pageMetaDto);
   // }
 
-  // async createMessage(
-  //   createDto: CreateMessageDto,
-  //   query: QueryRunner | undefined,
-  // ): Promise<MessageEnt> {
-  //   const MessageEnt = new MessageEnt();
-  //   MessageEnt.head_id = createDto.head_id;
-  //   MessageEnt.priority = createDto.priority;
-  //   MessageEnt.tittle = createDto.tittle;
-  //   MessageEnt.duration = createDto.duration;
-  //   MessageEnt.status = createDto.status;
-  //   MessageEnt.type = createDto.type;
-  //   if (query) return await query.manager.save(MessageEnt);
-  //   return await this.dataSource.manager.save(MessageEnt);
-  // }
+  async createMessage(
+    createDto: CreateMessageDto,
+    query: QueryRunner | undefined,
+  ): Promise<MessageEnt> {
+    const messageEnt = new MessageEnt();
+    messageEnt.to = createDto.to;
+    messageEnt.title = createDto.title;
+    messageEnt.content = createDto.content;
+    messageEnt.recieve_type = createDto.recieve_type;
+    messageEnt.publish_date = createDto.publish_date;
+    messageEnt.message_type = createDto.message_type;
+    if (query) await query.manager.save(messageEnt);
+    await this.dataSource.manager.save(messageEnt);
+
+    if (createDto.recieve_type === RecieveTypeMessageEnum.USERS) {
+      for (const id_user of createDto.to) {
+        const message_user = new MessageUserEnt();
+        message_user.user_id = id_user;
+        message_user.message = messageEnt;
+        await this.dataSource.manager.save(message_user);
+      }
+    } else if (createDto.recieve_type === RecieveTypeMessageEnum.DEPARTMENT) {
+      for (const id_department of createDto.to) {
+        const users = await this.dataSource.manager
+          .createQueryBuilder(DepartmentEnt, 'department')
+          .where('department.id = :id_department', { id_department })
+          .leftJoinAndSelect('department.users', 'users')
+          .getMany();
+        console.log('in recieve_type==DEPARTMENT');
+        console.log(users);
+        for (const user of users) {
+          const message_user = new MessageUserEnt();
+          message_user.user_id = user.id;
+          message_user.message = messageEnt;
+          await this.dataSource.manager.save(message_user);
+        }
+      }
+    } else {
+      const users = await this.dataSource.manager.find(UserEnt, {});
+      for (const user of users) {
+        const message_user = new MessageUserEnt();
+        message_user.user_id = user.id;
+        message_user.message = messageEnt;
+        await this.dataSource.manager.save(message_user);
+      }
+    }
+
+    return messageEnt;
+  }
 
   // async createMessageByProject(
   //   createDto: CreateMessageDto,
@@ -218,18 +258,15 @@ export class MessageRepo {
   //   return await this.dataSource.manager.save(MessageEnt);
   // }
 
-  // async findOneMessage(
-  //   searchDto: string,
-  //   options?: FindOneOptions,
-  // ): Promise<MessageEnt> {
-  //   const Message = await this.dataSource.manager.findOne(MessageEnt, {
-  //     where: { id: searchDto },
-  //   });
-  //   if (!Message)
-  //     throw new BadGatewayException({ message: 'Message does not exits' });
-  //   return Message;
-  // }
-
+  async getUsers(): Promise<MessageEnt[]> {
+    const message = await this.dataSource.manager.find(MessageEnt, {});
+    return message;
+  }
+  
+  async delelteMessage(id_message:string) {
+    return await this.dataSource.manager.update(MessageEnt,{id:id_message},{delete_at:new Date(Date.now())})
+     
+  }
   // async updateMessage(
   //   entity: MessageEnt,
   //   updateDto: UpdateMessageDto,

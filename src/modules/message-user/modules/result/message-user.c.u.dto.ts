@@ -16,7 +16,6 @@ export class MessageUserCUDto {
   constructor(init?: Partial<MessageUserEnt>) {
     this.id_message = init.id;
     this.publish_date = init.publish_date;
-    this.content = init.content;
     this.seen = init.seen;
   }
 }

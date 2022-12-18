@@ -145,4 +145,13 @@ export class TaskController {
   ): Promise<RelTaskEnt> {
     return this.task.forwardTask(id_prevoise_task, createDto);
   }
+
+  @Post('createTask/id_req/id_user')
+  createTaskWithIdReqAnddUser(
+    @Query('id_user') id_user: string,
+    @Query('id_req') id_req: string,
+    @Body() createDto: CreateTaskDto,
+  ): Promise<TaskEnt> {
+    return this.task.createTaskWithIdReqAnddUser(id_user,id_req, createDto);
+  }
 }

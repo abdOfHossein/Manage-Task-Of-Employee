@@ -457,4 +457,35 @@ export class TaskRepo {
     if (query) return await query.manager.save(taskRlEnt);
     return await this.dataSource.manager.save(taskRlEnt);
   }
+
+  async createTaskWithIdReqAnddUser(
+    id_user: string,
+    id_req: string,
+    createDto: CreateTaskDto,
+    query: QueryRunner | undefined,
+  ): Promise<TaskEnt> {
+    const user = await this.dataSource.manager.findOne(UserEnt, {
+      where: { id: id_user },
+    });
+
+    const department_rl = await this.dataSource.manager
+      .createQueryBuilder(DepartmentRlEnt, 'department_rl')
+      .where(
+        'department_rl.req = :req',
+        { req:id_req },
+      )
+      .getOne();
+
+    console.log('department_rl in repo', department_rl);
+
+    const taskEnt = new TaskEnt();
+    taskEnt.head_id = createDto.head_id;
+    taskEnt.priority = createDto.priority;
+    taskEnt.tittle = createDto.tittle;
+    taskEnt.duration = createDto.duration;
+    taskEnt.status = createDto.status;
+    taskEnt.type = createDto.type;
+    if (query) return await query.manager.save(taskEnt);
+    return await this.dataSource.manager.save(taskEnt);
+  }
 }

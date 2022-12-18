@@ -1,4 +1,4 @@
-import { Controller, UseGuards } from '@nestjs/common';
+import { Controller, UseGuards,Delete, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtGuard } from 'src/modules/user/modules/auth/guards/jwt.guard';
 import { MessageUserService } from '../../modules/services/message-user.service';
@@ -51,10 +51,10 @@ export class MessageUserController {
   //   return this.MessageUser.MessageUserTypePagination(req.user.id_User, reportDto);
   // }
 
-  // @Get()
-  // findOneMessageUser(@Query('id_MessageUser') id_MessageUser: string): Promise<MessageUserEnt> {
-  //   return this.MessageUser.findOneMessageUser(id_MessageUser);
-  // }
+  @Delete()
+  deleteMessageUser(@Query('id_messageUser') id_messageUser: string) {
+    return this.MessageUser.deleteMessageUser(id_messageUser);
+  }
 
   // @Put()
   // updateMessageUser(

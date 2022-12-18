@@ -148,15 +148,15 @@ export class TaskService {
   }
 
   async createTaskWithIdDepartmentAndIdReq(
+    id_user: string,
     id_req: string,
-    id_department: string,
     createDto: CreateTaskDto,
     query?: QueryRunner,
   ) {
     try {
       return await this.taskRepo.createTaskWithIdDepartmentAndIdReq(
+        id_user,
         id_req,
-        id_department,
         createDto,
         query,
       );
@@ -185,4 +185,25 @@ export class TaskService {
       throw e;
     }
   }
+
+  async createTaskWithIdReqAnddUser(
+    id_user: string,
+    id_req: string,
+    createDto: CreateTaskDto,
+    query?: QueryRunner,
+  ) {
+    try {
+
+      return await this.taskRepo.createTaskWithIdReqAnddUser(
+        id_user,
+        id_req,
+        createDto,
+        query
+      );
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  }
+  
 }

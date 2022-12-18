@@ -7,7 +7,7 @@ export class MessageCUDto {
   id_message: string;
 
   @ApiProperty()
-  to: string;
+  to: string[];
 
   @ApiProperty()
   title: string;

@@ -13,12 +13,10 @@ export class MessageUserEnt extends BasicEnt {
   @Column({ nullable: true })
   user_id: string;
 
-  @Column({ nullable: true })
-  content: string;
-
-  @Column({ nullable: true })
+  @Column({ nullable: true ,default:0})
   seen: number;
 
   @ManyToOne(() => MessageEnt, (message) => message.messages_user)
   message: MessageEnt;
+
 }

@@ -8,7 +8,7 @@ export class MessageGDto {
   id_message: string;
 
   @ApiProperty()
-  to: string;
+  to: string[];
 
   @ApiProperty()
   title: string;

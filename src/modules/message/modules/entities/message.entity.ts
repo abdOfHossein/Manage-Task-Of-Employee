@@ -1,5 +1,5 @@
 import { BasicEnt } from 'src/common/entities/basic.entity';
-import { MessageUserEnt } from 'src/modules/message copy/modules/entities/message-user.entity';
+import { MessageUserEnt } from 'src/modules/message-user/modules/entities/message-user.entity';
 import {
   Column,
   Entity,
@@ -16,8 +16,8 @@ export class MessageEnt extends BasicEnt {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ nullable: true })
-  to: string;
+  @Column('text',{ array: true, nullable: true })
+  to: string[];
 
   @Column({ nullable: true })
   title: string;

@@ -1,9 +1,24 @@
 import { Injectable } from '@nestjs/common';
+import { QueryRunner } from 'typeorm';
 import { MessageUserRepo } from '../repositories/message-user.repository';
 
 @Injectable()
 export class MessageUserService {
-  constructor(private MessageUserRepo: MessageUserRepo) {}
+  constructor(private messageUserRepo: MessageUserRepo) {}
+
+  async deleteMessageUser(
+    id_message_user: string,
+    query?: QueryRunner,
+  ) {
+    try {
+      return await this.messageUserRepo.deleteMessageUser(
+        id_message_user,
+        query,
+      );
+    } catch (e) {
+      throw e;
+    }
+  }
 
   // async MessageTypePagination(
   //   id_user: string,

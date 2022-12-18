@@ -8,7 +8,7 @@ import { DepartmentRlCoreModule } from '../department-rl/department-rl-core/depa
 import { DepartmentCoreModule } from '../department/department-core/department-core.module';
 import { EventCoreModule } from '../event/event-core/event-core.module';
 import { FileCoreModule } from '../file/file-core/file-core.module';
-import { MessageUserCoreModule } from '../message copy/message-core/message-user-core.module';
+import { MessageUserCoreModule } from '../message-user/message-user-core/message-user-core.module';
 import { MessageCoreModule } from '../message/message-core/message-core.module';
 import { ProjectCoreModule } from '../project/project-core/project-core.module';
 import { RelTaskCoreModule } from '../rel-task/task-core/rel-task-core.module';
