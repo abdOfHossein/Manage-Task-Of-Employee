@@ -18,6 +18,7 @@ import { UserPageDto } from '../paginations/user.page.dto';
 import { UserStatus } from "../enum/user.status";
 import { ChangePasswordUserDto } from "../dtos/change-password.user.dto";
 import { UserResponseJWTDto } from "../../../../common/dtos/user.dto";
+import { ChangePasswordAdmin } from "../dtos/password-admin.dto";
 const randomstring = require('randomstring');
 
 export class UserRepo {
@@ -140,21 +141,39 @@ export class UserRepo {
     return await this.dataSource.manager.save(userEntity);
   }
 
+  async changePasswordAdmin(
+    id_user: UserResponseJWTDto,
+    changePasswordUserDto: ChangePasswordAdmin,
+  ): Promise<UserEnt> {
+    const userEntity = await this.dataSource.manager.findOne(UserEnt, {
+      where: { id: id_user.uid },
+    });
+    if (!userEntity)
+      throw new BadRequestException({ message: 'user does not exits' });
+    userEntity.password = sha512(changePasswordUserDto.password);
+    const user =  await this.dataSource.manager.save(userEntity);
+    console.log("repo");
+    console.log(user);
+    return user;
+    
+  }
+
+
   async blockUser(id_user:string): Promise<UserEnt> {
     const userEntity = await this.dataSource.manager.findOne(UserEnt, {
       where: { id: id_user },
     });
     if (!userEntity) throw new BadGatewayException({ message: 'user does not exits' });
-    userEntity.status = UserStatus.BLOCK;
+    // userEntity.status = UserStatus.BLOCK;
     return await this.dataSource.manager.save(userEntity);
   }
 
   async paginationUser(pageDto: UserPageDto): Promise<PageDto<UserEnt>> {
     const queryBuilder = this.dataSource.manager
       .createQueryBuilder(UserEnt, 'user')
-      .leftJoinAndSelect('user.department', 'department')
-      .leftJoinAndSelect('department.department_rls', 'department_rls')
-      .leftJoinAndSelect('department_rls.tasks', 'tasks')
+      // .leftJoinAndSelect('user.department', 'department')
+      // .leftJoinAndSelect('department.department_rls', 'department_rls')
+      // .leftJoinAndSelect('department_rls.tasks', 'tasks')
       .select([
         'user.id',
         'user.first_name',
@@ -205,4 +224,5 @@ export class UserRepo {
     });
     return new PageDto(result[0], pageMetaDto);
   }
+
 }

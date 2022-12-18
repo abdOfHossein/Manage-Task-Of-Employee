@@ -18,6 +18,13 @@ export class DepartmentService {
     }
   }
 
+  async getAllDepartment() {
+    try {
+      return await this.departmentRepo.getAllDepartment();
+    } catch (e) {
+      console.log(e);
+    }
+  }
   async findOneDepartment(searchDto: string, options?: FindOneOptions) {
     try {
       return await this.departmentRepo.findOneDepartment(searchDto, options);

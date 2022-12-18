@@ -8,9 +8,9 @@ import { UserResponseJWTDto } from '../../../../common/dtos/user.dto';
 import { ChangePasswordUserDto } from '../dtos/change-password.user.dto';
 import { CreateUserDto } from '../dtos/create.user.dto';
 import { LoginUserDto } from '../dtos/login.user.dto';
+import { ChangePasswordAdmin } from '../dtos/password-admin.dto';
 import { UpdateUserDto } from '../dtos/update.user.dto';
 import { UserEnt } from '../entities/user.entity';
-import { UserStatus } from '../enum/user.status';
 import { UserPageDto } from '../paginations/user.page.dto';
 import { UserRepo } from '../repositories/user.repository';
 
@@ -54,10 +54,12 @@ export class UserService {
       const user = await this.dataSource.getRepository(UserEnt).findOne({
         where: { username: loginUserDto.username },
       });
+      console.log(user);
+
       if (
         !user ||
-        !(await user.validatePassword(loginUserDto.password)) ||
-        user.status == UserStatus.BLOCK
+        !(await user.validatePassword(loginUserDto.password))
+        //  ||  user.status == UserStatus.BLOCK
       ) {
         throw new BadRequestException('User does not exist');
       }
@@ -110,4 +112,16 @@ export class UserService {
     console.log('x');
     return await this.userRepo.changePassword(id_user, changePasswordUserDto);
   }
+
+  async changePasswordAdmin(    id_user: UserResponseJWTDto,
+    changePasswordUserDto: ChangePasswordAdmin): Promise<UserEnt> {
+    try {
+      return await this.userRepo.changePasswordAdmin(id_user, changePasswordUserDto);
+    } catch (error) {
+      console.log("error");
+      console.log(error);
+      
+    }
+  }
+
 }

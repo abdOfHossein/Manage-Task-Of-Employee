@@ -37,7 +37,11 @@ export class TaskController {
   }
 
   @Post()
-  createTask(@Body() createTaskDto: CreateTaskDto): Promise<TaskEnt> {
+  createTask(
+    @Query('id_department_rl') id_department_rl: string,
+    @Body() createTaskDto: CreateTaskDto,
+  ): Promise<TaskEnt> {
+    createTaskDto.id_department_rl = id_department_rl;
     return this.task.createTask(createTaskDto);
   }
 
@@ -85,9 +89,9 @@ export class TaskController {
 
   @Post('createDepartmentRl')
   createDepartmentRl(
-    @Query('id_department') id_department:string,
-    @Body() createDto:CreateTaskDto
+    @Query('id_department') id_department: string,
+    @Body() createDto: CreateTaskDto,
   ): Promise<TaskEnt> {
-    return this.task.createDepartmentRl(id_department,createDto);
+    return this.task.createDepartmentRl(id_department, createDto);
   }
 }

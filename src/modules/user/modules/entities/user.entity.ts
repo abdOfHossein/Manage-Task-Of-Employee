@@ -36,8 +36,8 @@ export class UserEnt extends BasicEnt {
   @Column({ nullable: true, unique: true })
   phonenumber: string;
 
-  @Column({ type: 'enum', enum: UserStatus, default: UserStatus.ACTIVE})
-  status: UserStatus;
+  // @Column({ type: 'enum', enum: UserStatus, default: UserStatus.ACTIVE})
+  // status: UserStatus;
 
   @ManyToOne(() => DepartmentEnt, (department) => department.users)
   department: DepartmentEnt;

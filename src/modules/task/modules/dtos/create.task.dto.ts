@@ -1,8 +1,15 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
+import { DepartmentRlEnt } from 'src/modules/department-rl/modules/entities/department-rl.entity';
 import { StatusTaskEnum } from '../enums/status-task.enum';
 import { TypeTaskEnum } from '../enums/type-task.enum';
 
 export class CreateTaskDto {
+@ApiHideProperty()
+  id_department_rl:string
+
+  @ApiHideProperty()
+  departmentRl:DepartmentRlEnt
+
   @ApiProperty()
   priority: string;
 

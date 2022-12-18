@@ -204,6 +204,10 @@ export class TaskRepo {
     createDto: CreateTaskDto,
     query: QueryRunner | undefined,
   ): Promise<TaskEnt> {
+    const department_rl = await this.dataSource.manager.findOne(
+      DepartmentRlEnt,
+      { where: { id: createDto.id_department_rl } },
+    );
     const taskEnt = new TaskEnt();
     taskEnt.head_id = createDto.head_id;
     taskEnt.priority = createDto.priority;
@@ -211,6 +215,7 @@ export class TaskRepo {
     taskEnt.duration = createDto.duration;
     taskEnt.status = createDto.status;
     taskEnt.type = createDto.type;
+    taskEnt.department_rl = department_rl;
     if (query) return await query.manager.save(taskEnt);
     return await this.dataSource.manager.save(taskEnt);
   }
@@ -320,17 +325,17 @@ export class TaskRepo {
       where: { isDefault: true },
     });
     console.log(req);
-    
+
     const department = await this.dataSource.manager.findOne(DepartmentEnt, {
       where: { id: id_department },
     });
     console.log(department);
-    
+
     const department_rl = await this.dataSource.manager
       .createQueryBuilder(DepartmentRlEnt, 'department_rl_ent')
       .where(
         'department_rl_ent.department = :department AND department_rl_ent.req = :req',
-        { department:department.id, req:req.id },
+        { department: department.id, req: req.id },
       )
       .getOne();
 

@@ -26,6 +26,13 @@ export class DepartmentController {
     return this.department.findOneDepartment(id_department);
   }
 
+  @Get('/all')
+  @ApiOperation({summary: 'get all department'})
+  async getAllDepartment(
+  ): Promise<DepartmentEnt[]> {
+    return this.department.getAllDepartment();
+  }
+
   @Put()
   async updateDepartment(
     @Query('id_Department') id_Department: string,

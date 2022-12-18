@@ -44,6 +44,10 @@ export class DepartmentRepo {
     return result;
   }
 
+  async getAllDepartment() {
+    return await this.dataSource.manager.createQueryBuilder(DepartmentEnt, 'department').getMany();
+  }
+
   async findOneDepartment(
     searchDto: string,
     options?: FindOneOptions,
