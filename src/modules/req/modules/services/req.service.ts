@@ -66,7 +66,7 @@ export class ReqService {
 
   async paginationReq(pageDto: ReqPageDto) {
     try {
-      return await this.reqRepo.paginationReq(pageDto);
+      return await this.reqRepo.paginationReq(pageDto)
     } catch (e) {
       throw e;
     }
