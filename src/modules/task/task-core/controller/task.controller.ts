@@ -8,7 +8,7 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { PageDto } from 'src/common/dtos/page.dto';
 import { CreateRelTaskDto } from 'src/modules/rel-task/modules/dtos/create.rel-task.dto';
 import { RelTaskEnt } from 'src/modules/rel-task/modules/entities/rel-task.entity';
@@ -31,6 +31,7 @@ import { TaskService } from '../../modules/services/task.service';
 export class TaskController {
   constructor(private task: TaskService) {}
 
+
   @Post('/checkExpirationTask')
   checkExpirationTask(
     @Body() expiredTaskPageDto: ExpiredTaskPageDto,
@@ -40,6 +41,7 @@ export class TaskController {
     return this.task.checkExpirationTask(req.user, expiredTaskPageDto);
   }
 
+  @ApiOperation({ summary: 'create task' })
   @ApiQuery({
     name: 'id_user',
     required: false,
@@ -61,7 +63,8 @@ export class TaskController {
     return this.task.createTask(createTaskDto);
   }
 
-  @Post('/project')
+  @ApiOperation({ summary: 'create task with getting id_project' })
+  @Post('/id_project')
   createTaskByProject(
     @Body() createTaskDto: CreateTaskDto,
     @GetUser() user: UserResponseJWTDto,
@@ -72,6 +75,7 @@ export class TaskController {
     return this.task.createTaskByProject(createTaskDto);
   }
 
+  @ApiOperation({ summary: 'pagination of task based on status' })
   @Post('/taskStatusReport')
   reportsTaskStatus(
     @Body() reportDto: ReportTaskPageDto,
@@ -80,6 +84,7 @@ export class TaskController {
     return this.task.getReportTask(req.user.id_User, reportDto);
   }
 
+  @ApiOperation({ summary: 'pagination of task based on type' })
   @Post('/taskTypeReport')
   taskTypePagination(
     @Body() reportDto: TaskTypePageDto,
@@ -88,6 +93,7 @@ export class TaskController {
     return this.task.taskTypePagination(req.user.id_User, reportDto);
   }
 
+  @ApiOperation({ summary: 'findOne task'})
   @Get()
   findOneTask(@Query('id_task') id_task: string): Promise<TaskEnt> {
     return this.task.findOneTask(id_task);

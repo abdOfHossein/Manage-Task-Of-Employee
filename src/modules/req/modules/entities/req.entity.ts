@@ -18,6 +18,12 @@ export class ReqEnt extends BasicEnt {
   @Column()
   status: StatusReqEnum;
 
+  @Column({nullable:true})
+  name: string;
+
+  @Column({nullable:true})
+  description:string
+
   @Column({ default: false })
   isDefault: boolean;
 

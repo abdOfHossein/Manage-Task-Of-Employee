@@ -225,7 +225,7 @@ export class TaskRepo {
     taskEnt.duration = createDto.duration;
     taskEnt.status = createDto.status;
     taskEnt.type = createDto.type;
-    taskEnt.department_rl = department_rl
+    taskEnt.department_rl = department_rl;
 
     taskEnt.user = user;
     if (query) return await query.manager.save(taskEnt);
@@ -469,15 +469,19 @@ export class TaskRepo {
       where: { id: id_user },
     });
 
-    const department_rl = await this.dataSource.manager
+    const departments = await this.dataSource.manager
+      .createQueryBuilder(UserEnt, 'user')
+      .where('user.id = :id', { id: id_user })
+      .leftJoinAndSelect('user.department', 'department')
+      .getMany();
+    console.log('departments=>', departments);
+    var department_rl = await this.dataSource.manager
       .createQueryBuilder(DepartmentRlEnt, 'department_rl')
       .where(
-        'department_rl.req = :id_req AND department_rl.department.user = :id_user',
-        { id_req, id_user },
+        'department_rl.req = :id_req AND department_rl.department = :department',
+        { id_req, department: departments[0].department.id },
       )
       .getOne();
-    console.log('department_rl', department_rl);
-
     const taskEnt = new TaskEnt();
     taskEnt.head_id = createDto.head_id;
     taskEnt.priority = createDto.priority;
@@ -485,6 +489,8 @@ export class TaskRepo {
     taskEnt.duration = createDto.duration;
     taskEnt.status = createDto.status;
     taskEnt.type = createDto.type;
+    taskEnt.user = user;
+    taskEnt.department_rl = department_rl;
     if (query) return await query.manager.save(taskEnt);
     return await this.dataSource.manager.save(taskEnt);
   }

@@ -86,7 +86,7 @@ export class ReqRepo {
   }
   
   async findAllReqWithIdProject(id_project:string): Promise<ReqEnt[]> {
-    return await this.dataSource.manager.createQueryBuilder(ReqEnt,'req').where('req.project.id = :id_project',{id_project}).select(['req.id','req.status','req.isDefault']).getMany()
+    return await this.dataSource.manager.createQueryBuilder(ReqEnt,'req').where('req.project.id = :id_project',{id_project}).getMany()
   }
   async updateReq(
     entity: ReqEnt,
