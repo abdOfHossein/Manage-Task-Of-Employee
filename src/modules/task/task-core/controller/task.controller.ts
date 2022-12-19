@@ -56,6 +56,7 @@ export class TaskController {
     }
     createTaskDto.id_user = req.user.id_User;
     console.log('req.user.id_User', req.user.id_User);
+
     createTaskDto.id_department_rl = id_department_rl;
     return this.task.createTask(createTaskDto);
   }
@@ -153,5 +154,6 @@ export class TaskController {
     @Body() createDto: CreateTaskDto,
   ): Promise<TaskEnt> {
     return this.task.createTaskWithIdReqAnddUser(id_user,id_req, createDto);
+
   }
 }

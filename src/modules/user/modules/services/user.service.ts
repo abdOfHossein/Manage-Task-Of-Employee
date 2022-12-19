@@ -9,6 +9,7 @@ import { UserResponseJWTDto } from '../../../../common/dtos/user.dto';
 import { ChangePasswordUserDto } from '../dtos/change-password.user.dto';
 import { CreateUserDto } from '../dtos/create.user.dto';
 import { LoginUserDto } from '../dtos/login.user.dto';
+import { ChangePasswordAdmin } from '../dtos/password-admin.dto';
 import { UpdateUserDto } from '../dtos/update.user.dto';
 import { UserEnt } from '../entities/user.entity';
 import { UserStatus } from '../enum/user.status';
@@ -56,10 +57,10 @@ export class UserService {
         where: { username: loginUserDto.username },
       });
       console.log(user);
-      
+
       if (
         !user ||
-        // !(await user.validatePassword(loginUserDto.password)) ||
+        !(await user.validatePassword(loginUserDto.password)) ||
         user.status == UserStatus.BLOCK
       ) {
         throw new BadRequestException('User does not exist');

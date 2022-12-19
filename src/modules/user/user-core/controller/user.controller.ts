@@ -8,6 +8,7 @@ import {
   Req,
   Res,
   UseGuards,
+
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
@@ -20,6 +21,7 @@ import { JwtGuard } from '../../modules/auth/guards/jwt.guard';
 import { ChangePasswordUserDto } from '../../modules/dtos/change-password.user.dto';
 import { CreateUserDto } from '../../modules/dtos/create.user.dto';
 import { LoginUserDto } from '../../modules/dtos/login.user.dto';
+import { ChangePasswordAdmin } from '../../modules/dtos/password-admin.dto';
 import { UpdateUserDto } from '../../modules/dtos/update.user.dto';
 import { UserEnt } from '../../modules/entities/User.entity';
 import { RolesGuard } from '../../modules/guard/role.guard';
@@ -83,20 +85,6 @@ export class UserController {
     return await this.user.changePassword(id_user, changePasswordUserDto);
   }
 
-  @UseGuards(RolesGuard)
-  @ApiBearerAuth('access-token')
-  @UseGuards(JwtGuard)
-  @Post('admin/password')
-  @ApiOperation({ summary: 'change user password by vadmin' })
-  async changePasswordAdmin(
-    @Body() changePasswordUserDto: ChangePasswordUserDto,
-    @Query('id_user') id_user: string,
-  ) {
-    const user = new UserResponseJWTDto();
-    user.uid = id_user;
-    return await this.user.changePasswordAdmin(user, changePasswordUserDto);
-  }
-
   @Put()
   updateUser(
     @Query('id_user') id_user: string,
@@ -115,12 +103,28 @@ export class UserController {
   @ApiOperation({ summary: 'pagination for user' })
   @Post('page')
   paginationUser(@Body() pageDto: UserPageDto): Promise<PageDto<UserEnt>> {
+    console.log(pageDto);
     return this.user.paginationUser(pageDto);
   }
 
   @UseGuards(RolesGuard)
   @ApiBearerAuth('access-token')
   @UseGuards(JwtGuard)
+  @Post('admin/password')
+  @ApiOperation({summary: 'change user password by vadmin'})
+  async changePasswordAdmin(
+    @Body() changePasswordUserDto: ChangePasswordUserDto,
+    @Query('id_user') id_user: string,
+  ) {
+    const user = new UserResponseJWTDto();
+    user.uid = id_user;
+    console.log("usercon");
+    console.log(user);
+    
+    return await this.user.changePasswordAdmin(user, changePasswordUserDto);
+  }
+
+
   @ApiOperation({ summary: 'pagination for user' })
   @Post('page/task')
   paginationTask(

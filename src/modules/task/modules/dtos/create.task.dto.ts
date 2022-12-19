@@ -1,4 +1,5 @@
-import { ApiHideProperty, ApiProperty } from "@nestjs/swagger";
+
+import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
 import { StatusTaskEnum } from '../enums/status-task.enum';
 import { TypeTaskEnum } from '../enums/type-task.enum';
 import { ProjectEnt } from "../../../project/modules/entities/project.entity";
@@ -9,6 +10,12 @@ import { DepartmentEnt } from "../../../department/modules/entities/department.e
 import { DepartmentRlEnt } from "../../../department-rl/modules/entities/department-rl.entity";
 
 export class CreateTaskDto {
+@ApiHideProperty()
+  id_department_rl:string
+
+  @ApiHideProperty()
+  departmentRl:DepartmentRlEnt
+
   @ApiProperty()
   priority: string;
 
@@ -35,9 +42,6 @@ export class CreateTaskDto {
 
   @ApiHideProperty()
   departmentRlEnt: DepartmentRlEnt;
-
-  @ApiHideProperty()
-  id_department_rl: string;
 
   @ApiHideProperty()
   id_user?: UserResponseJWTDto | any;

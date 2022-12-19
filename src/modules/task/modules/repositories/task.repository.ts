@@ -225,7 +225,8 @@ export class TaskRepo {
     taskEnt.duration = createDto.duration;
     taskEnt.status = createDto.status;
     taskEnt.type = createDto.type;
-    taskEnt.department_rl = department_rl;
+    taskEnt.department_rl = department_rl
+
     taskEnt.user = user;
     if (query) return await query.manager.save(taskEnt);
     return await this.dataSource.manager.save(taskEnt);

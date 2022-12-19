@@ -179,9 +179,9 @@ export class UserRepo {
   async paginationUser(pageDto: UserPageDto): Promise<PageDto<UserEnt>> {
     const queryBuilder = this.dataSource.manager
       .createQueryBuilder(UserEnt, 'user')
-      .leftJoinAndSelect('user.department', 'department')
-      .leftJoinAndSelect('department.department_rls', 'department_rls')
-      .leftJoinAndSelect('department_rls.tasks', 'tasks')
+      // .leftJoinAndSelect('user.department', 'department')
+      // .leftJoinAndSelect('department.department_rls', 'department_rls')
+      // .leftJoinAndSelect('department_rls.tasks', 'tasks')
       .select([
         'user.id',
         'user.first_name',
