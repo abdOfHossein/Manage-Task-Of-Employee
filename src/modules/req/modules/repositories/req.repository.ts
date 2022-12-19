@@ -27,6 +27,8 @@ export class ReqRepo {
   ): Promise<ReqEnt> {
     const reqEnt = new ReqEnt();
     reqEnt.status = createDto.status;
+    reqEnt.name = createDto.name;
+    reqEnt.description = createDto.description;
     reqEnt.project = createDto.projectEnt;
 
     if (query) return await query.manager.save(reqEnt);
@@ -84,9 +86,12 @@ export class ReqRepo {
   async findAllReq(): Promise<ReqEnt[]> {
     return await this.dataSource.manager.find(ReqEnt, {});
   }
-  
-  async findAllReqWithIdProject(id_project:string): Promise<ReqEnt[]> {
-    return await this.dataSource.manager.createQueryBuilder(ReqEnt,'req').where('req.project.id = :id_project',{id_project}).getMany()
+
+  async findAllReqWithIdProject(id_project: string): Promise<ReqEnt[]> {
+    return await this.dataSource.manager
+      .createQueryBuilder(ReqEnt, 'req')
+      .where('req.project.id = :id_project', { id_project })
+      .getMany();
   }
   async updateReq(
     entity: ReqEnt,
@@ -95,6 +100,8 @@ export class ReqRepo {
   ): Promise<ReqEnt> {
     entity.status = updateDto.status;
     entity.project = updateDto.projectEnt;
+    entity.name = updateDto.name;
+    entity.description = updateDto.description;
     if (query) return await query.manager.save(entity);
     return await this.dataSource.manager.save(entity);
   }
@@ -141,7 +148,6 @@ export class ReqRepo {
     id_req: string,
     pageDto: ReqPageDto,
   ): Promise<PageDto<ProjectEnt>> {
-
     const queryBuilder = this.dataSource.manager
       .createQueryBuilder(ProjectEnt, 'project')
       .where('project.id = :id', { id: id_req })
@@ -149,8 +155,8 @@ export class ReqRepo {
       .leftJoinAndSelect('reqs.department_rls', 'department_rls')
       .leftJoinAndSelect('department_rls.tasks', 'tasks');
 
-      console.log(await queryBuilder.getMany());
-      
+    console.log(await queryBuilder.getMany());
+
     if (pageDto.base) {
       const row = pageDto.base.row;
       const skip = PublicFunc.skipRow(pageDto.base.page, pageDto.base.row);
@@ -158,7 +164,6 @@ export class ReqRepo {
     }
 
     if (pageDto.filter) {
-
     }
 
     if (pageDto.field) {

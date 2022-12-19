@@ -9,6 +9,12 @@ export class CreateReqDto {
   @ApiProperty({ default: StatusReqEnum.OPEN })
   status: StatusReqEnum;
 
+  @ApiProperty()
+  name: string;
+
+  @ApiProperty()
+  description: string;
+
   @ApiHideProperty()
   project_id: string;
 
