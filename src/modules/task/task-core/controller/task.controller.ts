@@ -39,10 +39,9 @@ export class TaskController {
   @Post('/checkExpirationTask')
   checkExpirationTask(
     @Body() expiredTaskPageDto: ExpiredTaskPageDto,
-    @Req() req: any,
+    @Query('id_user') id_user: string,
   ): Promise<PageDto<TaskEnt>> {
-    console.log(req.user);
-    return this.task.checkExpirationTask(req.user, expiredTaskPageDto);
+    return this.task.checkExpirationTask(id_user, expiredTaskPageDto);
   }
 
   @ApiOperation({ summary: 'create task' })
@@ -61,8 +60,6 @@ export class TaskController {
       createTaskDto.id_user = id_user;
     }
     createTaskDto.id_user = req.user.id_User;
-    console.log('req.user.id_User', req.user.id_User);
-
     createTaskDto.id_department_rl = id_department_rl;
     return this.task.createTask(createTaskDto);
   }
@@ -92,9 +89,9 @@ export class TaskController {
   @Post('/taskTypeReport')
   taskTypePagination(
     @Body() reportDto: TaskTypePageDto,
-    @Req() req: any,
+    @Query('id_user') id_user: string,
   ): Promise<PageDto<TaskEnt>> {
-    return this.task.taskTypePagination(req.user.id_User, reportDto);
+    return this.task.taskTypePagination(id_user, reportDto);
   }
 
   @ApiOperation({ summary: 'findOne task' })
@@ -122,9 +119,9 @@ export class TaskController {
   @Post('page')
   paginationRole(
     @Body() pageDto: TaskPageDto,
-    @Req() req: any,
+    @Query('id_user') id_user: string,
   ): Promise<PageDto<TaskEnt>> {
-    return this.task.paginationTask(req.user.id_User, pageDto);
+    return this.task.paginationTask(id_user, pageDto);
   }
 
   @ApiOperation({ summary: 'create task based on id_department' })

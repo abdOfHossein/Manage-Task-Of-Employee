@@ -127,14 +127,13 @@ export class UserController {
   }
 
 
-  @ApiOperation({ summary: 'pagination for user' })
+  @ApiOperation({ summary: 'pagination for task of user' })
   @Post('page/task')
   paginationTask(
     @Body() pageDto: TaskPageDto,
-    @Req() req: any,
+    @Query('id_user') id_user:string
   ): Promise<PageDto<TaskEnt>> {
-    console.log(pageDto);
-    return this.user.paginationTask(req.user.id_User, pageDto);
+    return this.user.paginationTask(id_user, pageDto);
   }
 
   @UseGuards(RolesGuard)
