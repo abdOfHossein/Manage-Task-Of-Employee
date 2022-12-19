@@ -471,12 +471,11 @@ export class TaskRepo {
     const department_rl = await this.dataSource.manager
       .createQueryBuilder(DepartmentRlEnt, 'department_rl')
       .where(
-        'department_rl.req = :req',
-        { req:id_req },
+        'department_rl.req = :id_req AND department_rl.department.user = :id_user',
+        { id_req, id_user },
       )
       .getOne();
-
-    console.log('department_rl in repo', department_rl);
+    console.log('department_rl', department_rl);
 
     const taskEnt = new TaskEnt();
     taskEnt.head_id = createDto.head_id;

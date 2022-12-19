@@ -60,11 +60,12 @@ export class ProjectRepo {
       .leftJoin('project.reqs', 'req')
       .leftJoin('req.department_rls', 'department_rls')
       .leftJoin('department_rls.tasks', 'tasks')
-      .select(['project.id', 'project_name'])
+      .select(['project.id as id', 'project_name'])
       .addSelect('COUNT(DISTINCT(req.id))', 'req')
       .addSelect('COUNT(DISTINCT(tasks.id))', 'tasks')
       .groupBy('project.id')
-    console.log(await queryBuilder.getRawAndEntities());
+      console.log(await queryBuilder.getRawAndEntities());
+      
     if (pageDto.base) {
       const row = pageDto.base.row;
       const skip = PublicFunc.skipRow(pageDto.base.page, pageDto.base.row);
@@ -91,11 +92,16 @@ export class ProjectRepo {
         pageDto.base.order,
       );
     }
-    const result = await queryBuilder.getRawAndEntities();
+    // queryBuilder..map(() => {
+    //   return item
+    // })
+    console.log('x');
+    
+    const result = await queryBuilder.getRawMany();
     const pageMetaDto = new PageMetaDto({
       baseOptionsDto: pageDto.base,
-      itemCount: result.entities.length,
+      itemCount: result.length,
     });
-    return new PageDto(result.raw, pageMetaDto);
+    return new PageDto(result, pageMetaDto);
   }
 }
