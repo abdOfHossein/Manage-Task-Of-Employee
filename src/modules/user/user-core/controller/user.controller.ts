@@ -56,6 +56,7 @@ export class UserController {
     res.status(200).send(result);
   }
 
+  @ApiOperation({ summary: 'test Jwt' })
   @UseGuards(RolesGuard)
   @ApiBearerAuth('access-token')
   @UseGuards(JwtGuard)
@@ -85,6 +86,7 @@ export class UserController {
     return await this.user.changePassword(id_user, changePasswordUserDto);
   }
 
+  @ApiOperation({ summary: 'update user' })
   @Put()
   updateUser(
     @Query('id_user') id_user: string,

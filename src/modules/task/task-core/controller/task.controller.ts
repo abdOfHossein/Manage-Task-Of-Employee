@@ -8,7 +8,12 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
 import { PageDto } from 'src/common/dtos/page.dto';
 import { CreateRelTaskDto } from 'src/modules/rel-task/modules/dtos/create.rel-task.dto';
 import { RelTaskEnt } from 'src/modules/rel-task/modules/entities/rel-task.entity';
@@ -30,7 +35,6 @@ import { TaskService } from '../../modules/services/task.service';
 @Controller('Task')
 export class TaskController {
   constructor(private task: TaskService) {}
-
 
   @Post('/checkExpirationTask')
   checkExpirationTask(
@@ -93,12 +97,13 @@ export class TaskController {
     return this.task.taskTypePagination(req.user.id_User, reportDto);
   }
 
-  @ApiOperation({ summary: 'findOne task'})
+  @ApiOperation({ summary: 'findOne task' })
   @Get()
   findOneTask(@Query('id_task') id_task: string): Promise<TaskEnt> {
     return this.task.findOneTask(id_task);
   }
 
+  @ApiOperation({ summary: 'update task' })
   @Put()
   updateTask(
     @Query('id_task') id_task: string,
@@ -107,11 +112,13 @@ export class TaskController {
     return this.task.updateTask(id_task, updateTaskDto);
   }
 
+  @ApiOperation({ summary: 'find all task' })
   @Get('all')
   getAll(): Promise<TaskEnt[]> {
     return this.task.getAll();
   }
 
+  @ApiOperation({ summary: 'pagination of task' })
   @Post('page')
   paginationRole(
     @Body() pageDto: TaskPageDto,
@@ -120,7 +127,8 @@ export class TaskController {
     return this.task.paginationTask(req.user.id_User, pageDto);
   }
 
-  @Post('createTask/id_department')
+  @ApiOperation({ summary: 'create task based on id_department' })
+  @Post('/id_department')
   createDepartmentRl(
     @Query('id_department') id_department: string,
     @Body() createDto: CreateTaskDto,
@@ -128,11 +136,12 @@ export class TaskController {
     return this.task.createTaskWithIdDepartment(id_department, createDto);
   }
 
+  @ApiOperation({ summary: 'create task based on id_department & id_req' })
   @ApiQuery({
     name: 'id_req',
     required: false,
   })
-  @Post('createTask/id_department/id_req')
+  @Post('/id_department/id_req')
   createTaskWithIdDepartmentAndIdReq(
     @Query('id_department') id_department: string,
     @Query('id_req') id_req: string,
@@ -145,7 +154,8 @@ export class TaskController {
     );
   }
 
-  @Post('createTask/forward')
+  @ApiOperation({ summary: 'create task based on id_department & id_req' })
+  @Post('/forward')
   forwardTask(
     @Query('id_prevoise_task') id_prevoise_task: string,
     @Body() createDto: CreateRelTaskDto,
@@ -153,13 +163,13 @@ export class TaskController {
     return this.task.forwardTask(id_prevoise_task, createDto);
   }
 
-  @Post('createTask/id_req/id_user')
+  @ApiOperation({ summary: 'create task based on id_user & id_req' })
+  @Post('/id_req/id_user')
   createTaskWithIdReqAnddUser(
     @Query('id_user') id_user: string,
     @Query('id_req') id_req: string,
     @Body() createDto: CreateTaskDto,
   ): Promise<TaskEnt> {
-    return this.task.createTaskWithIdReqAnddUser(id_user,id_req, createDto);
-
+    return this.task.createTaskWithIdReqAnddUser(id_user, id_req, createDto);
   }
 }

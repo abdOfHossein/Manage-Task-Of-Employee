@@ -50,6 +50,7 @@ export class FileController {
  
     return await this.fileService.uploadFilePublic(file);
   }
+
   @ApiOperation({ summary: 'download Files' })
   @Get('stream-file/:id_unq_file')
   @Public()

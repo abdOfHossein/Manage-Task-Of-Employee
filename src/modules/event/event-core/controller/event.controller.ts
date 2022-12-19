@@ -10,16 +10,19 @@ import { EventService } from '../../modules/services/event.service';
 export class EventController {
   constructor(private event: EventService) {}
 
+  @ApiOperation({ summary: 'create for Event' })
   @Post()
   createEvent(@Body() createEventDto: CreateEventDto): Promise<EventEnt> {
     return this.event.createEvent(createEventDto);
   }
 
+  @ApiOperation({ summary: 'findOne for Event' })
   @Get()
   findOneEvent(@Query('id_Event') id_Event: string): Promise<EventEnt> {
     return this.event.findOneEvent(id_Event);
   }
 
+  @ApiOperation({ summary: ' update for Event' })
   @Put()
   updateEvent(
     @Query('id_Event') id_Event: string,

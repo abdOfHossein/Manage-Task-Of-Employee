@@ -13,6 +13,7 @@ import { ReqService } from '../../modules/services/req.service';
 export class ReqController {
   constructor(private req: ReqService) {}
 
+  @ApiOperation({ summary: 'create req' })
   @Post()
   createReq(
     @Query('project_id') project_id: string,
@@ -22,20 +23,25 @@ export class ReqController {
     return this.req.createReq(createReqDto);
   }
 
+  @ApiOperation({ summary: 'findOne req' })
   @Get()
   findOneReq(@Query('id_req') id_req: string): Promise<ReqEnt> {
     return this.req.findOneReq(id_req);
   }
 
+  @ApiOperation({ summary: 'findAll req' })
   @Get('all')
   findAllReq(): Promise<ReqEnt[]> {
     return this.req.findAllReq();
   }
 
+  @ApiOperation({ summary: 'findAll req based on id_project' })
   @Get('all/id_project')
   findAllReqWithIdProject(@Query('id_project') id_project:string): Promise<ReqEnt[]> {
     return this.req.findAllReqWithIdProject(id_project);
   }
+
+  @ApiOperation({ summary: 'update req' })
   @Put()
   updateReq(
     @Query('id_req') id_req: string,
@@ -52,6 +58,7 @@ export class ReqController {
     return this.req.paginationReq(pageDto);
   }
 
+  @ApiOperation({ summary: 'create req based on id_project' })
   @Post('page/id_project')
   getAllReqAndTask(@Query('id_project') id_project:string,@Body() pageDto: ReqPageDto): Promise<PageDto<ProjectEnt>> {
     return this.req.getAllReqAndTask(id_project,pageDto);

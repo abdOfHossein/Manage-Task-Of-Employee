@@ -12,6 +12,7 @@ import { ProjectService } from '../../modules/services/project.service';
 export class ProjectController {
   constructor(private project: ProjectService) {}
 
+  @ApiOperation({ summary: 'create Project' })
   @Post()
   createProject(
     @Body() createProjectDto: CreateProjectDto,
@@ -19,18 +20,20 @@ export class ProjectController {
     return this.project.createProject(createProjectDto);
   }
 
+  @ApiOperation({ summary: 'findOne Project' })
   @Get()
   findOneProject(@Query('id_project') id_project: string): Promise<ProjectEnt> {
     return this.project.findOneProject(id_project);
   }
 
+  @ApiOperation({ summary: 'update Project' })
   @Put()
   updateProject(
     @Query('id_project') id_project: string,
     @Query('unq_file') unq_file: string,
     @Body() updateProjectDto: UpdateProjectDto,
-  ): Promise<ProjectEnt> { 
-    updateProjectDto.unq_file=unq_file
+  ): Promise<ProjectEnt> {
+    updateProjectDto.unq_file = unq_file;
     return this.project.updateProject(id_project, updateProjectDto);
   }
 
@@ -41,6 +44,4 @@ export class ProjectController {
   ): Promise<PageDto<ProjectEnt>> {
     return this.project.paginationProject(pageDto);
   }
-
-  
 }

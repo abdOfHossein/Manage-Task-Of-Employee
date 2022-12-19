@@ -12,6 +12,7 @@ import { DepartmentService } from '../../modules/services/department.service';
 export class DepartmentController {
   constructor(private department: DepartmentService) {}
 
+  @ApiOperation({ summary: 'create Department' })
   @Post()
   async createDepartment(
     @Body() createDepartmentDto: CreateDepartmentDto,
@@ -19,6 +20,7 @@ export class DepartmentController {
     return this.department.createDepartment(createDepartmentDto);
   }
 
+  @ApiOperation({ summary: 'findOne Department' })
   @Get()
   async findOneDepartment(
     @Query('id_department') id_department: string,
@@ -26,13 +28,14 @@ export class DepartmentController {
     return this.department.findOneDepartment(id_department);
   }
 
+  @ApiOperation({ summary: 'findAll Department' })
   @Get('/all')
-  @ApiOperation({summary: 'get all department'})
-  async getAllDepartment(
-  ): Promise<DepartmentEnt[]> {
+  @ApiOperation({ summary: 'get all department' })
+  async getAllDepartment(): Promise<DepartmentEnt[]> {
     return this.department.getAllDepartment();
   }
 
+  @ApiOperation({ summary: 'update Department' })
   @Put()
   async updateDepartment(
     @Query('id_Department') id_Department: string,
