@@ -6,12 +6,9 @@ import {
   Put,
   Query,
   Req,
-  Res,
   UseGuards,
-
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { Response } from 'express';
 import { PageDto } from 'src/common/dtos/page.dto';
 import { TaskEnt } from 'src/modules/task/modules/entities/task.entity';
 import { TaskPageDto } from 'src/modules/task/modules/paginations/task.page.dto';
@@ -21,7 +18,6 @@ import { JwtGuard } from '../../modules/auth/guards/jwt.guard';
 import { ChangePasswordUserDto } from '../../modules/dtos/change-password.user.dto';
 import { CreateUserDto } from '../../modules/dtos/create.user.dto';
 import { LoginUserDto } from '../../modules/dtos/login.user.dto';
-import { ChangePasswordAdmin } from '../../modules/dtos/password-admin.dto';
 import { UpdateUserDto } from '../../modules/dtos/update.user.dto';
 import { UserEnt } from '../../modules/entities/User.entity';
 import { RolesGuard } from '../../modules/guard/role.guard';
@@ -49,11 +45,18 @@ export class UserController {
     return this.user.createUser(createUserDto);
   }
 
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtGuard)
+  @ApiOperation({summary:"set Role for user"})
+  @Get('setRole')
+  async setRole(@Query('id_role') id_role: string,@Req()  req:any) {
+    return await this.user.createJwtSetRole(req.user.id_User,id_role);
+  }
+
   @Post('login')
-  @ApiOperation({ summary: 'sign in user by user name and password' })
-  async login(@Body() loginUserDto: LoginUserDto, @Res() res: Response) {
-    const result = await this.user._createJwt(loginUserDto);
-    res.status(200).send(result);
+  @ApiOperation({ summary: 'sign in user by username and password' })
+  async login(@Body() loginUserDto: LoginUserDto) {
+    return await this.user._createJwt(loginUserDto);
   }
 
   @ApiOperation({ summary: 'test Jwt' })
@@ -113,25 +116,24 @@ export class UserController {
   @ApiBearerAuth('access-token')
   @UseGuards(JwtGuard)
   @Post('admin/password')
-  @ApiOperation({summary: 'change user password by vadmin'})
+  @ApiOperation({ summary: 'change user password by vadmin' })
   async changePasswordAdmin(
     @Body() changePasswordUserDto: ChangePasswordUserDto,
     @Query('id_user') id_user: string,
   ) {
     const user = new UserResponseJWTDto();
     user.uid = id_user;
-    console.log("usercon");
+    console.log('usercon');
     console.log(user);
-    
+
     return await this.user.changePasswordAdmin(user, changePasswordUserDto);
   }
-
 
   @ApiOperation({ summary: 'pagination for task of user' })
   @Post('page/task')
   paginationTask(
     @Body() pageDto: TaskPageDto,
-    @Query('id_user') id_user:string
+    @Query('id_user') id_user: string,
   ): Promise<PageDto<TaskEnt>> {
     return this.user.paginationTask(id_user, pageDto);
   }

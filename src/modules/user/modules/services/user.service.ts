@@ -9,7 +9,6 @@ import { UserResponseJWTDto } from '../../../../common/dtos/user.dto';
 import { ChangePasswordUserDto } from '../dtos/change-password.user.dto';
 import { CreateUserDto } from '../dtos/create.user.dto';
 import { LoginUserDto } from '../dtos/login.user.dto';
-import { ChangePasswordAdmin } from '../dtos/password-admin.dto';
 import { UpdateUserDto } from '../dtos/update.user.dto';
 import { UserEnt } from '../entities/user.entity';
 import { UserStatus } from '../enum/user.status';
@@ -50,6 +49,27 @@ export class UserService {
     }
   }
 
+  async createJwtSetRole(id_user: string, id_role: string) {
+    try {
+      console.log(id_user);
+      console.log(id_role);
+
+      const user = await this.dataSource.getRepository(UserEnt).findOne({
+        where: { id: id_user },
+      });
+      console.log(user);
+      const role = await this.dataSource
+        .getRepository(RoleEnt)
+        .findOne({ where: { id: id_role } });
+      if (!user || user.status == UserStatus.BLOCK) {
+        throw new BadRequestException('User does not exist');
+      }
+      return await this.userRepo.createJwtSetRole(user.id, role);
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  }
 
   async _createJwt(loginUserDto: LoginUserDto) {
     try {
@@ -65,7 +85,7 @@ export class UserService {
       ) {
         throw new BadRequestException('User does not exist');
       }
-      return await this.userRepo._createJwt(user.id, user.role);
+      return await this.userRepo._createJwt(user.id);
     } catch (e) {
       console.log(e);
       throw e;
@@ -114,38 +134,38 @@ export class UserService {
     console.log('x');
     return await this.userRepo.changePassword(id_user, changePasswordUserDto);
   }
-  async changePasswordAdmin(    id_user: UserResponseJWTDto,
-    changePasswordUserDto: ChangePasswordUserDto): Promise<UserEnt> {
+  async changePasswordAdmin(
+    id_user: UserResponseJWTDto,
+    changePasswordUserDto: ChangePasswordUserDto,
+  ): Promise<UserEnt> {
     try {
-      return await this.userRepo.changePasswordAdmin(id_user, changePasswordUserDto);
+      return await this.userRepo.changePasswordAdmin(
+        id_user,
+        changePasswordUserDto,
+      );
     } catch (error) {
       console.log(error);
-      
     }
   }
 
-  async paginationTask(id_user:string,pageDto: TaskPageDto) {
-    return await this.userRepo.paginationTask(id_user,pageDto);
+  async paginationTask(id_user: string, pageDto: TaskPageDto) {
+    return await this.userRepo.paginationTask(id_user, pageDto);
   }
 
   async jwtAdmin(id_user: string) {
     try {
       const user = await this.dataSource.getRepository(UserEnt).findOne({
-        where: { id: id_user},
+        where: { id: id_user },
       });
       console.log(user);
-      
-      if (
-        !user ||
-        user.status == UserStatus.BLOCK
-      ) {
+
+      if (!user || user.status == UserStatus.BLOCK) {
         throw new BadRequestException('User does not exist');
       }
-      return await this.userRepo._createJwt(user.id, user.role);
+      return await this.userRepo._createJwt(user.id);
     } catch (e) {
       console.log(e);
       throw e;
     }
   }
-
 }

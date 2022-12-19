@@ -1,6 +1,7 @@
-import { Controller, Delete, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Post, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { JwtGuard } from 'src/modules/user/modules/auth/guards/jwt.guard';
+import { MessageUserPageDto } from '../../modules/paginations/message-user.page.dto';
 import { MessageUserService } from '../../modules/services/message-user.service';
 
 @ApiTags('MessageUser')
@@ -16,4 +17,11 @@ export class MessageUserController {
   deleteMessageUser(@Query('id_messageUser') id_messageUser: string) {
     return this.MessageUser.deleteMessageUser(id_messageUser);
   }
+
+  @ApiOperation({ summary: 'pagination MessageUser' })
+  @Post('/page')
+  paginationMessageUser(@Query('id_user') id_user: string, @Body() reportPage: MessageUserPageDto) {
+    return this.MessageUser.paginationMessageUser(id_user,reportPage);
+  }
+  
 }

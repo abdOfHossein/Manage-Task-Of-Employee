@@ -3,6 +3,7 @@ import { Reflector } from '@nestjs/core';
 import { RoleEnt } from 'src/modules/role/modules/entities/role.entity';
 import { RoleTypeEnum } from 'src/modules/role/modules/enum/role.enum';
 import { DataSource } from 'typeorm';
+import { UserEnt } from '../entities/user.entity';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -11,12 +12,14 @@ export class RolesGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     try {
       const request = context.switchToHttp().getRequest();
-      const user = request.user;
-      console.log('user', user);
+      console.log(request);
+      
+      const user =await this.dataSource.getRepository(UserEnt).findOne({where:{id:request.user.id_User},relations:{role:true}});
+      console.log('user ===>', user);
 
       const role = await this.dataSource.getRepository(RoleEnt).findOne({
         where: {
-          id: user.roles.id,
+          id: user.role.id,
         },
       });
 
