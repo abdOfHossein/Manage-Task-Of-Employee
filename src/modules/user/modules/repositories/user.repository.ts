@@ -321,75 +321,11 @@ export class UserRepo {
   async paginationDoneTaskRecentDay(
     id_user: string,
     pageDto: TaskPageDto,
-  ): Promise<PageDto<TaskEnt>> {
-    let nowDate = new Date(Date.now());
-    let previousDay = new Date(nowDate.setDate(nowDate.getDate() - 1));
-    console.log(nowDate);
-    console.log(previousDay);
-    console.log(nowDate == previousDay);
-
-    const queryBuilder = this.dataSource.manager
-      .createQueryBuilder(UserEnt, 'user')
-      .where('user.id = : id_user ', { id_user })
-      .leftJoinAndSelect('user.department', 'department')
-      .leftJoinAndSelect('department.department_rls', 'department_rls')
-      .leftJoinAndSelect('department_rls.tasks', 'tasks')
-      .subQuery()
-      .select('task.id')
-      .from(TaskEnt, 'task')
-      .where(
-        'task.update_at BETWEEN :first_date AND :second_date AND task.type = :typeDone OR task.type = :typePublish',
-        {
-          typeDone: TypeTaskEnum.DONE,
-          typePublish: TypeTaskEnum.PUBLISH,
-          first_date: previousDay,
-          second_date: nowDate,
-        },
-      );
-
-    if (pageDto.base) {
-      const row = pageDto.base.row;
-      const skip = PublicFunc.skipRow(pageDto.base.page, pageDto.base.row);
-      queryBuilder.skip(skip).take(row);
-    }
-
-    if (pageDto.filter) {
-      if (pageDto.filter.priority)
-        queryBuilder.andWhere('user.priority LIKE :priority', {
-          priority: `%${pageDto.filter.priority}%`,
-        });
-      if (pageDto.filter.tittle)
-        queryBuilder.andWhere('user.tittle LIKE :tittle', {
-          tittle: `%${pageDto.filter.tittle}%`,
-        });
-      if (pageDto.filter.type)
-        queryBuilder.andWhere('user.type LIKE :type', {
-          type: `%${pageDto.filter.type}%`,
-        });
-      if (pageDto.filter.status)
-        queryBuilder.andWhere('user.status LIKE :status', {
-          status: `%${pageDto.filter.status}%`,
-        });
-    }
-    if (pageDto.field) {
-      const mapper = TaskMapperPagination[pageDto.field];
-      if (!mapper)
-        throw new Error(
-          `${JSON.stringify({
-            section: 'public',
-            value: 'Column Not Exist',
-          })}`,
-        );
-      queryBuilder.addOrderBy(
-        `${TaskMapperPagination[pageDto.field]}`,
-        pageDto.base.order,
-      );
-    }
-    const result = await queryBuilder.getManyAndCount();
-    const pageMetaDto = new PageMetaDto({
-      baseOptionsDto: pageDto.base,
-      itemCount: result[1],
-    });
-    return new PageDto(result[0], pageMetaDto);
+  ): Promise<UserEnt[]> {
+    // let nowDate = new Date(Date.now());
+    // let previousDay = new Date(nowDate.setDate(nowDate.getDate() - 1));
+    return this.dataSource.manager.query(`select u.id,u.first_name ,u.last_name , (select  jsonb_agg(jsonb_build_object('id',id,'title',tittle,'status',status,'type',"type",'priority',priority,'duration',duration)) as text  from public.task t where cast (t."userId" as text) = cast(u.id as text) )  
+    from public."user" u where u.status ='active'
+    `);
   }
 }

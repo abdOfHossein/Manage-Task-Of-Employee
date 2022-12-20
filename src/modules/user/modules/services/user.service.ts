@@ -173,5 +173,4 @@ export class UserService {
   async paginationDoneTaskRecentDay(id_user: string, pageDto: TaskPageDto) {
     return await this.userRepo.paginationDoneTaskRecentDay(id_user, pageDto);
   }
-
 }
