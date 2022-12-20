@@ -14,6 +14,7 @@ import { TaskPageDto } from 'src/modules/task/modules/paginations/task.page.dto'
 import { DataSource, FindOneOptions, QueryRunner } from 'typeorm';
 import { UserResponseJWTDto } from '../../../../common/dtos/user.dto';
 import { JwtPayloadInterface } from '../auth/interface/jwt-payload.interface';
+import { ChangePasswordAdminDto } from '../dtos/change-password-admin.dto';
 import { ChangePasswordUserDto } from '../dtos/change-password.user.dto';
 import { CreateUserDto } from '../dtos/create.user.dto';
 import { LoginUserDto } from '../dtos/login.user.dto';
@@ -33,7 +34,6 @@ export class UserRepo {
     private redisService: RedisService,
     private jwtService: JwtService,
   ) {}
-
 
   async _createJwt(data: string) {
     let jwtPayloadInterface: JwtPayloadInterface = {};
@@ -57,7 +57,7 @@ export class UserRepo {
     );
     return result;
   }
-  
+
   async createJwtSetRole(data: string, roles: any) {
     let jwtPayloadInterface: JwtPayloadInterface = {};
     const encryptTextInterface = await this.hashService.encrypt(data);
@@ -177,7 +177,7 @@ export class UserRepo {
 
   async changePasswordAdmin(
     id_user: UserResponseJWTDto,
-    changePasswordUserDto: ChangePasswordUserDto,
+    changePasswordUserDto: ChangePasswordAdminDto,
   ): Promise<UserEnt> {
     const userEntity = await this.dataSource.manager.findOne(UserEnt, {
       where: { id: id_user.uid },
@@ -271,6 +271,81 @@ export class UserRepo {
       .where('task.type = :type', {
         type: TypeTaskEnum.CANCELE || TypeTaskEnum.DONE || TypeTaskEnum.PUBLISH,
       });
+
+    if (pageDto.base) {
+      const row = pageDto.base.row;
+      const skip = PublicFunc.skipRow(pageDto.base.page, pageDto.base.row);
+      queryBuilder.skip(skip).take(row);
+    }
+
+    if (pageDto.filter) {
+      if (pageDto.filter.priority)
+        queryBuilder.andWhere('user.priority LIKE :priority', {
+          priority: `%${pageDto.filter.priority}%`,
+        });
+      if (pageDto.filter.tittle)
+        queryBuilder.andWhere('user.tittle LIKE :tittle', {
+          tittle: `%${pageDto.filter.tittle}%`,
+        });
+      if (pageDto.filter.type)
+        queryBuilder.andWhere('user.type LIKE :type', {
+          type: `%${pageDto.filter.type}%`,
+        });
+      if (pageDto.filter.status)
+        queryBuilder.andWhere('user.status LIKE :status', {
+          status: `%${pageDto.filter.status}%`,
+        });
+    }
+    if (pageDto.field) {
+      const mapper = TaskMapperPagination[pageDto.field];
+      if (!mapper)
+        throw new Error(
+          `${JSON.stringify({
+            section: 'public',
+            value: 'Column Not Exist',
+          })}`,
+        );
+      queryBuilder.addOrderBy(
+        `${TaskMapperPagination[pageDto.field]}`,
+        pageDto.base.order,
+      );
+    }
+    const result = await queryBuilder.getManyAndCount();
+    const pageMetaDto = new PageMetaDto({
+      baseOptionsDto: pageDto.base,
+      itemCount: result[1],
+    });
+    return new PageDto(result[0], pageMetaDto);
+  }
+
+  async paginationDoneTaskRecentDay(
+    id_user: string,
+    pageDto: TaskPageDto,
+  ): Promise<PageDto<TaskEnt>> {
+    let nowDate = new Date(Date.now());
+    let previousDay = new Date(nowDate.setDate(nowDate.getDate() - 1));
+    console.log(nowDate);
+    console.log(previousDay);
+    console.log(nowDate == previousDay);
+
+    const queryBuilder = this.dataSource.manager
+      .createQueryBuilder(UserEnt, 'user')
+      .where('user.id = : id_user ', { id_user })
+      .leftJoinAndSelect('user.department', 'department')
+      .leftJoinAndSelect('department.department_rls', 'department_rls')
+      .leftJoinAndSelect('department_rls.tasks', 'tasks')
+      .subQuery()
+      .select('task.id')
+      .from(TaskEnt, 'task')
+      .where(
+        'task.update_at BETWEEN :first_date AND :second_date AND task.type = :typeDone OR task.type = :typePublish',
+        {
+          typeDone: TypeTaskEnum.DONE,
+          typePublish: TypeTaskEnum.PUBLISH,
+          first_date: previousDay,
+          second_date: nowDate,
+        },
+      );
 
     if (pageDto.base) {
       const row = pageDto.base.row;

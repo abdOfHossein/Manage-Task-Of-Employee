@@ -15,6 +15,7 @@ import { TaskPageDto } from 'src/modules/task/modules/paginations/task.page.dto'
 import { GetUser } from '../../../../common/decorates/get.user.decorator';
 import { UserResponseJWTDto } from '../../../../common/dtos/user.dto';
 import { JwtGuard } from '../../modules/auth/guards/jwt.guard';
+import { ChangePasswordAdminDto } from '../../modules/dtos/change-password-admin.dto';
 import { ChangePasswordUserDto } from '../../modules/dtos/change-password.user.dto';
 import { CreateUserDto } from '../../modules/dtos/create.user.dto';
 import { LoginUserDto } from '../../modules/dtos/login.user.dto';
@@ -118,7 +119,7 @@ export class UserController {
   @Post('admin/password')
   @ApiOperation({ summary: 'change user password by vadmin' })
   async changePasswordAdmin(
-    @Body() changePasswordUserDto: ChangePasswordUserDto,
+    @Body() changePasswordUserDto: ChangePasswordAdminDto,
     @Query('id_user') id_user: string,
   ) {
     const user = new UserResponseJWTDto();
@@ -146,4 +147,15 @@ export class UserController {
   jwtAdmin(@Query('id_user') id_user: string, @Req() req: any) {
     return this.user.jwtAdmin(id_user);
   }
+
+  @UseGuards(RolesGuard)
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtGuard)
+  @ApiOperation({ summary: 'pagination for tasks are done in previous day' })
+  @Post('/page/previousDay')
+  paginationDoneTaskRecentDay(@GetUser() id_user: UserResponseJWTDto, @Body() pageDto: TaskPageDto,) {
+    return this.user.paginationDoneTaskRecentDay(id_user.uid,pageDto);
+  }
+
+  
 }
