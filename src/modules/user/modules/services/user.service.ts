@@ -169,8 +169,12 @@ export class UserService {
       throw e;
     }
   }
-  
+
   async paginationDoneTaskRecentDay(id_user: string, pageDto: TaskPageDto) {
     return await this.userRepo.paginationDoneTaskRecentDay(id_user, pageDto);
+  }
+
+  async listOfTaskRecentDay(id_user:string) {
+    return await this.userRepo.listOfTaskRecentDay(id_user);
   }
 }

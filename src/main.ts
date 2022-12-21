@@ -1,5 +1,5 @@
 import { Logger as NestLogger, ValidationPipe } from '@nestjs/common';
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
 import {
   I18nMiddleware,
   i18nValidationErrorFactory,
@@ -8,6 +8,7 @@ import {
 import { ResponseInterceptor } from './common/interceptor/respons.interceptor';
 import { SwaggerService } from './config/swagger/service/swagger.service';
 import { AppModule } from './modules/app/app.module';
+import { JwtGuard } from './modules/user/modules/auth/guards/jwt.guard';
 
 async function bootstrap() {
   const nestLogger = new NestLogger('Main_Logger');
@@ -19,6 +20,8 @@ async function bootstrap() {
   app.useGlobalPipes(
     new ValidationPipe({ exceptionFactory: i18nValidationErrorFactory }),
   );
+  // const reflector = app.get(Reflector);
+  // app.useGlobalGuards(new JwtGuard(reflector));
   app.use(I18nMiddleware);
   const swaggerConfig = app.get<SwaggerService>(SwaggerService);
   swaggerConfig.init(app);

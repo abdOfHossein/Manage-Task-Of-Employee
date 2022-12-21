@@ -63,4 +63,5 @@ export class ReqController {
   getAllReqAndTask(@Query('id_project') id_project:string,@Body() pageDto: ReqPageDto): Promise<PageDto<ProjectEnt>> {
     return this.req.getAllReqAndTask(id_project,pageDto);
   }
+
 }

@@ -1,20 +1,19 @@
-
 import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
+import { UserResponseJWTDto } from '../../../../common/dtos/user.dto';
+import { DepartmentRlEnt } from '../../../department-rl/modules/entities/department-rl.entity';
+import { DepartmentEnt } from '../../../department/modules/entities/department.entity';
+import { ProjectEnt } from '../../../project/modules/entities/project.entity';
+import { ReqEnt } from '../../../req/modules/entities/req.entity';
+import { UserEnt } from '../../../user/modules/entities/user.entity';
 import { StatusTaskEnum } from '../enums/status-task.enum';
 import { TypeTaskEnum } from '../enums/type-task.enum';
-import { ProjectEnt } from "../../../project/modules/entities/project.entity";
-import { ReqEnt } from "../../../req/modules/entities/req.entity";
-import { UserEnt } from "../../../user/modules/entities/user.entity";
-import { UserResponseJWTDto } from "../../../../common/dtos/user.dto";
-import { DepartmentEnt } from "../../../department/modules/entities/department.entity";
-import { DepartmentRlEnt } from "../../../department-rl/modules/entities/department-rl.entity";
 
 export class CreateTaskDto {
-@ApiHideProperty()
-  id_department_rl:string
+  @ApiHideProperty()
+  id_department_rl: string;
 
   @ApiHideProperty()
-  departmentRl:DepartmentRlEnt
+  departmentRl: DepartmentRlEnt;
 
   @ApiProperty()
   priority: string;
@@ -55,9 +54,15 @@ export class CreateTaskDto {
   @ApiHideProperty()
   reqEnt?: ReqEnt;
 
-  @ApiProperty({ default: TypeTaskEnum.DOING })
+  @ApiProperty({ default: TypeTaskEnum.NEWTASK })
   type: TypeTaskEnum;
+  
+  @ApiProperty()
+  do_date:Date
 
-  @ApiProperty({ default: StatusTaskEnum.NEWTASK })
+  @ApiProperty()
+  remain_date:Date
+
+  @ApiProperty({ default: StatusTaskEnum.DOING })
   status: StatusTaskEnum;
 }

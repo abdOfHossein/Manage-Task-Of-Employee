@@ -44,4 +44,10 @@ export class ProjectController {
   ): Promise<PageDto<ProjectEnt>> {
     return this.project.paginationProject(pageDto);
   }
+
+  @ApiOperation({ summary: 'findAll Project with its Total Reqs and Done Reqs' })
+  @Get('all/withReqs')
+  allProjectWithReq(): Promise<ProjectEnt[]> {
+    return this.project.allProjectWithReq();
+  }
 }

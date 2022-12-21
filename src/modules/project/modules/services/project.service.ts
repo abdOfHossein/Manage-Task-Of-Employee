@@ -62,4 +62,13 @@ export class ProjectService {
       throw e;
     }
   }
+
+  async allProjectWithReq() {
+    try {
+      return await this.projectRepo.allProjectWithReq();
+    } catch (e) {
+      throw e;
+    }
+  }
+
 }

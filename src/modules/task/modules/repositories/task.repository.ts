@@ -13,7 +13,8 @@ import { DataSource, FindOneOptions, QueryRunner } from 'typeorm';
 import { CreateTaskDto } from '../dtos/create.task.dto';
 import { UpdateTaskDto } from '../dtos/update.task.dto';
 import { TaskEnt } from '../entities/task.entity';
-import { StatusTaskEnum } from '../enums/status-task.enum';
+import { StatusTaskEnum } from '../enums/status-task.enum';  
+import { TypeTaskEnum } from '../enums/type-task.enum';
 import { TaskMapperPagination } from '../mapper/task.mapper.pagination';
 import { ExpiredTaskPageDto } from '../paginations/expired.task.page.dto';
 import { ReportTaskPageDto } from '../paginations/report.page.dto';
@@ -434,7 +435,7 @@ export class TaskRepo {
     await this.dataSource.manager.update(
       TaskEnt,
       { id: id_prevoise_task },
-      { status: StatusTaskEnum.FORWARD },
+      { type: TypeTaskEnum.FORWARD },
     );
 
     const srcTask = await this.dataSource.manager.findOne(TaskEnt, {

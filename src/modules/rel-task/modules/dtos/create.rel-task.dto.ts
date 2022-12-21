@@ -16,10 +16,10 @@ export class CreateRelTaskDto {
   @ApiProperty()
   head_id: string;
 
-  @ApiProperty({ default: TypeTaskEnum.REL })
+  @ApiProperty({ default: TypeTaskEnum.FORWARD })
   type: TypeTaskEnum;
 
-  @ApiProperty({ default: StatusTaskEnum.FORWARD })
+  @ApiProperty({ default: StatusTaskEnum.REL })
   status: StatusTaskEnum;
 
   @ApiHideProperty()

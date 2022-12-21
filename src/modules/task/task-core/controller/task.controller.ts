@@ -70,6 +70,7 @@ export class TaskController {
     @Body() createTaskDto: CreateTaskDto,
     @GetUser() user: UserResponseJWTDto,
     @Query('id_project') id_project: string,
+    @Query('id_user') id_user: string,
   ): Promise<TaskEnt> {
     createTaskDto.id_project = id_project;
     createTaskDto.id_user = user;
@@ -129,6 +130,7 @@ export class TaskController {
   createDepartmentRl(
     @Query('id_department') id_department: string,
     @Body() createDto: CreateTaskDto,
+    @Query('id_user') id_user: string,
   ): Promise<TaskEnt> {
     return this.task.createTaskWithIdDepartment(id_department, createDto);
   }
@@ -142,6 +144,7 @@ export class TaskController {
   createTaskWithIdDepartmentAndIdReq(
     @Query('id_department') id_department: string,
     @Query('id_req') id_req: string,
+    @Query('id_user') id_user: string,
     @Body() createDto: CreateTaskDto,
   ): Promise<TaskEnt> {
     return this.task.createTaskWithIdDepartmentAndIdReq(
@@ -155,6 +158,7 @@ export class TaskController {
   @Post('/forward')
   forwardTask(
     @Query('id_prevoise_task') id_prevoise_task: string,
+    @Query('id_user') id_user: string,
     @Body() createDto: CreateRelTaskDto,
   ): Promise<RelTaskEnt> {
     return this.task.forwardTask(id_prevoise_task, createDto);

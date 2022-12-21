@@ -66,7 +66,6 @@ export class TaskService {
 
   async createTask(createDt: CreateTaskDto, query?: QueryRunner) {
     try {
-
       return await this.taskRepo.createTask(createDt, query);
     } catch (e) {
       throw e;
@@ -172,8 +171,8 @@ export class TaskService {
     query?: QueryRunner,
   ) {
     try {
-      if(createDto.status !== StatusTaskEnum.FORWARD){
-        throw new BadRequestException({message:"Status must be FORWARD"})
+      if (createDto.type !== TypeTaskEnum.FORWARD) {
+        throw new BadRequestException({ message: 'type must be FORWARD' });
       }
       return await this.taskRepo.forwardTask(
         id_prevoise_task,
@@ -193,17 +192,15 @@ export class TaskService {
     query?: QueryRunner,
   ) {
     try {
-
       return await this.taskRepo.createTaskWithIdReqAnddUser(
         id_user,
         id_req,
         createDto,
-        query
+        query,
       );
     } catch (e) {
       console.log(e);
       throw e;
     }
   }
-  
 }

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { TaskEnt } from 'src/modules/task/modules/entities/task.entity';
-import { StatusTaskEnum } from 'src/modules/task/modules/enums/status-task.enum';
+import { StatusTaskEnum } from 'src/modules/task/modules/enums/status-task.enum';  
 import { DataSource, FindOneOptions, QueryRunner } from 'typeorm';
 import { CreateRelTaskDto } from '../dtos/create.rel-task.dto';
 import { UpdateRelTaskDto } from '../dtos/update.rel-task.dto';
@@ -49,7 +49,7 @@ export class RelTaskService {
         .findOne({ where: { id: updateDt.id_src } });
       await this.dataSource
         .getRepository(TaskEnt)
-        .update({ id: updateDt.id_src }, { status: StatusTaskEnum.FORWARD });
+        .update({ id: updateDt.id_src }, { status: StatusTaskEnum.DONE });
       updateDt.refEnt = await this.dataSource
         .getRepository(TaskEnt)
         .findOne({ where: { id: updateDt.id_ref } });

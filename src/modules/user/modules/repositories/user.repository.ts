@@ -8,7 +8,7 @@ import { PublicFunc } from 'src/common/function/public.func';
 import { HashService } from 'src/modules/hash/hash.service';
 import { RedisService } from 'src/modules/redis/redis.service';
 import { TaskEnt } from 'src/modules/task/modules/entities/task.entity';
-import { TypeTaskEnum } from 'src/modules/task/modules/enums/type-task.enum';
+import { StatusTaskEnum } from 'src/modules/task/modules/enums/status-task.enum';
 import { TaskMapperPagination } from 'src/modules/task/modules/mapper/task.mapper.pagination';
 import { TaskPageDto } from 'src/modules/task/modules/paginations/task.page.dto';
 import { DataSource, FindOneOptions, QueryRunner } from 'typeorm';
@@ -269,7 +269,10 @@ export class UserRepo {
       .select('task.id')
       .from(TaskEnt, 'task')
       .where('task.type = :type', {
-        type: TypeTaskEnum.CANCELE || TypeTaskEnum.DONE || TypeTaskEnum.PUBLISH,
+        type:
+          StatusTaskEnum.CANCELE ||
+          StatusTaskEnum.DONE ||
+          StatusTaskEnum.PUBLISH,
       });
 
     if (pageDto.base) {
@@ -322,10 +325,24 @@ export class UserRepo {
     id_user: string,
     pageDto: TaskPageDto,
   ): Promise<UserEnt[]> {
-    // let nowDate = new Date(Date.now());
-    // let previousDay = new Date(nowDate.setDate(nowDate.getDate() - 1));
-    return this.dataSource.manager.query(`select u.id,u.first_name ,u.last_name , (select  jsonb_agg(jsonb_build_object('id',id,'title',tittle,'status',status,'type',"type",'priority',priority,'duration',duration)) as text  from public.task t where cast (t."userId" as text) = cast(u.id as text) )  
+    return this.dataSource.manager
+      .query(`select u.id,u.first_name ,u.last_name , (select  jsonb_agg(jsonb_build_object('id',id,'title',tittle,'status',status,'type',"type",'priority',priority,'duration',duration)) as text  from public.task t where cast (t."userId" as text) = cast(u.id as text) )  
     from public."user" u where u.status ='active'
+    `);
+  }
+
+  async listOfTaskRecentDay(id_user: string): Promise<UserEnt[]> {
+    let nowDate = new Date(Date.now());
+    let previousDay = new Date(nowDate.setDate(nowDate.getDate() - 4));
+    console.log(nowDate);
+    console.log(previousDay);
+
+    return this.dataSource.manager.query(`select  * from  public."user" u 
+    left join  public.task t on u.id =t."userId" 
+    where  u.id ='${id_user}'
+    and t.update_at  between '${JSON.stringify(
+      previousDay,
+    )}' and '${JSON.stringify(nowDate)}'
     `);
   }
 }

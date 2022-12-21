@@ -10,31 +10,37 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { UserEnt } from '../../../user/modules/entities/user.entity';
 import { StatusTaskEnum } from '../enums/status-task.enum';
 import { TypeTaskEnum } from '../enums/type-task.enum';
-import { UserEnt } from "../../../user/modules/entities/user.entity";
 
 @Entity({ name: 'task' })
 export class TaskEnt extends BasicEnt {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({nullable:true})
+  @Column({ nullable: true })
   priority: string;
 
-  @Column({nullable:true})
+  @Column({ nullable: true })
   tittle: string;
 
-  @Column({nullable:true})
+  @Column({ nullable: true })
   head_id: string;
 
-  @Column({nullable:true})
+  @Column({ nullable: true })
+  do_date: Date;
+  
+  @Column({ nullable: true })
+  remain_date: Date;
+
+  @Column({ nullable: true })
   type: TypeTaskEnum;
 
-  @Column({nullable:true})
+  @Column({ nullable: true })
   duration: number;
 
-  @Column({nullable:true})
+  @Column({ nullable: true })
   status: StatusTaskEnum;
 
   @ManyToOne(() => DepartmentRlEnt, (department_rl) => department_rl.tasks)

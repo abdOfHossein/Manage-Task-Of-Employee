@@ -9,10 +9,12 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Public } from 'src/common/decorates/public.decorator';
 import { PageDto } from 'src/common/dtos/page.dto';
 import { TaskEnt } from 'src/modules/task/modules/entities/task.entity';
 import { TaskPageDto } from 'src/modules/task/modules/paginations/task.page.dto';
 import { GetUser } from '../../../../common/decorates/get.user.decorator';
+import { PublicRole } from '../../../../common/decorates/public.role.decorator';
 import { UserResponseJWTDto } from '../../../../common/dtos/user.dto';
 import { JwtGuard } from '../../modules/auth/guards/jwt.guard';
 import { ChangePasswordAdminDto } from '../../modules/dtos/change-password-admin.dto';
@@ -32,8 +34,6 @@ export class UserController {
   constructor(private user: UserService) {}
 
   @UseGuards(RolesGuard)
-  @ApiBearerAuth('access-token')
-  @UseGuards(JwtGuard)
   @Post('/register')
   @ApiOperation({ summary: 'sign up user with department' })
   register(
@@ -46,14 +46,15 @@ export class UserController {
     return this.user.createUser(createUserDto);
   }
 
-  @ApiBearerAuth('access-token')
-  @UseGuards(JwtGuard)
-  @ApiOperation({summary:"set Role for user"})
+  @ApiOperation({ summary: 'set Role for user' })
+  @PublicRole()
   @Get('setRole')
-  async setRole(@Query('id_role') id_role: string,@Req()  req:any) {
-    return await this.user.createJwtSetRole(req.user.id_User,id_role);
+  async setRole(@Query('id_role') id_role: string, @Req() req: any) {
+    return await this.user.createJwtSetRole(req.user.id_User, id_role);
   }
 
+  @PublicRole()
+  @Public()
   @Post('login')
   @ApiOperation({ summary: 'sign in user by username and password' })
   async login(@Body() loginUserDto: LoginUserDto) {
@@ -62,16 +63,12 @@ export class UserController {
 
   @ApiOperation({ summary: 'test Jwt' })
   @UseGuards(RolesGuard)
-  @ApiBearerAuth('access-token')
-  @UseGuards(JwtGuard)
   @Get('/protected')
   protected(@Req() req) {
     return req.user;
   }
 
   @UseGuards(RolesGuard)
-  @ApiBearerAuth('access-token')
-  @UseGuards(JwtGuard)
   @Get('/block')
   @ApiOperation({ summary: 'block user access to app' })
   async blockUser(@Query('id_user') id_user: string) {
@@ -79,8 +76,6 @@ export class UserController {
   }
 
   @UseGuards(RolesGuard)
-  @ApiBearerAuth('access-token')
-  @UseGuards(JwtGuard)
   @Post('password')
   @ApiOperation({ summary: 'change user password' })
   async changePassword(
@@ -104,8 +99,6 @@ export class UserController {
   }
 
   @UseGuards(RolesGuard)
-  @ApiBearerAuth('access-token')
-  @UseGuards(JwtGuard)
   @ApiOperation({ summary: 'pagination for user' })
   @Post('page')
   paginationUser(@Body() pageDto: UserPageDto): Promise<PageDto<UserEnt>> {
@@ -114,8 +107,6 @@ export class UserController {
   }
 
   @UseGuards(RolesGuard)
-  @ApiBearerAuth('access-token')
-  @UseGuards(JwtGuard)
   @Post('admin/password')
   @ApiOperation({ summary: 'change user password by vadmin' })
   async changePasswordAdmin(
@@ -140,8 +131,6 @@ export class UserController {
   }
 
   @UseGuards(RolesGuard)
-  @ApiBearerAuth('access-token')
-  @UseGuards(JwtGuard)
   @ApiOperation({ summary: 'pagination for user' })
   @Get('/admin/jwt')
   jwtAdmin(@Query('id_user') id_user: string, @Req() req: any) {
@@ -149,13 +138,20 @@ export class UserController {
   }
 
   @UseGuards(RolesGuard)
-  @ApiBearerAuth('access-token')
-  @UseGuards(JwtGuard)
   @ApiOperation({ summary: 'pagination for tasks are done in previous day' })
   @Post('/page/previousDay')
-  paginationDoneTaskRecentDay(@GetUser() id_user: UserResponseJWTDto, @Body() pageDto: TaskPageDto,) {
-    return this.user.paginationDoneTaskRecentDay(id_user.uid,pageDto);
+  paginationDoneTaskRecentDay(
+    @GetUser() id_user: UserResponseJWTDto,
+    @Body() pageDto: TaskPageDto,
+  ) {
+    return this.user.paginationDoneTaskRecentDay(id_user.uid, pageDto);
   }
 
-  
+  @UseGuards(JwtGuard)
+  @ApiBearerAuth('access-token')
+  @ApiOperation({ summary: 'find All tasks in previous day' })
+  @Post('/lsit/previousDay')
+  listOfTaskRecentDay(@GetUser() id_user: UserResponseJWTDto) {
+    return this.user.listOfTaskRecentDay(id_user.uid);
+  }
 }
