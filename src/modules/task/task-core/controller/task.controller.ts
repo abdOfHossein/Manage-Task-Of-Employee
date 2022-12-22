@@ -18,6 +18,7 @@ import { PageDto } from 'src/common/dtos/page.dto';
 import { CreateRelTaskDto } from 'src/modules/rel-task/modules/dtos/create.rel-task.dto';
 import { RelTaskEnt } from 'src/modules/rel-task/modules/entities/rel-task.entity';
 import { JwtGuard } from 'src/modules/user/modules/auth/guards/jwt.guard';
+import { RolesGuard } from 'src/modules/user/modules/guard/role.guard';
 import { GetUser } from '../../../../common/decorates/get.user.decorator';
 import { UserResponseJWTDto } from '../../../../common/dtos/user.dto';
 import { CreateTaskDto } from '../../modules/dtos/create.task.dto';
@@ -172,5 +173,12 @@ export class TaskController {
     @Body() createDto: CreateTaskDto,
   ): Promise<TaskEnt> {
     return this.task.createTaskWithIdReqAnddUser(id_user, id_req, createDto);
+  }
+
+  @UseGuards(RolesGuard)
+  @ApiOperation({ summary: 'findAll task are pending' })
+  @Get('/all/pending')
+  findAllPendingTask(): Promise<TaskEnt[]> {
+    return this.task.findAllPendingTask();
   }
 }

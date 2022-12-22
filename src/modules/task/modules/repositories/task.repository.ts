@@ -13,7 +13,7 @@ import { DataSource, FindOneOptions, QueryRunner } from 'typeorm';
 import { CreateTaskDto } from '../dtos/create.task.dto';
 import { UpdateTaskDto } from '../dtos/update.task.dto';
 import { TaskEnt } from '../entities/task.entity';
-import { StatusTaskEnum } from '../enums/status-task.enum';  
+import { StatusTaskEnum } from '../enums/status-task.enum';
 import { TypeTaskEnum } from '../enums/type-task.enum';
 import { TaskMapperPagination } from '../mapper/task.mapper.pagination';
 import { ExpiredTaskPageDto } from '../paginations/expired.task.page.dto';
@@ -494,5 +494,11 @@ export class TaskRepo {
     taskEnt.department_rl = department_rl;
     if (query) return await query.manager.save(taskEnt);
     return await this.dataSource.manager.save(taskEnt);
+  }
+
+  async findAllPendingTask(): Promise<TaskEnt[]> {
+    return await this.dataSource.manager.find(TaskEnt, {
+      where: { status: StatusTaskEnum.PENDING },
+    });
   }
 }

@@ -332,17 +332,16 @@ export class UserRepo {
   }
 
   async listOfTaskRecentDay(id_user: string): Promise<UserEnt[]> {
-    let nowDate = new Date(Date.now());
-    let previousDay = new Date(nowDate.setDate(nowDate.getDate() - 4));
-    console.log(nowDate);
-    console.log(previousDay);
-
-    return this.dataSource.manager.query(`select  * from  public."user" u 
+    let nowDate = new Date(Date.now()).toUTCString();
+    const midnight = nowDate.split(' ')[4];
+    let previousDay = nowDate.replace(midnight, '00:00:00');
+    const result = this.dataSource.manager
+      .query(`select  * from  public."user" u 
     left join  public.task t on u.id =t."userId" 
     where  u.id ='${id_user}'
-    and t.update_at  between '${JSON.stringify(
-      previousDay,
-    )}' and '${JSON.stringify(nowDate)}'
+    and t.update_at  between '${previousDay}' and '${nowDate}'
     `);
+
+    return result;
   }
 }

@@ -29,6 +29,7 @@ export class UserService {
       createDt.departmentEnt = await this.dataSource
         .getRepository(DepartmentEnt)
         .findOne({ where: { id: createDt.id_department } });
+        
       if (createDt.role_default_status === true) {
         createDt.roleEnt = await this.dataSource
           .getRepository(RoleEnt)

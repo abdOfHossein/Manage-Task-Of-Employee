@@ -34,6 +34,8 @@ export class UserController {
   constructor(private user: UserService) {}
 
   @UseGuards(RolesGuard)
+  @UseGuards(JwtGuard)
+  @ApiBearerAuth('access-token')
   @Post('/register')
   @ApiOperation({ summary: 'sign up user with department' })
   register(

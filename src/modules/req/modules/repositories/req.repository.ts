@@ -9,8 +9,10 @@ import { ProjectEnt } from 'src/modules/project/modules/entities/project.entity'
 import { ProjectMapperPagination } from 'src/modules/project/modules/mapper/project.mapper.pagination';
 import { DataSource, FindOneOptions, QueryRunner } from 'typeorm';
 import { CreateReqDto } from '../dtos/create.req.dto';
+import { DoneReqDto } from '../dtos/done.req.dto';
 import { UpdateReqDto } from '../dtos/update.req.dto';
 import { ReqEnt } from '../entities/req.entity';
+import { StatusReqEnum } from '../enums/req.enum';
 import { ReqMapperPagination } from '../mapper/req.mapper.pagination';
 import { ReqPageDto } from '../paginations/req.page.dto';
 
@@ -188,4 +190,28 @@ export class ReqRepo {
     });
     return new PageDto(result[0], pageMetaDto);
   }
+
+  async getAllDoneReq(doneReqDto: DoneReqDto): Promise<ReqEnt[]> {
+    return await this.dataSource.manager
+      .createQueryBuilder(ReqEnt, 'req')
+      .where('req.status = :status', { status: StatusReqEnum.DONE })
+      .limit(doneReqDto.limit)
+      .orderBy('req.create_at')
+      .execute();
+  }
+
+  async allReqWithoutTask(id_user:string): Promise<ReqEnt[]> {
+    return await this.dataSource.manager
+      .createQueryBuilder(ReqEnt, 'req')
+      // .leftJoin('req.')
+      .getMany();
+  }
+
+  async allReqWithoutTaskAdmin(): Promise<ReqEnt[]> {
+    return await this.dataSource.manager
+      .createQueryBuilder(ReqEnt, 'req')
+      // .where('req.project.id = :id_project', { id_project })
+      .getMany();
+  }
+  
 }
