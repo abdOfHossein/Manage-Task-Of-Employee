@@ -109,7 +109,7 @@ export class ReqRepo {
   async paginationReq(pageDto: ReqPageDto): Promise<PageDto<ReqEnt>> {
     const queryBuilder = this.dataSource.manager
       .createQueryBuilder(ReqEnt, 'req')
-      .select(['req.id', 'req.status']);
+      // .select(['req.id', 'req.status']);
     if (pageDto.base) {
       const row = pageDto.base.row;
       const skip = PublicFunc.skipRow(pageDto.base.page, pageDto.base.row);

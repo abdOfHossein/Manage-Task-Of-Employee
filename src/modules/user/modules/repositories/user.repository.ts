@@ -14,6 +14,7 @@ import { TaskPageDto } from 'src/modules/task/modules/paginations/task.page.dto'
 import { DataSource, FindOneOptions, QueryRunner } from 'typeorm';
 import { UserResponseJWTDto } from '../../../../common/dtos/user.dto';
 import { JwtPayloadInterface } from '../auth/interface/jwt-payload.interface';
+import { ChangePasswordAdminDto } from '../dtos/change-password-admin.dto';
 import { ChangePasswordUserDto } from '../dtos/change-password.user.dto';
 import { CreateUserDto } from '../dtos/create.user.dto';
 import { LoginUserDto } from '../dtos/login.user.dto';
@@ -155,11 +156,14 @@ export class UserRepo {
 
   async changePasswordAdmin(
     id_user: UserResponseJWTDto,
-    changePasswordUserDto: ChangePasswordUserDto,
+    changePasswordUserDto: ChangePasswordAdminDto,
   ): Promise<UserEnt> {
     const userEntity = await this.dataSource.manager.findOne(UserEnt, {
       where: { id: id_user.uid },
     });
+    console.log(changePasswordUserDto);
+    console.log(id_user);
+
     if (!userEntity)
       throw new BadRequestException({ message: 'user does not exits' });
     userEntity.password = sha512(changePasswordUserDto.new_password);
@@ -179,17 +183,17 @@ export class UserRepo {
   async paginationUser(pageDto: UserPageDto): Promise<PageDto<UserEnt>> {
     const queryBuilder = this.dataSource.manager
       .createQueryBuilder(UserEnt, 'user')
-      // .leftJoinAndSelect('user.department', 'department')
-      // .leftJoinAndSelect('department.department_rls', 'department_rls')
-      // .leftJoinAndSelect('department_rls.tasks', 'tasks')
-      .select([
-        'user.id',
-        'user.first_name',
-        'user.last_name',
-        'user.username',
-        'user.email',
-        'user.phonenumber',
-      ]);
+      .leftJoinAndSelect('user.department', 'department')
+      .leftJoinAndSelect('department.department_rls', 'department_rls')
+      .leftJoinAndSelect('department_rls.tasks', 'tasks');
+    // .select([
+    //   'user.id',
+    //   'user.first_name',
+    //   'user.last_name',
+    //   'user.username',
+    //   'user.email',
+    //   'user.phonenumber',
+    // ]);
 
     if (pageDto.base) {
       const row = pageDto.base.row;
@@ -294,5 +298,47 @@ export class UserRepo {
       itemCount: result[1],
     });
     return new PageDto(result[0], pageMetaDto);
+  }
+
+  async getUser(id_user: string, options?: FindOneOptions): Promise<UserEnt> {
+    const result = await this.dataSource.manager
+      .createQueryBuilder(UserEnt, 'user')
+      .where('user.id = :id', { id: id_user })
+      .select([
+        'user.id',
+        'user.first_name',
+        'user.last_name',
+        'user.username',
+        'user.email',
+        'user.phonenumber',
+        'user.status',
+        'user.role_default_status',
+      ])
+      .getOne();
+    console.log(result);
+
+    if (!result)
+      throw new BadGatewayException({ message: 'user does not exits' });
+    return result;
+  }
+
+  async getDepartmentUsers(id_department: string) {
+    return await this.dataSource.manager
+      .createQueryBuilder(UserEnt, 'user')
+      .innerJoin('user.department', 'department')
+      .where('department.id = :id_department', {
+        id_department,
+      })
+      .select([
+        'user.id',
+        'user.first_name',
+        'user.last_name',
+        'user.username',
+        'user.email',
+        'user.phonenumber',
+        'user.status',
+        'user.role_default_status',
+      ])
+      .getMany();
   }
 }

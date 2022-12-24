@@ -6,6 +6,7 @@ import { RoleTypeEnum } from 'src/modules/role/modules/enum/role.enum';
 import { TaskPageDto } from 'src/modules/task/modules/paginations/task.page.dto';
 import { DataSource, FindOneOptions, QueryRunner } from 'typeorm';
 import { UserResponseJWTDto } from '../../../../common/dtos/user.dto';
+import { ChangePasswordAdminDto } from '../dtos/change-password-admin.dto';
 import { ChangePasswordUserDto } from '../dtos/change-password.user.dto';
 import { CreateUserDto } from '../dtos/create.user.dto';
 import { LoginUserDto } from '../dtos/login.user.dto';
@@ -115,7 +116,7 @@ export class UserService {
     return await this.userRepo.changePassword(id_user, changePasswordUserDto);
   }
   async changePasswordAdmin(    id_user: UserResponseJWTDto,
-    changePasswordUserDto: ChangePasswordUserDto): Promise<UserEnt> {
+    changePasswordUserDto: ChangePasswordAdminDto): Promise<UserEnt> {
     try {
       return await this.userRepo.changePasswordAdmin(id_user, changePasswordUserDto);
     } catch (error) {
@@ -148,4 +149,18 @@ export class UserService {
     }
   }
 
+  
+  async getUser(id_user: string) {
+    try {
+    
+      return await this.userRepo.getUser(id_user);
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  }
+
+  async getDepartmentUsers(id_department: string) {
+    return await this.userRepo.getDepartmentUsers(id_department);
+  }
 }

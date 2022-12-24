@@ -48,4 +48,6 @@ export class DepartmentController {
   ): Promise<PageDto<DepartmentEnt>> {
     return this.department.paginationDepartment(pageDto);
   }
+
+
 }

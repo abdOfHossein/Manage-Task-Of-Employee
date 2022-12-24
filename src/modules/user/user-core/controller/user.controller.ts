@@ -7,8 +7,7 @@ import {
   Query,
   Req,
   Res,
-  UseGuards,
-
+  UseGuards
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
@@ -18,10 +17,10 @@ import { TaskPageDto } from 'src/modules/task/modules/paginations/task.page.dto'
 import { GetUser } from '../../../../common/decorates/get.user.decorator';
 import { UserResponseJWTDto } from '../../../../common/dtos/user.dto';
 import { JwtGuard } from '../../modules/auth/guards/jwt.guard';
+import { ChangePasswordAdminDto } from '../../modules/dtos/change-password-admin.dto';
 import { ChangePasswordUserDto } from '../../modules/dtos/change-password.user.dto';
 import { CreateUserDto } from '../../modules/dtos/create.user.dto';
 import { LoginUserDto } from '../../modules/dtos/login.user.dto';
-import { ChangePasswordAdmin } from '../../modules/dtos/password-admin.dto';
 import { UpdateUserDto } from '../../modules/dtos/update.user.dto';
 import { UserEnt } from '../../modules/entities/User.entity';
 import { RolesGuard } from '../../modules/guard/role.guard';
@@ -113,7 +112,7 @@ export class UserController {
   @Post('admin/password')
   @ApiOperation({summary: 'change user password by vadmin'})
   async changePasswordAdmin(
-    @Body() changePasswordUserDto: ChangePasswordUserDto,
+    @Body() changePasswordUserDto: ChangePasswordAdminDto,
     @Query('id_user') id_user: string,
   ) {
     const user = new UserResponseJWTDto();
@@ -142,5 +141,21 @@ export class UserController {
   @Get('/admin/jwt')
   jwtAdmin(@Query('id_user') id_user: string, @Req() req: any) {
     return this.user.jwtAdmin(id_user);
+  }
+
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtGuard)
+  @ApiOperation({ summary: 'get user' })
+  @Get('/getUser')
+  getUser(@GetUser() id_user: UserResponseJWTDto) {
+    return this.user.getUser(id_user.uid);
+  }
+
+  @ApiOperation({ summary: 'get all users in department' })
+  @Get('/users')
+  async getDepartmentUsers(
+    @Query('id_department') id_department: string
+  ): Promise<UserEnt[]> {
+    return this.user.getDepartmentUsers(id_department);
   }
 }
