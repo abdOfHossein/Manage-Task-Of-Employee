@@ -35,6 +35,15 @@ export class DepartmentController {
     return this.department.getAllDepartment();
   }
 
+  
+  @ApiOperation({ summary: 'get all users in department' })
+  @Get('/users')
+  async getDepartmentUsers(
+    @Query('id_department') id_department: string
+  ): Promise<DepartmentEnt[]> {
+    return this.department.getDepartmentUsers(id_department);
+  }
+
   @ApiOperation({ summary: 'update Department' })
   @Put()
   async updateDepartment(
@@ -51,4 +60,5 @@ export class DepartmentController {
   ): Promise<PageDto<DepartmentEnt>> {
     return this.department.paginationDepartment(pageDto);
   }
+
 }

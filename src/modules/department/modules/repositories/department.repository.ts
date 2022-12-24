@@ -48,6 +48,15 @@ export class DepartmentRepo {
     return await this.dataSource.manager.createQueryBuilder(DepartmentEnt, 'department').getMany();
   }
 
+  async getDepartmentUsers(id_department:string) {
+    return await this.dataSource.manager.createQueryBuilder(DepartmentEnt,'department')
+    .innerJoinAndSelect('department.users', 'users')
+    .where('department.id = :id_department', {
+      id_department
+    })
+    .getMany()
+  }
+
   async findOneDepartment(
     searchDto: string,
     options?: FindOneOptions,

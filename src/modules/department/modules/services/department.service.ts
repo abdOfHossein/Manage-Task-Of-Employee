@@ -33,6 +33,10 @@ export class DepartmentService {
     }
   }
 
+  async getDepartmentUsers(id_department: string) {
+    return await this.departmentRepo.getDepartmentUsers(id_department);
+  }
+
   async updateDepartment(
     Department_Id: string,
     updateDt: UpdateDepartmentDto,
