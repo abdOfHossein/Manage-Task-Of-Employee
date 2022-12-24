@@ -5,7 +5,7 @@ export enum  StatusTaskEnum{
   PENDING = 'PENDING', // task is 
   DOING_PARALLER = 'DOING_PARALLER',
   DONE = 'DONE', //تسک انجام شد
-  CANCELE = 'CANCELE',//تسک لغو شد
+  CANCEL = 'CANCEL',//تسک لغو شد
   PUBLISH = 'PUBLISH',//تسک پابلیش شد 
   QC_FAILED = 'QC_FAILED',//
   CUSTOMER_FAILED = 'CUSTOMER_FAILED',

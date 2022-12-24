@@ -7,6 +7,8 @@ import { DepartmentRlEnt } from 'src/modules/department-rl/modules/entities/depa
 import { DepartmentEnt } from 'src/modules/department/modules/entities/department.entity';
 import { ProjectEnt } from 'src/modules/project/modules/entities/project.entity';
 import { ProjectMapperPagination } from 'src/modules/project/modules/mapper/project.mapper.pagination';
+import { StatusTaskEnum } from 'src/modules/task/modules/enums/status-task.enum';
+import { UserEnt } from 'src/modules/user/modules/entities/user.entity';
 import { DataSource, FindOneOptions, QueryRunner } from 'typeorm';
 import { CreateReqDto } from '../dtos/create.req.dto';
 import { DoneReqDto } from '../dtos/done.req.dto';
@@ -200,11 +202,26 @@ export class ReqRepo {
       .execute();
   }
 
-  async allReqWithoutTask(id_user:string): Promise<ReqEnt[]> {
-    return await this.dataSource.manager
-      .createQueryBuilder(ReqEnt, 'req')
-      // .leftJoin('req.')
+  async allReqWithoutTask(id_user: string): Promise<UserEnt[]> {
+    console.log(id_user);
+    const result = await this.dataSource.manager
+      .createQueryBuilder(UserEnt, 'user')
+      .leftJoinAndSelect('user.department', 'department')
+      .leftJoinAndSelect('department.department_rls', 'department_rls')
+      .leftJoinAndSelect('department_rls.tasks', 'tasks')
+      .where(
+        'user.id = :id_user AND (tasks.status = :statusCancel OR tasks.status = :statusDone OR tasks.status = :statusPublish)',
+        //  and tasks.status = :statusPublish',
+        {
+          id_user,
+          statusDone: StatusTaskEnum.DONE,
+          statusCancel: StatusTaskEnum.CANCEL,
+          statusPublish: StatusTaskEnum.PUBLISH,
+        },
+      )
       .getMany();
+    console.log(result);
+    return result;
   }
 
   async allReqWithoutTaskAdmin(): Promise<ReqEnt[]> {
@@ -213,5 +230,4 @@ export class ReqRepo {
       // .where('req.project.id = :id_project', { id_project })
       .getMany();
   }
-  
 }

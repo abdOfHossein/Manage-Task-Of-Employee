@@ -270,7 +270,7 @@ export class UserRepo {
       .from(TaskEnt, 'task')
       .where('task.type = :type', {
         type:
-          StatusTaskEnum.CANCELE ||
+          StatusTaskEnum.CANCEL ||
           StatusTaskEnum.DONE ||
           StatusTaskEnum.PUBLISH,
       });

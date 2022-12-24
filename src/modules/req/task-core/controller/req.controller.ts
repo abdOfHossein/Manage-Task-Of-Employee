@@ -1,9 +1,12 @@
 import { Body, Controller, Get, Post, Put, Query, UseGuards } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { GetUser } from 'src/common/decorates/get.user.decorator';
 import { PageDto } from 'src/common/dtos/page.dto';
 import { UserResponseJWTDto } from 'src/common/dtos/user.dto';
 import { ProjectEnt } from 'src/modules/project/modules/entities/project.entity';
+import { TaskEnt } from 'src/modules/task/modules/entities/task.entity';
+import { JwtGuard } from 'src/modules/user/modules/auth/guards/jwt.guard';
+import { UserEnt } from 'src/modules/user/modules/entities/user.entity';
 import { RolesGuard } from 'src/modules/user/modules/guard/role.guard';
 import { CreateReqDto } from '../../modules/dtos/create.req.dto';
 import { DoneReqDto } from '../../modules/dtos/done.req.dto';
@@ -79,9 +82,11 @@ export class ReqController {
     return this.req.getAllDoneReq(doneReqDto);
   }
 
+  @UseGuards(JwtGuard)
+  @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'findAll Req without Task'})
   @Get('allReq/withoutTask')
-  allReqWithoutTask(@GetUser() user: UserResponseJWTDto): Promise<ReqEnt[]> {
+  allReqWithoutTask(@GetUser() user: UserResponseJWTDto): Promise<UserEnt[]> {
     return this.req.allReqWithoutTask(user.uid);
   }
 
