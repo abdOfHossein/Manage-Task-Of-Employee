@@ -203,7 +203,6 @@ export class ReqRepo {
   }
 
   async allReqWithoutTask(id_user: string): Promise<UserEnt[]> {
-    console.log(id_user);
     const result = await this.dataSource.manager
       .createQueryBuilder(UserEnt, 'user')
       .leftJoinAndSelect('user.department', 'department')
@@ -220,14 +219,27 @@ export class ReqRepo {
         },
       )
       .getMany();
-    console.log(result);
     return result;
   }
 
-  async allReqWithoutTaskAdmin(): Promise<ReqEnt[]> {
-    return await this.dataSource.manager
-      .createQueryBuilder(ReqEnt, 'req')
-      // .where('req.project.id = :id_project', { id_project })
+  async allReqWithoutTaskAdmin(): Promise<UserEnt[]> {
+
+    const result = await this.dataSource.manager
+      .createQueryBuilder(UserEnt, 'user')
+      .leftJoinAndSelect('user.department', 'department')
+      .leftJoinAndSelect('department.department_rls', 'department_rls')
+      .leftJoinAndSelect('department_rls.tasks', 'tasks')
+      .where(
+        '(tasks.status = :statusCancel OR tasks.status = :statusDone OR tasks.status = :statusPublish)',
+        //  and tasks.status = :statusPublish',
+        {
+          statusDone: StatusTaskEnum.DONE,
+          statusCancel: StatusTaskEnum.CANCEL,
+          statusPublish: StatusTaskEnum.PUBLISH,
+        },
+      )
       .getMany();
+    console.log(result);
+    return result;
   }
 }

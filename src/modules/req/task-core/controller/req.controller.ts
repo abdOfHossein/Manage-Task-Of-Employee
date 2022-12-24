@@ -1,10 +1,17 @@
-import { Body, Controller, Get, Post, Put, Query, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Put,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { GetUser } from 'src/common/decorates/get.user.decorator';
 import { PageDto } from 'src/common/dtos/page.dto';
 import { UserResponseJWTDto } from 'src/common/dtos/user.dto';
 import { ProjectEnt } from 'src/modules/project/modules/entities/project.entity';
-import { TaskEnt } from 'src/modules/task/modules/entities/task.entity';
 import { JwtGuard } from 'src/modules/user/modules/auth/guards/jwt.guard';
 import { UserEnt } from 'src/modules/user/modules/entities/user.entity';
 import { RolesGuard } from 'src/modules/user/modules/guard/role.guard';
@@ -76,7 +83,7 @@ export class ReqController {
     return this.req.getAllReqAndTask(id_project, pageDto);
   }
 
-  @ApiOperation({ summary: 'findAll DoneReq with given limitation'})
+  @ApiOperation({ summary: 'findAll DoneReq with given limitation' })
   @Post('all/DoneReq')
   getAllDoneReq(@Body() doneReqDto: DoneReqDto): Promise<ReqEnt[]> {
     return this.req.getAllDoneReq(doneReqDto);
@@ -84,16 +91,18 @@ export class ReqController {
 
   @UseGuards(JwtGuard)
   @ApiBearerAuth('access-token')
-  @ApiOperation({ summary: 'findAll Req without Task'})
+  @ApiOperation({ summary: 'findAll Req without Task' })
   @Get('allReq/withoutTask')
   allReqWithoutTask(@GetUser() user: UserResponseJWTDto): Promise<UserEnt[]> {
     return this.req.allReqWithoutTask(user.uid);
   }
 
   @UseGuards(RolesGuard)
-  @ApiOperation({ summary: 'findAll Req without Task for Admin'})
+  @UseGuards(JwtGuard)
+  @ApiBearerAuth('access-token')
+  @ApiOperation({ summary: 'findAll Req without Task for Admin' })
   @Get('allReq/withoutTask/admin')
-  allReqWithoutTaskAdmin(): Promise<ReqEnt[]> {
+  allReqWithoutTaskAdmin(): Promise<UserEnt[]> {
     return this.req.allReqWithoutTaskAdmin();
   }
 }
