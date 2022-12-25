@@ -22,6 +22,7 @@ import { RolesGuard } from 'src/modules/user/modules/guard/role.guard';
 import { GetUser } from '../../../../common/decorates/get.user.decorator';
 import { UserResponseJWTDto } from '../../../../common/dtos/user.dto';
 import { CreateTaskDto } from '../../modules/dtos/create.task.dto';
+import { UpdateStatusTaskDto } from '../../modules/dtos/update.status.task.dto';
 import { UpdateTaskDto } from '../../modules/dtos/update.task.dto';
 import { TaskEnt } from '../../modules/entities/task.entity';
 import { ExpiredTaskPageDto } from '../../modules/paginations/expired.task.page.dto';
@@ -155,7 +156,7 @@ export class TaskController {
     );
   }
 
-  @ApiOperation({ summary: 'create task based on id_department & id_req' })
+  @ApiOperation({ summary: 'forward task to another person' })
   @Post('/forward')
   forwardTask(
     @Query('id_prevoise_task') id_prevoise_task: string,
@@ -180,5 +181,14 @@ export class TaskController {
   @Get('/all/pending')
   findAllPendingTask(): Promise<TaskEnt[]> {
     return this.task.findAllPendingTask();
+  }
+
+  @ApiOperation({ summary: 'update status of task ' })
+  @Put('taskStatus')
+  updateStatusTask(
+    @Query('id_task') id_task: string,
+    @Body() updateStatusTaskDto: UpdateStatusTaskDto,
+  ): Promise<TaskEnt> {
+    return this.task.updateStatusTask(id_task, updateStatusTaskDto.status);
   }
 }

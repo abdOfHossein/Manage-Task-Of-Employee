@@ -11,7 +11,6 @@ import {
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Public } from 'src/common/decorates/public.decorator';
 import { PageDto } from 'src/common/dtos/page.dto';
-import { TaskEnt } from 'src/modules/task/modules/entities/task.entity';
 import { TaskPageDto } from 'src/modules/task/modules/paginations/task.page.dto';
 import { GetUser } from '../../../../common/decorates/get.user.decorator';
 import { PublicRole } from '../../../../common/decorates/public.role.decorator';
@@ -123,13 +122,27 @@ export class UserController {
     return await this.user.changePasswordAdmin(user, changePasswordUserDto);
   }
 
-  @ApiOperation({ summary: 'pagination for task of user' })
-  @Post('page/task')
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtGuard)
+  @ApiBearerAuth('access-token')
+  @ApiOperation({ summary: 'pagination for task of user wiht recieve id_user' })
+  @Post('page/task/id_user')
   paginationTask(
     @Body() pageDto: TaskPageDto,
     @Query('id_user') id_user: string,
-  ): Promise<PageDto<TaskEnt>> {
+  ): Promise<PageDto<UserEnt>> {
     return this.user.paginationTask(id_user, pageDto);
+  }
+
+  @UseGuards(JwtGuard)
+  @ApiBearerAuth('access-token')
+  @ApiOperation({ summary: 'pagination for task of user with JWT' })
+  @Post('page/task/withJWT')
+  paginationTaskWithJwt(
+    @Body() pageDto: TaskPageDto,
+    @GetUser() id_user: UserResponseJWTDto,
+  ): Promise<PageDto<UserEnt>> {
+    return this.user.paginationTaskWithJwt(id_user.uid, pageDto);
   }
 
   @UseGuards(RolesGuard)

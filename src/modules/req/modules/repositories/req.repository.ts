@@ -223,7 +223,6 @@ export class ReqRepo {
   }
 
   async allReqWithoutTaskAdmin(): Promise<UserEnt[]> {
-
     const result = await this.dataSource.manager
       .createQueryBuilder(UserEnt, 'user')
       .leftJoinAndSelect('user.department', 'department')
@@ -231,7 +230,6 @@ export class ReqRepo {
       .leftJoinAndSelect('department_rls.tasks', 'tasks')
       .where(
         '(tasks.status = :statusCancel OR tasks.status = :statusDone OR tasks.status = :statusPublish)',
-        //  and tasks.status = :statusPublish',
         {
           statusDone: StatusTaskEnum.DONE,
           statusCancel: StatusTaskEnum.CANCEL,
@@ -242,4 +240,6 @@ export class ReqRepo {
     console.log(result);
     return result;
   }
+
+
 }

@@ -8,6 +8,7 @@ import { DepartmentEnt } from 'src/modules/department/modules/entities/departmen
 import { CreateRelTaskDto } from 'src/modules/rel-task/modules/dtos/create.rel-task.dto';
 import { RelTaskEnt } from 'src/modules/rel-task/modules/entities/rel-task.entity';
 import { ReqEnt } from 'src/modules/req/modules/entities/req.entity';
+import { StatusReqEnum } from 'src/modules/req/modules/enums/req.enum';
 import { UserEnt } from 'src/modules/user/modules/entities/user.entity';
 import { DataSource, FindOneOptions, QueryRunner } from 'typeorm';
 import { CreateTaskDto } from '../dtos/create.task.dto';
@@ -201,7 +202,6 @@ export class TaskRepo {
       itemCount: result[1],
     });
     console.log(result[0]);
-
     return new PageDto(result[0], pageMetaDto);
   }
 
@@ -209,6 +209,20 @@ export class TaskRepo {
     createDto: CreateTaskDto,
     query: QueryRunner | undefined,
   ): Promise<TaskEnt> {
+    const queryBuilder = await this.dataSource.manager
+      .createQueryBuilder(TaskEnt, 'task')
+      .innerJoinAndSelect('task.department_rl', 'department_rl')
+      .innerJoinAndSelect('department_rl.req', 'req')
+      .where('department_rl.id = :id_department', {
+        id_department: createDto.id_department_rl,
+      })
+      .getOne();
+
+    if (queryBuilder.department_rl.req.status !== StatusReqEnum.OPEN) {
+      queryBuilder.department_rl.req.status = StatusReqEnum.OPEN;
+      await this.dataSource.manager.save(queryBuilder.department_rl.req);
+    }
+
     const department_rl = await this.dataSource.manager.findOne(
       DepartmentRlEnt,
       { where: { id: createDto.id_department_rl } },
@@ -237,6 +251,20 @@ export class TaskRepo {
     createDto: CreateTaskDto,
     query: QueryRunner | undefined,
   ) {
+    const queryBuilder = await this.dataSource.manager
+      .createQueryBuilder(TaskEnt, 'task')
+      .innerJoinAndSelect('task.department_rl', 'department_rl')
+      .innerJoinAndSelect('department_rl.req', 'req')
+      .where('department_rl.id = :id_department', {
+        id_department: createDto.id_department_rl,
+      })
+      .getOne();
+
+    if (queryBuilder.department_rl.req.status !== StatusReqEnum.OPEN) {
+      queryBuilder.department_rl.req.status = StatusReqEnum.OPEN;
+      await this.dataSource.manager.save(queryBuilder.department_rl.req);
+    }
+
     const taskEnt = new TaskEnt();
     taskEnt.head_id = createDto.head_id;
     taskEnt.user = createDto.userEnt;
@@ -351,6 +379,19 @@ export class TaskRepo {
     createDto: CreateTaskDto,
     query: QueryRunner | undefined,
   ): Promise<TaskEnt> {
+    const queryBuilder = await this.dataSource.manager
+      .createQueryBuilder(TaskEnt, 'task')
+      .innerJoinAndSelect('task.department_rl', 'department_rl')
+      .innerJoinAndSelect('department_rl.req', 'req')
+      .where('department_rl.id = :id_department', {
+        id_department: createDto.id_department_rl,
+      })
+      .getOne();
+
+    if (queryBuilder.department_rl.req.status !== StatusReqEnum.OPEN) {
+      queryBuilder.department_rl.req.status = StatusReqEnum.OPEN;
+      await this.dataSource.manager.save(queryBuilder.department_rl.req);
+    }
     const req = await this.dataSource.manager.findOne(ReqEnt, {
       where: { isDefault: true },
     });
@@ -388,7 +429,19 @@ export class TaskRepo {
     createDto: CreateTaskDto,
     query: QueryRunner | undefined,
   ): Promise<TaskEnt> {
-    console.log(id_req);
+    const queryBuilder = await this.dataSource.manager
+      .createQueryBuilder(TaskEnt, 'task')
+      .innerJoinAndSelect('task.department_rl', 'department_rl')
+      .innerJoinAndSelect('department_rl.req', 'req')
+      .where('department_rl.id = :id_department', {
+        id_department: createDto.id_department_rl,
+      })
+      .getOne();
+
+    if (queryBuilder.department_rl.req.status !== StatusReqEnum.OPEN) {
+      queryBuilder.department_rl.req.status = StatusReqEnum.OPEN;
+      await this.dataSource.manager.save(queryBuilder.department_rl.req);
+    }
 
     let req: ReqEnt;
     if (!id_req) {
@@ -466,6 +519,20 @@ export class TaskRepo {
     createDto: CreateTaskDto,
     query: QueryRunner | undefined,
   ): Promise<TaskEnt> {
+    const queryBuilder = await this.dataSource.manager
+      .createQueryBuilder(TaskEnt, 'task')
+      .innerJoinAndSelect('task.department_rl', 'department_rl')
+      .innerJoinAndSelect('department_rl.req', 'req')
+      .where('department_rl.id = :id_department', {
+        id_department: createDto.id_department_rl,
+      })
+      .getOne();
+
+    if (queryBuilder.department_rl.req.status !== StatusReqEnum.OPEN) {
+      queryBuilder.department_rl.req.status = StatusReqEnum.OPEN;
+      await this.dataSource.manager.save(queryBuilder.department_rl.req);
+    }
+
     const user = await this.dataSource.manager.findOne(UserEnt, {
       where: { id: id_user },
     });
@@ -500,5 +567,55 @@ export class TaskRepo {
     return await this.dataSource.manager.find(TaskEnt, {
       where: { status: StatusTaskEnum.PENDING },
     });
+  }
+
+  async updateStatusTask(
+    id_task: string,
+    status: StatusTaskEnum,
+    query?: QueryRunner,
+  ): Promise<TaskEnt> {
+    if (status === StatusTaskEnum.CANCEL || status === StatusTaskEnum.DONE) {
+      const req = await this.dataSource.manager
+        .createQueryBuilder(ReqEnt, 'req')
+        .leftJoinAndSelect('req.department_rls', 'department_rls')
+        .leftJoinAndSelect('department_rls.tasks', 'tasks')
+        .where(
+          'task.id = :id_task AND (tasks.status != :statusCancel OR tasks.status != :statusDone)',
+          {
+            id_task,
+            statusCancel: StatusTaskEnum.CANCEL,
+            statusDone: StatusTaskEnum.DONE,
+          },
+        )
+        .getMany();
+      console.log(req);
+      if (!req) {
+        const result = await this.dataSource.manager
+          .createQueryBuilder(ReqEnt, 'req')
+          .leftJoinAndSelect('req.department_rls', 'department_rls')
+          .leftJoinAndSelect('department_rls.tasks', 'tasks')
+
+          .where(
+            'task.id = :id_task AND (tasks.status != :statusCancel OR tasks.status != :statusDone)',
+            {
+              id_task,
+              statusCancel: StatusTaskEnum.CANCEL,
+              statusDone: StatusTaskEnum.DONE,
+            },
+          )
+          .update(ReqEnt)
+          .set({
+            status: StatusReqEnum.DONE,
+          })
+          .execute();
+        console.log('result', result);
+      }
+    }
+    const entity = await this.dataSource.manager.findOne(TaskEnt, {
+      where: { id: id_task },
+    });
+    entity.status = status;
+    if (query) return await query.manager.save(entity);
+    return await this.dataSource.manager.save(entity);
   }
 }

@@ -7,8 +7,6 @@ import { PageMetaDto } from 'src/common/dtos/page.meta.dto';
 import { PublicFunc } from 'src/common/function/public.func';
 import { HashService } from 'src/modules/hash/hash.service';
 import { RedisService } from 'src/modules/redis/redis.service';
-import { TaskEnt } from 'src/modules/task/modules/entities/task.entity';
-import { StatusTaskEnum } from 'src/modules/task/modules/enums/status-task.enum';
 import { TaskMapperPagination } from 'src/modules/task/modules/mapper/task.mapper.pagination';
 import { TaskPageDto } from 'src/modules/task/modules/paginations/task.page.dto';
 import { DataSource, FindOneOptions, QueryRunner } from 'typeorm';
@@ -201,17 +199,17 @@ export class UserRepo {
   async paginationUser(pageDto: UserPageDto): Promise<PageDto<UserEnt>> {
     const queryBuilder = this.dataSource.manager
       .createQueryBuilder(UserEnt, 'user')
-      // .leftJoinAndSelect('user.department', 'department')
-      // .leftJoinAndSelect('department.department_rls', 'department_rls')
-      // .leftJoinAndSelect('department_rls.tasks', 'tasks')
-      .select([
-        'user.id',
-        'user.first_name',
-        'user.last_name',
-        'user.username',
-        'user.email',
-        'user.phonenumber',
-      ]);
+      .leftJoinAndSelect('user.department', 'department')
+      .leftJoinAndSelect('department.department_rls', 'department_rls')
+      .leftJoinAndSelect('department_rls.tasks', 'tasks');
+    // .select([
+    //   'user.id',
+    //   'user.first_name',
+    //   'user.last_name',
+    //   'user.username',
+    //   'user.email',
+    //   'user.phonenumber',
+    // ]);
 
     if (pageDto.base) {
       const row = pageDto.base.row;
@@ -258,22 +256,23 @@ export class UserRepo {
   async paginationTask(
     id_user: string,
     pageDto: TaskPageDto,
-  ): Promise<PageDto<TaskEnt>> {
+  ): Promise<PageDto<UserEnt>> {
     const queryBuilder = this.dataSource.manager
       .createQueryBuilder(UserEnt, 'user')
-      .where('user.id = : id_user', { id_user })
-      .leftJoinAndSelect('user.department', 'department')
-      .leftJoinAndSelect('department.department_rls', 'department_rls')
-      .leftJoinAndSelect('department_rls.tasks', 'tasks')
-      .subQuery()
-      .select('task.id')
-      .from(TaskEnt, 'task')
-      .where('task.type = :type', {
-        type:
-          StatusTaskEnum.CANCEL ||
-          StatusTaskEnum.DONE ||
-          StatusTaskEnum.PUBLISH,
-      });
+      .where('user.id = :id_user', { id_user })
+      .leftJoinAndSelect('user.task', 'task')
+      .select([
+        'user.id',
+        'task.id',
+        'task.priority',
+        'task.tittle',
+        'task.head_id',
+        'task.do_date',
+        'task.remain_date',
+        'task.type',
+        'task.duration',
+        'task.status',
+      ]);
 
     if (pageDto.base) {
       const row = pageDto.base.row;
@@ -283,19 +282,19 @@ export class UserRepo {
 
     if (pageDto.filter) {
       if (pageDto.filter.priority)
-        queryBuilder.andWhere('user.priority LIKE :priority', {
+        queryBuilder.andWhere('task.priority LIKE :priority', {
           priority: `%${pageDto.filter.priority}%`,
         });
       if (pageDto.filter.tittle)
-        queryBuilder.andWhere('user.tittle LIKE :tittle', {
+        queryBuilder.andWhere('task.tittle LIKE :tittle', {
           tittle: `%${pageDto.filter.tittle}%`,
         });
       if (pageDto.filter.type)
-        queryBuilder.andWhere('user.type LIKE :type', {
+        queryBuilder.andWhere('task.type LIKE :type', {
           type: `%${pageDto.filter.type}%`,
         });
       if (pageDto.filter.status)
-        queryBuilder.andWhere('user.status LIKE :status', {
+        queryBuilder.andWhere('task.status LIKE :status', {
           status: `%${pageDto.filter.status}%`,
         });
     }
@@ -321,6 +320,72 @@ export class UserRepo {
     return new PageDto(result[0], pageMetaDto);
   }
 
+  async paginationTaskWithJwt(
+    id_user: string,
+    pageDto: TaskPageDto,
+  ): Promise<PageDto<UserEnt>> {
+    const queryBuilder = this.dataSource.manager
+      .createQueryBuilder(UserEnt, 'user')
+      .where('user.id = :id_user', { id_user })
+      .leftJoinAndSelect('user.task', 'task')
+      .select([
+        'user.id',
+        'task.id',
+        'task.priority',
+        'task.tittle',
+        'task.head_id',
+        'task.do_date',
+        'task.remain_date',
+        'task.type',
+        'task.duration',
+        'task.status',
+      ]);
+
+    if (pageDto.base) {
+      const row = pageDto.base.row;
+      const skip = PublicFunc.skipRow(pageDto.base.page, pageDto.base.row);
+      queryBuilder.skip(skip).take(row);
+    }
+
+    if (pageDto.filter) {
+      if (pageDto.filter.priority)
+        queryBuilder.andWhere('task.priority LIKE :priority', {
+          priority: `%${pageDto.filter.priority}%`,
+        });
+      if (pageDto.filter.tittle)
+        queryBuilder.andWhere('task.tittle LIKE :tittle', {
+          tittle: `%${pageDto.filter.tittle}%`,
+        });
+      if (pageDto.filter.type)
+        queryBuilder.andWhere('task.type LIKE :type', {
+          type: `%${pageDto.filter.type}%`,
+        });
+      if (pageDto.filter.status)
+        queryBuilder.andWhere('task.status LIKE :status', {
+          status: `%${pageDto.filter.status}%`,
+        });
+    }
+    if (pageDto.field) {
+      const mapper = TaskMapperPagination[pageDto.field];
+      if (!mapper)
+        throw new Error(
+          `${JSON.stringify({
+            section: 'public',
+            value: 'Column Not Exist',
+          })}`,
+        );
+      queryBuilder.addOrderBy(
+        `${TaskMapperPagination[pageDto.field]}`,
+        pageDto.base.order,
+      );
+    }
+    const result = await queryBuilder.getManyAndCount();
+    const pageMetaDto = new PageMetaDto({
+      baseOptionsDto: pageDto.base,
+      itemCount: result[1],
+    });
+    return new PageDto(result[0], pageMetaDto);
+  }
   async paginationDoneTaskRecentDay(
     id_user: string,
     pageDto: TaskPageDto,

@@ -1,6 +1,17 @@
-import { Body, Controller, Get, Post, Put, Query } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Put,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { GetUser } from 'src/common/decorates/get.user.decorator';
 import { PageDto } from 'src/common/dtos/page.dto';
+import { UserResponseJWTDto } from 'src/common/dtos/user.dto';
+import { JwtGuard } from 'src/modules/user/modules/auth/guards/jwt.guard';
 import { CreateDepartmentDto } from '../../modules/dtos/create.department.dto';
 import { UpdateDepartmentDto } from '../../modules/dtos/update.department.dto';
 import { DepartmentEnt } from '../../modules/entities/department.entity';
@@ -35,11 +46,10 @@ export class DepartmentController {
     return this.department.getAllDepartment();
   }
 
-  
   @ApiOperation({ summary: 'get all users in department' })
   @Get('/users')
   async getDepartmentUsers(
-    @Query('id_department') id_department: string
+    @Query('id_department') id_department: string,
   ): Promise<DepartmentEnt[]> {
     return this.department.getDepartmentUsers(id_department);
   }
@@ -61,4 +71,54 @@ export class DepartmentController {
     return this.department.paginationDepartment(pageDto);
   }
 
+  @UseGuards(JwtGuard)
+  @ApiBearerAuth('access-token')
+  @ApiOperation({ summary: 'findAll Req of department' })
+  @Get('allReq/department')
+  allReqOfDepartment(
+    @GetUser() user: UserResponseJWTDto,
+  ): Promise<DepartmentEnt[]> {
+    return this.department.allReqOfDepartment(user.uid);
+  }
+
+  @UseGuards(JwtGuard)
+  @ApiBearerAuth('access-token')
+  @ApiOperation({ summary: 'findAll Task of department based on jwt' })
+  @Get('allTask/department')
+  allTaskOfDepartment(
+    @GetUser() user: UserResponseJWTDto,
+  ): Promise<DepartmentEnt[]> {
+    return this.department.allTaskOfDepartment(user.uid);
+  }
+
+  @UseGuards(JwtGuard)
+  @ApiBearerAuth('access-token')
+  @ApiOperation({ summary: 'findAll Users of department based on jwt' })
+  @Get('allUsers/department')
+  allUsersOfDepartment(
+    @GetUser() user: UserResponseJWTDto,
+  ): Promise<DepartmentEnt[]> {
+    return this.department.allUsersOfDepartment(user.uid);
+  }
+
+  @UseGuards(JwtGuard)
+  @ApiBearerAuth('access-token')
+  @ApiOperation({ summary: 'findAll Task of user based on jwt and id_user' })
+  @Get('allTask/User')
+  allTaskOfUser(
+    @Query('id_user') id_user: string,
+    @GetUser() user: UserResponseJWTDto,
+  ): Promise<DepartmentEnt[]> {
+    return this.department.allTaskOfUser(user.uid, id_user);
+  }
+
+  @UseGuards(JwtGuard)
+  @ApiBearerAuth('access-token')
+  @ApiOperation({ summary: 'findAll Req without Task of department ' })
+  @Get('allReq/department')
+  allReqWithoutTaskOfDepartment(
+    @GetUser() user: UserResponseJWTDto,
+  ): Promise<DepartmentEnt[]> {
+    return this.department.allReqWithoutTaskOfDepartment(user.uid);
+  }
 }

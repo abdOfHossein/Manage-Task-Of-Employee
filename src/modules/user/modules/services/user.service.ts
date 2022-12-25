@@ -29,7 +29,7 @@ export class UserService {
       createDt.departmentEnt = await this.dataSource
         .getRepository(DepartmentEnt)
         .findOne({ where: { id: createDt.id_department } });
-        
+
       if (createDt.role_default_status === true) {
         createDt.roleEnt = await this.dataSource
           .getRepository(RoleEnt)
@@ -154,6 +154,10 @@ export class UserService {
     return await this.userRepo.paginationTask(id_user, pageDto);
   }
 
+  async paginationTaskWithJwt(id_user: string, pageDto: TaskPageDto) {
+    return await this.userRepo.paginationTaskWithJwt(id_user, pageDto);
+  }
+  
   async jwtAdmin(id_user: string) {
     try {
       const user = await this.dataSource.getRepository(UserEnt).findOne({
@@ -175,7 +179,7 @@ export class UserService {
     return await this.userRepo.paginationDoneTaskRecentDay(id_user, pageDto);
   }
 
-  async listOfTaskRecentDay(id_user:string) {
+  async listOfTaskRecentDay(id_user: string) {
     return await this.userRepo.listOfTaskRecentDay(id_user);
   }
 }

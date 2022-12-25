@@ -7,6 +7,7 @@ import { ReqService } from '../../../req/modules/services/req.service';
 import { CreateTaskDto } from '../dtos/create.task.dto';
 import { UpdateTaskDto } from '../dtos/update.task.dto';
 import { TaskEnt } from '../entities/task.entity';
+import { StatusTaskEnum } from '../enums/status-task.enum';
 import { TypeTaskEnum } from '../enums/type-task.enum';
 import { ExpiredTaskPageDto } from '../paginations/expired.task.page.dto';
 import { ReportTaskPageDto } from '../paginations/report.page.dto';
@@ -208,6 +209,18 @@ export class TaskService {
       return await this.taskRepo.findAllPendingTask();
     } catch (e) {
       console.log(e);
+      throw e;
+    }
+  }
+
+  async updateStatusTask(
+    id_task: string,
+    status: StatusTaskEnum,
+    query?: QueryRunner,
+  ) {
+    try {
+      return await this.taskRepo.updateStatusTask(id_task, status, query);
+    } catch (e) {
       throw e;
     }
   }

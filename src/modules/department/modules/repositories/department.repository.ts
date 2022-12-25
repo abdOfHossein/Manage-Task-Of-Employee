@@ -29,32 +29,33 @@ export class DepartmentRepo {
     departmentEnt.name_department = createDto.name_department;
     if (query) return await query.manager.save(departmentEnt);
     const result = await this.dataSource.manager.save(departmentEnt);
-    const reqs = await this.dataSource.manager.find(ReqEnt,{});
+    const reqs = await this.dataSource.manager.find(ReqEnt, {});
     console.log(reqs);
-    
+
     for (const req of reqs) {
-      const departmentRl = this.dataSource
-        .manager
-        .create(DepartmentRlEnt,{
-          req,
-          department: result,
-        });
+      const departmentRl = this.dataSource.manager.create(DepartmentRlEnt, {
+        req,
+        department: result,
+      });
       await this.dataSource.manager.save(departmentRl);
     }
     return result;
   }
 
   async getAllDepartment() {
-    return await this.dataSource.manager.createQueryBuilder(DepartmentEnt, 'department').getMany();
+    return await this.dataSource.manager
+      .createQueryBuilder(DepartmentEnt, 'department')
+      .getMany();
   }
 
-  async getDepartmentUsers(id_department:string) {
-    return await this.dataSource.manager.createQueryBuilder(DepartmentEnt,'department')
-    .innerJoinAndSelect('department.users', 'users')
-    .where('department.id = :id_department', {
-      id_department
-    })
-    .getMany()
+  async getDepartmentUsers(id_department: string) {
+    return await this.dataSource.manager
+      .createQueryBuilder(DepartmentEnt, 'department')
+      .innerJoinAndSelect('department.users', 'users')
+      .where('department.id = :id_department', {
+        id_department,
+      })
+      .getMany();
   }
 
   async findOneDepartment(
@@ -122,5 +123,130 @@ export class DepartmentRepo {
       itemCount: result[1],
     });
     return new PageDto(result[0], pageMetaDto);
+  }
+
+  async allReqOfDepartment(id_user: string): Promise<DepartmentEnt[]> {
+    const result = await this.dataSource.manager
+      .createQueryBuilder(DepartmentEnt, 'department')
+      .leftJoin('department.department_rls', 'department_rls')
+      .leftJoinAndSelect('department_rls.req', 'req')
+      .where('department.header_id = :id_user', {
+        id_user,
+      })
+      .getMany();
+    console.log(result);
+    return result;
+  }
+
+  async allTaskOfDepartment(id_user: string): Promise<DepartmentEnt[]> {
+    console.log(
+      'hereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+    );
+
+    const result = await this.dataSource.manager
+      .createQueryBuilder(DepartmentEnt, 'department')
+      .where('department.header_id = :id_user', {
+        id_user,
+      })
+      .leftJoinAndSelect('department.department_rls', 'department_rls')
+      .leftJoinAndSelect('department_rls.tasks', 'tasks')
+      .select([
+        'department.id',
+        'department_rls.id',
+        'tasks.id',
+        'tasks.priority',
+        'tasks.tittle',
+        'tasks.head_id',
+        'tasks.do_date',
+        'tasks.remain_date',
+        'tasks.type',
+        'tasks.duration',
+        'tasks.status',
+      ])
+      .getMany();
+    console.log(result);
+    return result;
+  }
+
+  async allUsersOfDepartment(id_user: string): Promise<DepartmentEnt[]> {
+    const result = await this.dataSource.manager
+      .createQueryBuilder(DepartmentEnt, 'department')
+      .where('department.header_id = :id_user', {
+        id_user,
+      })
+      .leftJoinAndSelect('department.users', 'users')
+      .select([
+        'department.id',
+        'users.id',
+        'users.first_name',
+        'users.last_name',
+        'users.username',
+        'users.phonenumber',
+        'users.email',
+        'users.status',
+        'users.role_default_status',
+      ])
+      .getMany();
+    console.log(result);
+    return result;
+  }
+
+  async allTaskOfUser(
+    id_header: string,
+    id_user: string,
+  ): Promise<DepartmentEnt[]> {
+    const result = await this.dataSource.manager
+      .createQueryBuilder(DepartmentEnt, 'department')
+      .where('department.header_id = :id_header', {
+        id_header,
+      })
+      .leftJoinAndSelect('department.users', 'users')
+      .where('users.id = :id_user', { id_user })
+      .leftJoinAndSelect('users.task', 'task')
+      .select([
+        'department.id',
+        'users.id',
+        'task.id',
+        'task.priority',
+        'task.tittle',
+        'task.head_id',
+        'task.do_date',
+        'task.remain_date',
+        'task.type',
+        'task.duration',
+        'task.status',
+      ])
+      .getMany();
+    console.log(result);
+    return result;
+  }
+
+  async allReqWithoutTaskOfDepartment(
+    id_user: string,
+  ): Promise<DepartmentEnt[]> {
+    const result = await this.dataSource.manager
+      .createQueryBuilder(DepartmentEnt, 'department')
+      .where('department.header_id = :id_user', {
+        id_user,
+      })
+      .leftJoinAndSelect('department.department_rls', 'department_rls')
+      .leftJoinAndSelect('department.department_rls', 'department_rls')
+      .leftJoinAndSelect('department.department_rls', 'department_rls')
+      .select([
+        'department.id',
+        'users.id',
+        'task.id',
+        'task.priority',
+        'task.tittle',
+        'task.head_id',
+        'task.do_date',
+        'task.remain_date',
+        'task.type',
+        'task.duration',
+        'task.status',
+      ])
+      .getMany();
+    console.log(result);
+    return result;
   }
 }
