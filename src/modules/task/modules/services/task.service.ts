@@ -147,6 +147,14 @@ export class TaskService {
     }
   }
 
+  async dailyTask(): Promise<TaskEnt[]> {
+    try {
+      return await this.taskRepo.dailyTask();
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   async createTaskWithIdDepartmentAndIdReq(
     id_user: string,
     id_req: string,

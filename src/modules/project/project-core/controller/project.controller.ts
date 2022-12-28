@@ -29,8 +29,8 @@ export class ProjectController {
     @Query('id_project') id_project: string,
     @Query('unq_file') unq_file: string,
     @Body() updateProjectDto: UpdateProjectDto,
-  ): Promise<ProjectEnt> { 
-    updateProjectDto.unq_file=unq_file
+  ): Promise<ProjectEnt> {
+    updateProjectDto.unq_file = unq_file;
     return this.project.updateProject(id_project, updateProjectDto);
   }
 
@@ -42,5 +42,11 @@ export class ProjectController {
     return this.project.paginationProject(pageDto);
   }
 
-  
+  @ApiOperation({ summary: 'findAll Project of a User based on id_user' })
+  @Post('/all/id_user')
+  allProjectWithIdUSer(
+    @Query('id_user') id_user: string,
+  ): Promise<ProjectEnt[]> {
+    return this.project.allProjectWithIdUSer(id_user);
+  }
 }

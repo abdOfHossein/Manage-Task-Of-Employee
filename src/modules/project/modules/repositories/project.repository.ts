@@ -9,9 +9,6 @@ import { UpdateProjectDto } from '../dtos/update.project.dto';
 import { ProjectEnt } from '../entities/project.entity';
 import { ProjectMapperPagination } from '../mapper/project.mapper.pagination';
 import { ProjectPageDto } from '../paginations/project.page.dto';
-import { TaskEnt } from "../../../task/modules/entities/task.entity";
-import { DepartmentRlEnt } from "../../../department-rl/modules/entities/department-rl.entity";
-import { ReqEnt } from "../../../req/modules/entities/req.entity";
 
 export class ProjectRepo {
   constructor(
@@ -63,9 +60,9 @@ export class ProjectRepo {
       .select(['project.id as id', 'project_name'])
       .addSelect('COUNT(DISTINCT(req.id))', 'req')
       .addSelect('COUNT(DISTINCT(tasks.id))', 'tasks')
-      .groupBy('project.id')
-      console.log(await queryBuilder.getRawAndEntities());
-      
+      .groupBy('project.id');
+    console.log(await queryBuilder.getRawAndEntities());
+
     if (pageDto.base) {
       const row = pageDto.base.row;
       const skip = PublicFunc.skipRow(pageDto.base.page, pageDto.base.row);
@@ -96,12 +93,26 @@ export class ProjectRepo {
     //   return item
     // })
     console.log('x');
-    
+
     const result = await queryBuilder.getRawMany();
     const pageMetaDto = new PageMetaDto({
       baseOptionsDto: pageDto.base,
       itemCount: result.length,
     });
     return new PageDto(result, pageMetaDto);
+  }
+
+  async allProjectWithIdUSer(
+    id_user: string,
+    options?: FindOneOptions,
+  ): Promise<ProjectEnt[]> {
+    const project = await this.dataSource.manager.createQueryBuilder(ProjectEnt,'project')
+    .leftJoinAndSelect('project.reqs','reqs')
+    .leftJoinAndSelect('reqs.department_rls','department_rls')
+    .leftJoinAndSelect('department_rls.department','department')
+    .leftJoinAndSelect('department.users','users')
+    .where('users.id = :id_user',{id_user})
+    .getMany()
+    return project;
   }
 }

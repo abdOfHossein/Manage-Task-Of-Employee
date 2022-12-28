@@ -155,7 +155,11 @@ export class TaskRepo {
 
     const queryBuilder = this.dataSource.manager
       .createQueryBuilder(TaskEnt, 'task')
-      .where('task.head_id = :head_id', { head_id: id_user })
+      .leftJoinAndSelect('task.user','user')
+      .where('(user.id = :id_user) AND (task.status = :status)', {
+       id_user,
+        status: reportPage.filter.status,
+      })
       .select([
         'task.id',
         'task.tittle',
@@ -194,7 +198,10 @@ export class TaskRepo {
         reportPage.base.order,
       );
     }
+    
     const result = await queryBuilder.getManyAndCount();
+    console.log(result);
+    
     const pageMetaDto = new PageMetaDto({
       baseOptionsDto: reportPage.base,
       itemCount: result[1],
@@ -277,7 +284,15 @@ export class TaskRepo {
   }
 
   async getAll(): Promise<TaskEnt[]> {
-    return await this.dataSource.manager.find(TaskEnt, {});
+    // return await this.dataSource.manager.find(TaskEnt, {relations: ['user']});
+    return await this.dataSource.manager
+      .createQueryBuilder(TaskEnt, 'task')
+      .innerJoinAndSelect('task.user', 'user')
+      .innerJoinAndSelect('task.department_rl', 'department_rl')
+      .innerJoinAndSelect('department_rl.req', 'req')
+      .innerJoinAndSelect('req.project', 'project')
+      .select(['task', 'user', 'department_rl.id', 'req.id', 'project'])
+      .getMany();
   }
 
   async paginationTask(
@@ -457,6 +472,12 @@ export class TaskRepo {
     taskRlEnt.comment = createDto.comment;
     if (query) return await query.manager.save(taskRlEnt);
     return await this.dataSource.manager.save(taskRlEnt);
+  }
+
+  async dailyTask(): Promise<TaskEnt[]> {
+    return await this.dataSource.manager.query(
+      `select *,(select u.username  from "user" u  where u.id = t."userId") from task as t where DATE(t.do_date) >= CURRENT_DATE AND DATE(t.do_date) < CURRENT_DATE + INTERVAL '1 DAY'      `,
+    );
   }
 
   async createTaskWithIdReqAnddUser(
