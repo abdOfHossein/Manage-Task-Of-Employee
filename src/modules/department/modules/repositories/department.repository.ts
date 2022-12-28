@@ -5,6 +5,7 @@ import { PageMetaDto } from 'src/common/dtos/page.meta.dto';
 import { PublicFunc } from 'src/common/function/public.func';
 import { DepartmentRlEnt } from 'src/modules/department-rl/modules/entities/department-rl.entity';
 import { ReqEnt } from 'src/modules/req/modules/entities/req.entity';
+import { StatusTaskEnum } from 'src/modules/task/modules/enums/status-task.enum';
 import { DataSource, FindOneOptions, QueryRunner } from 'typeorm';
 import { CreateDepartmentDto } from '../dtos/create.department.dto';
 import { UpdateDepartmentDto } from '../dtos/update.department.dto';
@@ -224,26 +225,32 @@ export class DepartmentRepo {
   async allReqWithoutTaskOfDepartment(
     id_user: string,
   ): Promise<DepartmentEnt[]> {
-    const result = await this.dataSource.manager
+    const result =await this.dataSource.manager
       .createQueryBuilder(DepartmentEnt, 'department')
+      .innerJoinAndSelect('department.department_rls', 'department_rls')
       .where('department.header_id = :id_user', {
         id_user,
       })
-      .leftJoinAndSelect('department.department_rls', 'department_rls')
-      .leftJoinAndSelect('department.department_rls', 'department_rls')
-      .leftJoinAndSelect('department.department_rls', 'department_rls')
+      .leftJoinAndSelect('department_rls.req', 'req')
+      .leftJoinAndSelect('department_rls.tasks', 'tasks')
+
+      .where(
+        'tasks = :task OR (tasks.status = :statusC OR tasks.status = :statusP OR tasks.status = :statusD) ',
+        {
+          task: null,
+          statusC: StatusTaskEnum.CANCEL,
+          statusD: StatusTaskEnum.DONE,
+          statusP: StatusTaskEnum.PUBLISH,
+        },
+      )
       .select([
         'department.id',
-        'users.id',
-        'task.id',
-        'task.priority',
-        'task.tittle',
-        'task.head_id',
-        'task.do_date',
-        'task.remain_date',
-        'task.type',
-        'task.duration',
-        'task.status',
+        'department_rls.id',
+        'req.id',
+        'req.status',
+        'req.name',
+        'req.description',
+        'req.isDefault',
       ])
       .getMany();
     console.log(result);

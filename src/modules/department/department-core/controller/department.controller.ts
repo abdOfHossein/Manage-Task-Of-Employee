@@ -115,10 +115,11 @@ export class DepartmentController {
   @UseGuards(JwtGuard)
   @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'findAll Req without Task of department ' })
-  @Get('allReq/department')
+  @Get('allReq/withoutTask/department')
   allReqWithoutTaskOfDepartment(
     @GetUser() user: UserResponseJWTDto,
   ): Promise<DepartmentEnt[]> {
+    console.log('ssss');
     return this.department.allReqWithoutTaskOfDepartment(user.uid);
   }
 }
