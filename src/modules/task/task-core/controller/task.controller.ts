@@ -1,11 +1,4 @@
-import { Body, Controller, Get, Post, Put, Query, Req, UseGuards } from '@nestjs/common';
 import {
-<<<<<<< HEAD
-  ApiBearerAuth,
-  ApiOperation,
-  ApiQuery,
-  ApiResponse,
-=======
   Body,
   Controller,
   Get,
@@ -19,7 +12,7 @@ import {
   ApiBearerAuth,
   ApiOperation,
   ApiQuery,
->>>>>>> f9fc725b7e98bd95aa8a4aa358e135b1857fcaae
+  ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
 import { PageDto } from 'src/common/dtos/page.dto';
@@ -46,18 +39,16 @@ import { TaskService } from '../../modules/services/task.service';
 export class TaskController {
   constructor(private task: TaskService) {}
 
-<<<<<<< HEAD
   @ApiOperation({ summary: 'get daily tasks' })
   @ApiResponse({ type: [TaskEnt] })
   @Get('daily')
   dailyTask(): Promise<TaskEnt[]> {
     return this.task.dailyTask();
-=======
+  }
   @ApiOperation({ summary: 'paginatio for all ExpiredTask' })
   @Post('/all/ExpiredTask')
   allExpirationTask(@Body() pageDto: TaskPageDto): Promise<PageDto<TaskEnt>> {
     return this.task.allExpirationTask(pageDto);
->>>>>>> f9fc725b7e98bd95aa8a4aa358e135b1857fcaae
   }
 
   @ApiOperation({ summary: 'paginatio for ExpiredTask with JWT' })
@@ -66,7 +57,7 @@ export class TaskController {
     @Body() pageDto: TaskPageDto,
     @GetUser() user: UserResponseJWTDto,
   ): Promise<PageDto<TaskEnt>> {
-    return this.task.oneExpirationTask(user.uid,pageDto);
+    return this.task.oneExpirationTask(user.uid, pageDto);
   }
 
   @ApiOperation({ summary: 'create task' })
@@ -109,7 +100,7 @@ export class TaskController {
     @GetUser() user: UserResponseJWTDto,
   ): Promise<PageDto<TaskEnt>> {
     console.log('hereeeeeeeeeeeeeeeeeeeeeeee');
-    
+
     return this.task.getReportTask(user.uid, reportDto);
   }
 
@@ -117,15 +108,9 @@ export class TaskController {
   @Post('/taskTypeReport')
   taskTypePagination(
     @Body() reportDto: TaskTypePageDto,
-<<<<<<< HEAD
     @GetUser() user: UserResponseJWTDto,
   ): Promise<PageDto<TaskEnt>> {
     return this.task.taskTypePagination(user.uid, reportDto);
-=======
-    @Query('id_user') id_user: string,
-  ): Promise<PageDto<TaskEnt>> {
-    return this.task.taskTypePagination(id_user, reportDto);
->>>>>>> f9fc725b7e98bd95aa8a4aa358e135b1857fcaae
   }
 
   @ApiOperation({ summary: 'findOne task' })
@@ -205,8 +190,6 @@ export class TaskController {
     @Body() createDto: CreateTaskDto,
   ): Promise<TaskEnt> {
     return this.task.createTaskWithIdReqAnddUser(id_user, id_req, createDto);
-<<<<<<< HEAD
-=======
   }
 
   @UseGuards(RolesGuard)
@@ -250,6 +233,5 @@ export class TaskController {
     @GetUser() user: UserResponseJWTDto,
   ): Promise<TaskEnt> {
     return this.task.changeStatusToSuccess(user.uid, id_task);
->>>>>>> f9fc725b7e98bd95aa8a4aa358e135b1857fcaae
   }
 }

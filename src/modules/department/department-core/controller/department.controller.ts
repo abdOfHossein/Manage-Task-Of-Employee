@@ -71,9 +71,6 @@ export class DepartmentController {
     return this.department.paginationDepartment(pageDto);
   }
 
-<<<<<<< HEAD
-
-=======
   @UseGuards(JwtGuard)
   @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'findAll Req of department' })
@@ -125,5 +122,4 @@ export class DepartmentController {
     console.log('ssss');
     return this.department.allReqWithoutTaskOfDepartment(user.uid);
   }
->>>>>>> f9fc725b7e98bd95aa8a4aa358e135b1857fcaae
 }

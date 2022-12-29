@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { DepartmentRlEnt } from 'src/modules/department-rl/modules/entities/department-rl.entity';
 import { FileEnt } from 'src/modules/file/modules/entities/file.entity';
 import { ReqEnt } from 'src/modules/req/modules/entities/req.entity';
 import { StatusReqEnum } from 'src/modules/req/modules/enums/req.enum';
@@ -62,23 +61,20 @@ export class ProjectService {
       throw e;
     }
   }
-<<<<<<< HEAD
-  
+
   async allProjectWithIdUSer(id_user: string) {
     try {
       return await this.projectRepo.allProjectWithIdUSer(id_user);
-=======
-
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  }
   async allProjectWithReq() {
     try {
       return await this.projectRepo.allProjectWithReq();
->>>>>>> f9fc725b7e98bd95aa8a4aa358e135b1857fcaae
     } catch (e) {
       throw e;
     }
   }
-<<<<<<< HEAD
-=======
-
->>>>>>> f9fc725b7e98bd95aa8a4aa358e135b1857fcaae
 }

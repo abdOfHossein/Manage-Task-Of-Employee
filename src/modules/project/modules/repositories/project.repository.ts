@@ -102,24 +102,24 @@ export class ProjectRepo {
     return new PageDto(result, pageMetaDto);
   }
 
-<<<<<<< HEAD
   async allProjectWithIdUSer(
     id_user: string,
     options?: FindOneOptions,
   ): Promise<ProjectEnt[]> {
-    const project = await this.dataSource.manager.createQueryBuilder(ProjectEnt,'project')
-    .leftJoinAndSelect('project.reqs','reqs')
-    .leftJoinAndSelect('reqs.department_rls','department_rls')
-    .leftJoinAndSelect('department_rls.department','department')
-    .leftJoinAndSelect('department.users','users')
-    .where('users.id = :id_user',{id_user})
-    .getMany()
-=======
+    return await this.dataSource.manager
+      .createQueryBuilder(ProjectEnt, 'project')
+      .leftJoinAndSelect('project.reqs', 'reqs')
+      .leftJoinAndSelect('reqs.department_rls', 'department_rls')
+      .leftJoinAndSelect('department_rls.department', 'department')
+      .leftJoinAndSelect('department.users', 'users')
+      .where('users.id = :id_user', { id_user })
+      .getMany();
+  }
+
   async allProjectWithReq(): Promise<ProjectEnt[]> {
     const project = await this.dataSource.manager.query(
       `select *, (select count(r) from public."Req" r where r."projectId"= p.id and r.status = 'DONE') as done, (select count(r) from public."Req" r where r."projectId"= p.id) as total from public."Project" p  `,
     );
->>>>>>> f9fc725b7e98bd95aa8a4aa358e135b1857fcaae
     return project;
   }
 }

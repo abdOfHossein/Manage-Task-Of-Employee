@@ -136,15 +136,10 @@ export class UserService {
     console.log('x');
     return await this.userRepo.changePassword(id_user, changePasswordUserDto);
   }
-<<<<<<< HEAD
-  async changePasswordAdmin(    id_user: UserResponseJWTDto,
-    changePasswordUserDto: ChangePasswordAdminDto): Promise<UserEnt> {
-=======
   async changePasswordAdmin(
     id_user: UserResponseJWTDto,
     changePasswordUserDto: ChangePasswordAdminDto,
   ): Promise<UserEnt> {
->>>>>>> f9fc725b7e98bd95aa8a4aa358e135b1857fcaae
     try {
       return await this.userRepo.changePasswordAdmin(
         id_user,
@@ -162,7 +157,7 @@ export class UserService {
   async paginationTaskWithJwt(id_user: string, pageDto: TaskPageDto) {
     return await this.userRepo.paginationTaskWithJwt(id_user, pageDto);
   }
-  
+
   async jwtAdmin(id_user: string) {
     try {
       const user = await this.dataSource.getRepository(UserEnt).findOne({
@@ -180,11 +175,8 @@ export class UserService {
     }
   }
 
-<<<<<<< HEAD
-  
   async getUser(id_user: string) {
     try {
-    
       return await this.userRepo.getUser(id_user);
     } catch (e) {
       console.log(e);
@@ -194,13 +186,12 @@ export class UserService {
 
   async getDepartmentUsers(id_department: string) {
     return await this.userRepo.getDepartmentUsers(id_department);
-=======
+  }
   async paginationDoneTaskRecentDay(id_user: string, pageDto: TaskPageDto) {
     return await this.userRepo.paginationDoneTaskRecentDay(id_user, pageDto);
   }
 
   async listOfTaskRecentDay(id_user: string) {
     return await this.userRepo.listOfTaskRecentDay(id_user);
->>>>>>> f9fc725b7e98bd95aa8a4aa358e135b1857fcaae
   }
 }

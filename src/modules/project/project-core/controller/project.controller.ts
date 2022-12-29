@@ -45,18 +45,18 @@ export class ProjectController {
     return this.project.paginationProject(pageDto);
   }
 
-<<<<<<< HEAD
   @ApiOperation({ summary: 'findAll Project of a User based on id_user' })
   @Post('/all/id_user')
   allProjectWithIdUSer(
     @Query('id_user') id_user: string,
   ): Promise<ProjectEnt[]> {
     return this.project.allProjectWithIdUSer(id_user);
-=======
-  @ApiOperation({ summary: 'findAll Project with its Total Reqs and Done Reqs' })
+  }
+  @ApiOperation({
+    summary: 'findAll Project with its Total Reqs and Done Reqs',
+  })
   @Get('all/withReqs')
   allProjectWithReq(): Promise<ProjectEnt[]> {
     return this.project.allProjectWithReq();
->>>>>>> f9fc725b7e98bd95aa8a4aa358e135b1857fcaae
   }
 }

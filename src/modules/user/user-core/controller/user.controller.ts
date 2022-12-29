@@ -6,12 +6,7 @@ import {
   Put,
   Query,
   Req,
-<<<<<<< HEAD
-  Res,
-  UseGuards
-=======
   UseGuards,
->>>>>>> f9fc725b7e98bd95aa8a4aa358e135b1857fcaae
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Public } from 'src/common/decorates/public.decorator';
@@ -157,7 +152,6 @@ export class UserController {
     return this.user.jwtAdmin(id_user);
   }
 
-<<<<<<< HEAD
   @ApiBearerAuth('access-token')
   @UseGuards(JwtGuard)
   @ApiOperation({ summary: 'get user' })
@@ -169,10 +163,11 @@ export class UserController {
   @ApiOperation({ summary: 'get all users in department' })
   @Get('/users')
   async getDepartmentUsers(
-    @Query('id_department') id_department: string
+    @Query('id_department') id_department: string,
   ): Promise<UserEnt[]> {
     return this.user.getDepartmentUsers(id_department);
-=======
+  }
+
   @UseGuards(RolesGuard)
   @ApiOperation({ summary: 'pagination for tasks are done in previous day' })
   @Post('/page/previousDay')
@@ -189,6 +184,5 @@ export class UserController {
   @Post('/lsit/previousDay')
   listOfTaskRecentDay(@GetUser() id_user: UserResponseJWTDto) {
     return this.user.listOfTaskRecentDay(id_user.uid);
->>>>>>> f9fc725b7e98bd95aa8a4aa358e135b1857fcaae
   }
 }

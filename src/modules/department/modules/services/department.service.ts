@@ -64,9 +64,6 @@ export class DepartmentService {
     }
   }
 
-<<<<<<< HEAD
-
-=======
   async allReqOfDepartment(id_user:string) {
     try {
       return await this.departmentRepo.allReqOfDepartment(id_user);
@@ -106,5 +103,4 @@ export class DepartmentService {
       throw e;
     }
   }
->>>>>>> f9fc725b7e98bd95aa8a4aa358e135b1857fcaae
 }

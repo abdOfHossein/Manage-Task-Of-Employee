@@ -126,9 +126,6 @@ export class DepartmentRepo {
     return new PageDto(result[0], pageMetaDto);
   }
 
-<<<<<<< HEAD
-
-=======
   async allReqOfDepartment(id_user: string): Promise<DepartmentEnt[]> {
     const result = await this.dataSource.manager
       .createQueryBuilder(DepartmentEnt, 'department')
@@ -259,5 +256,4 @@ export class DepartmentRepo {
     console.log(result);
     return result;
   }
->>>>>>> f9fc725b7e98bd95aa8a4aa358e135b1857fcaae
 }

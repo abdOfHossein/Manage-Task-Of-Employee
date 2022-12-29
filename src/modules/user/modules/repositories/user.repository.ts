@@ -323,7 +323,6 @@ export class UserRepo {
     return new PageDto(result[0], pageMetaDto);
   }
 
-<<<<<<< HEAD
   async getUser(id_user: string, options?: FindOneOptions): Promise<UserEnt> {
     const result = await this.dataSource.manager
       .createQueryBuilder(UserEnt, 'user')
@@ -365,7 +364,6 @@ export class UserRepo {
       ])
       .getMany();
   }
-=======
   async paginationTaskWithJwt(
     id_user: string,
     pageDto: TaskPageDto,
@@ -455,5 +453,4 @@ export class UserRepo {
 
     return result;
   }
->>>>>>> f9fc725b7e98bd95aa8a4aa358e135b1857fcaae
 }
