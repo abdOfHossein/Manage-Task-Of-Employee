@@ -3,15 +3,7 @@ import { Allow } from 'class-validator';
 import { StatusTaskEnum } from '../enums/status-task.enum'; 
 import { TypeTaskEnum } from '../enums/type-task.enum';  
 
-export class TaskFilterDto {
-  @ApiProperty()
-  @Allow()
-  priority: string;
-
-  @ApiProperty()
-  @Allow()
-  tittle: string;
-
+export class TaskTypeStatusFilterDto {
   @ApiProperty()
   @Allow()
   type: TypeTaskEnum;

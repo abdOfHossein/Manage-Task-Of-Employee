@@ -15,9 +15,15 @@ export class UpdateTaskDto {
   @ApiProperty()
   head_id: string;
 
-  @ApiProperty({ default: TypeTaskEnum.DOING })
+  @ApiProperty()
+  do_date: Date;
+
+  @ApiProperty()
+  remain_date: Date;
+
+  @ApiProperty({ default: TypeTaskEnum.NEWTASK })
   type: TypeTaskEnum;
 
-  @ApiProperty({ default: StatusTaskEnum.NEWTASK })
+  @ApiProperty({ default: StatusTaskEnum.DOING })
   status: StatusTaskEnum;
 }

@@ -33,6 +33,10 @@ export class DepartmentService {
     }
   }
 
+  async getDepartmentUsers(id_department: string) {
+    return await this.departmentRepo.getDepartmentUsers(id_department);
+  }
+
   async updateDepartment(
     Department_Id: string,
     updateDt: UpdateDepartmentDto,
@@ -60,5 +64,47 @@ export class DepartmentService {
     }
   }
 
+<<<<<<< HEAD
 
+=======
+  async allReqOfDepartment(id_user:string) {
+    try {
+      return await this.departmentRepo.allReqOfDepartment(id_user);
+    } catch (e) {
+      throw e;
+    }
+  }
+  
+  async allTaskOfDepartment(id_user:string) {
+    try {
+      return await this.departmentRepo.allTaskOfDepartment(id_user);
+    } catch (e) {
+      throw e;
+    }
+  }
+  
+  async allUsersOfDepartment(id_user:string) {
+    try {
+      return await this.departmentRepo.allUsersOfDepartment(id_user);
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  async allTaskOfUser(id_header:string,id_user:string) {
+    try {
+      return await this.departmentRepo.allTaskOfUser(id_header,id_user);
+    } catch (e) {
+      throw e;
+    }
+  }
+  
+  async allReqWithoutTaskOfDepartment(id_user:string) {
+    try {
+      return await this.departmentRepo.allReqWithoutTaskOfDepartment(id_user);
+    } catch (e) {
+      throw e;
+    }
+  }
+>>>>>>> f9fc725b7e98bd95aa8a4aa358e135b1857fcaae
 }

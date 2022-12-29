@@ -1,23 +1,41 @@
 import { Body, Controller, Get, Post, Put, Query, Req, UseGuards } from '@nestjs/common';
 import {
+<<<<<<< HEAD
   ApiBearerAuth,
   ApiOperation,
   ApiQuery,
   ApiResponse,
+=======
+  Body,
+  Controller,
+  Get,
+  Post,
+  Put,
+  Query,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiQuery,
+>>>>>>> f9fc725b7e98bd95aa8a4aa358e135b1857fcaae
   ApiTags,
 } from '@nestjs/swagger';
 import { PageDto } from 'src/common/dtos/page.dto';
 import { CreateRelTaskDto } from 'src/modules/rel-task/modules/dtos/create.rel-task.dto';
 import { RelTaskEnt } from 'src/modules/rel-task/modules/entities/rel-task.entity';
 import { JwtGuard } from 'src/modules/user/modules/auth/guards/jwt.guard';
+import { RolesGuard } from 'src/modules/user/modules/guard/role.guard';
 import { GetUser } from '../../../../common/decorates/get.user.decorator';
 import { UserResponseJWTDto } from '../../../../common/dtos/user.dto';
 import { CreateTaskDto } from '../../modules/dtos/create.task.dto';
+import { UpdateStatusTaskDto } from '../../modules/dtos/update.status.task.dto';
 import { UpdateTaskDto } from '../../modules/dtos/update.task.dto';
 import { TaskEnt } from '../../modules/entities/task.entity';
-import { ExpiredTaskPageDto } from '../../modules/paginations/expired.task.page.dto';
 import { ReportTaskPageDto } from '../../modules/paginations/report.page.dto';
 import { TaskPageDto } from '../../modules/paginations/task.page.dto';
+import { TaskTypeStatusPageDto } from '../../modules/paginations/task.status-type.page.dto';
 import { TaskTypePageDto } from '../../modules/paginations/task.type.page.dto';
 import { TaskService } from '../../modules/services/task.service';
 
@@ -28,20 +46,27 @@ import { TaskService } from '../../modules/services/task.service';
 export class TaskController {
   constructor(private task: TaskService) {}
 
+<<<<<<< HEAD
   @ApiOperation({ summary: 'get daily tasks' })
   @ApiResponse({ type: [TaskEnt] })
   @Get('daily')
   dailyTask(): Promise<TaskEnt[]> {
     return this.task.dailyTask();
+=======
+  @ApiOperation({ summary: 'paginatio for all ExpiredTask' })
+  @Post('/all/ExpiredTask')
+  allExpirationTask(@Body() pageDto: TaskPageDto): Promise<PageDto<TaskEnt>> {
+    return this.task.allExpirationTask(pageDto);
+>>>>>>> f9fc725b7e98bd95aa8a4aa358e135b1857fcaae
   }
 
-  @Post('/checkExpirationTask')
-  checkExpirationTask(
-    @Body() expiredTaskPageDto: ExpiredTaskPageDto,
-    @Req() req: any,
+  @ApiOperation({ summary: 'paginatio for ExpiredTask with JWT' })
+  @Post('/one/ExpiredTask')
+  oneExpirationTask(
+    @Body() pageDto: TaskPageDto,
+    @GetUser() user: UserResponseJWTDto,
   ): Promise<PageDto<TaskEnt>> {
-    console.log(req.user);
-    return this.task.checkExpirationTask(req.user, expiredTaskPageDto);
+    return this.task.oneExpirationTask(user.uid,pageDto);
   }
 
   @ApiOperation({ summary: 'create task' })
@@ -60,8 +85,6 @@ export class TaskController {
       createTaskDto.id_user = id_user;
     }
     createTaskDto.id_user = req.user.id_User;
-    console.log('req.user.id_User', req.user.id_User);
-
     createTaskDto.id_department_rl = id_department_rl;
     return this.task.createTask(createTaskDto);
   }
@@ -72,6 +95,7 @@ export class TaskController {
     @Body() createTaskDto: CreateTaskDto,
     @GetUser() user: UserResponseJWTDto,
     @Query('id_project') id_project: string,
+    @Query('id_user') id_user: string,
   ): Promise<TaskEnt> {
     createTaskDto.id_project = id_project;
     createTaskDto.id_user = user;
@@ -93,9 +117,15 @@ export class TaskController {
   @Post('/taskTypeReport')
   taskTypePagination(
     @Body() reportDto: TaskTypePageDto,
+<<<<<<< HEAD
     @GetUser() user: UserResponseJWTDto,
   ): Promise<PageDto<TaskEnt>> {
     return this.task.taskTypePagination(user.uid, reportDto);
+=======
+    @Query('id_user') id_user: string,
+  ): Promise<PageDto<TaskEnt>> {
+    return this.task.taskTypePagination(id_user, reportDto);
+>>>>>>> f9fc725b7e98bd95aa8a4aa358e135b1857fcaae
   }
 
   @ApiOperation({ summary: 'findOne task' })
@@ -104,6 +134,7 @@ export class TaskController {
     return this.task.findOneTask(id_task);
   }
 
+  @ApiOperation({ summary: 'update task' })
   @Put()
   updateTask(
     @Query('id_task') id_task: string,
@@ -112,35 +143,41 @@ export class TaskController {
     return this.task.updateTask(id_task, updateTaskDto);
   }
 
+  @ApiOperation({ summary: 'find all task' })
   @Get('all')
   getAll(): Promise<TaskEnt[]> {
     return this.task.getAll();
   }
 
+  @ApiOperation({ summary: 'pagination of task' })
   @Post('page')
   paginationRole(
     @Body() pageDto: TaskPageDto,
-    @Req() req: any,
+    @Query('id_user') id_user: string,
   ): Promise<PageDto<TaskEnt>> {
-    return this.task.paginationTask(req.user.id_User, pageDto);
+    return this.task.paginationTask(id_user, pageDto);
   }
 
-  @Post('createTask/id_department')
+  @ApiOperation({ summary: 'create task based on id_department' })
+  @Post('/id_department')
   createDepartmentRl(
     @Query('id_department') id_department: string,
     @Body() createDto: CreateTaskDto,
+    @Query('id_user') id_user: string,
   ): Promise<TaskEnt> {
     return this.task.createTaskWithIdDepartment(id_department, createDto);
   }
 
+  @ApiOperation({ summary: 'create task based on id_department & id_req' })
   @ApiQuery({
     name: 'id_req',
     required: false,
   })
-  @Post('createTask/id_department/id_req')
+  @Post('/id_department/id_req')
   createTaskWithIdDepartmentAndIdReq(
     @Query('id_department') id_department: string,
     @Query('id_req') id_req: string,
+    @Query('id_user') id_user: string,
     @Body() createDto: CreateTaskDto,
   ): Promise<TaskEnt> {
     return this.task.createTaskWithIdDepartmentAndIdReq(
@@ -150,20 +187,69 @@ export class TaskController {
     );
   }
 
-  @Post('createTask/forward')
+  @ApiOperation({ summary: 'forward task to another person' })
+  @Post('/forward')
   forwardTask(
     @Query('id_prevoise_task') id_prevoise_task: string,
+    @Query('id_user') id_user: string,
     @Body() createDto: CreateRelTaskDto,
   ): Promise<RelTaskEnt> {
     return this.task.forwardTask(id_prevoise_task, createDto);
   }
 
-  @Post('createTask/id_req/id_user')
+  @ApiOperation({ summary: 'create task based on id_user & id_req' })
+  @Post('/id_req/id_user')
   createTaskWithIdReqAnddUser(
     @Query('id_user') id_user: string,
     @Query('id_req') id_req: string,
     @Body() createDto: CreateTaskDto,
   ): Promise<TaskEnt> {
     return this.task.createTaskWithIdReqAnddUser(id_user, id_req, createDto);
+<<<<<<< HEAD
+=======
+  }
+
+  @UseGuards(RolesGuard)
+  @ApiOperation({ summary: 'findAll task are pending' })
+  @Get('/all/pending')
+  findAllPendingTask(): Promise<TaskEnt[]> {
+    return this.task.findAllPendingTask();
+  }
+
+  @ApiOperation({ summary: 'update status of task ' })
+  @Put('taskStatus')
+  updateStatusTask(
+    @Query('id_task') id_task: string,
+    @Body() updateStatusTaskDto: UpdateStatusTaskDto,
+  ): Promise<TaskEnt> {
+    return this.task.updateStatusTask(id_task, updateStatusTaskDto.status);
+  }
+
+  @ApiOperation({ summary: 'pagination of task based on status and type' })
+  @Post('/taskStatusType')
+  paginationStatusTypeTask(
+    @Body() pageDto: TaskTypeStatusPageDto,
+    @Req() req: any,
+  ): Promise<PageDto<TaskEnt>> {
+    return this.task.paginationStatusTypeTask(req.user.id_User, pageDto);
+  }
+
+  @ApiOperation({ summary: 'pagination of task based on status and type' })
+  @Get('/changeStatus/pending')
+  changeStatusToPending(
+    @Query('id_task') id_task: string,
+    @GetUser() user: UserResponseJWTDto,
+  ): Promise<TaskEnt> {
+    return this.task.changeStatusToPending(user.uid, id_task);
+  }
+
+  @ApiOperation({ summary: 'pagination of task based on status and type' })
+  @Get('/changeStatus/success')
+  changeStatusToSuccess(
+    @Query('id_task') id_task: string,
+    @GetUser() user: UserResponseJWTDto,
+  ): Promise<TaskEnt> {
+    return this.task.changeStatusToSuccess(user.uid, id_task);
+>>>>>>> f9fc725b7e98bd95aa8a4aa358e135b1857fcaae
   }
 }

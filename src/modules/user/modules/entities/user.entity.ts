@@ -41,15 +41,15 @@ export class UserEnt extends BasicEnt {
   @Column({ type: 'enum', enum: UserStatus, default: UserStatus.ACTIVE})
   status: UserStatus;
 
+  @Column({ nullable: true, default: true })
+  role_default_status: boolean;
+
   @ManyToOne(() => DepartmentEnt, (department) => department.users)
   department: DepartmentEnt;
 
   @ManyToOne(() => RoleEnt, (role) => role.users)
   role: RoleEnt;
-
-  @Column({ nullable: true, default: true })
-  role_default_status: boolean;
-
+  
   @OneToMany(() => FileEnt, (files) => files.user)
   files: FileEnt[];
 

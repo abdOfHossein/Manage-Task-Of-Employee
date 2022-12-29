@@ -1,5 +1,10 @@
 import { Body, Controller, Get, Post, Put, Query } from '@nestjs/common';
-import { ApiBearerAuth, ApiHeader, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiHeader,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
 import { CreateFrontendDto } from '../../modules/frontend/dtos/create.frontend.dto';
 import { UpdateFrontendDto } from '../../modules/frontend/dtos/update.frontend.dto';
 import { FrontendPageDto } from '../../modules/frontend/pagination/frontend.page.dto';
@@ -18,21 +23,25 @@ import { FrontendService } from '../../modules/frontend/services/frontend.servic
 export class FrontendController {
   constructor(private frontendService: FrontendService) {}
 
+  @ApiOperation({ summary: 'page of frontend' })
   @Post('page')
   pagination(@Body() pageDto: FrontendPageDto) {
     return this.frontendService._pagination(pageDto);
   }
 
+  @ApiOperation({ summary: 'create of frontend' })
   @Post()
   create(@Body() createFrontendDto: CreateFrontendDto) {
     return this.frontendService._create(createFrontendDto);
   }
 
+  @ApiOperation({ summary: 'findOne frontend' })
   @Get()
   getOne(@Query('id_frontend') id_frontend: string) {
     return this.frontendService._getOne(id_frontend);
   }
 
+  @ApiOperation({ summary: 'update frontend' })
   @Put()
   update(
     @Query('id_frontend') id_frontend: string,

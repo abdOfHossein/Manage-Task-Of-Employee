@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ProjectEnt } from 'src/modules/project/modules/entities/project.entity';
 import { DataSource, FindOneOptions, QueryRunner } from 'typeorm';
 import { CreateReqDto } from '../dtos/create.req.dto';
+import { DoneReqDto } from '../dtos/done.req.dto';
 import { UpdateReqDto } from '../dtos/update.req.dto';
 import { ReqEnt } from '../entities/req.entity';
 import { ReqPageDto } from '../paginations/req.page.dto';
@@ -79,4 +80,30 @@ export class ReqService {
       throw e;
     }
   }
+
+  async getAllDoneReq(doneReqDto: DoneReqDto) {
+    try {
+      return await this.reqRepo.getAllDoneReq(doneReqDto);
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  async allReqWithoutTask(id_user: string) {
+    try {
+      return await this.reqRepo.allReqWithoutTask(id_user);
+    } catch (e) {
+      throw e;
+    }
+  } 
+  
+  async allReqWithoutTaskAdmin() {
+    try {
+      return await this.reqRepo.allReqWithoutTaskAdmin();
+    } catch (e) {
+      throw e;
+    }
+  }
+  
+
 }

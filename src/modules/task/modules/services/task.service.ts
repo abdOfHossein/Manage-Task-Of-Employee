@@ -9,9 +9,9 @@ import { UpdateTaskDto } from '../dtos/update.task.dto';
 import { TaskEnt } from '../entities/task.entity';
 import { StatusTaskEnum } from '../enums/status-task.enum';
 import { TypeTaskEnum } from '../enums/type-task.enum';
-import { ExpiredTaskPageDto } from '../paginations/expired.task.page.dto';
 import { ReportTaskPageDto } from '../paginations/report.page.dto';
 import { TaskPageDto } from '../paginations/task.page.dto';
+import { TaskTypeStatusPageDto } from '../paginations/task.status-type.page.dto';
 import { TaskTypePageDto } from '../paginations/task.type.page.dto';
 import { TaskRepo } from '../repositories/task.repository';
 
@@ -36,21 +36,21 @@ export class TaskService {
     }
   }
 
-  async checkExpirationTask(
-    user_info: any,
-    expiredTaskPageDto: ExpiredTaskPageDto,
-    query?: QueryRunner,
-  ) {
-    try {
-      return await this.taskRepo.checkExpirationTask(
-        user_info,
-        expiredTaskPageDto,
-        query,
-      );
-    } catch (e) {
-      throw e;
-    }
-  }
+  // async checkExpirationTask(
+  //   user_info: any,
+  //   expiredTaskPageDto: ExpiredTaskPageDto,
+  //   query?: QueryRunner,
+  // ) {
+  //   try {
+  //     return await this.taskRepo.checkExpirationTask(
+  //       user_info,
+  //       expiredTaskPageDto,
+  //       query,
+  //     );
+  //   } catch (e) {
+  //     throw e;
+  //   }
+  // }
 
   async getReportTask(
     id_user: string,
@@ -66,7 +66,6 @@ export class TaskService {
 
   async createTask(createDt: CreateTaskDto, query?: QueryRunner) {
     try {
-
       return await this.taskRepo.createTask(createDt, query);
     } catch (e) {
       throw e;
@@ -180,8 +179,8 @@ export class TaskService {
     query?: QueryRunner,
   ) {
     try {
-      if(createDto.status !== StatusTaskEnum.FORWARD){
-        throw new BadRequestException({message:"Status must be FORWARD"})
+      if (createDto.type !== TypeTaskEnum.FORWARD) {
+        throw new BadRequestException({ message: 'type must be FORWARD' });
       }
       return await this.taskRepo.forwardTask(
         id_prevoise_task,
@@ -201,17 +200,96 @@ export class TaskService {
     query?: QueryRunner,
   ) {
     try {
-
       return await this.taskRepo.createTaskWithIdReqAnddUser(
         id_user,
         id_req,
         createDto,
-        query
+        query,
       );
     } catch (e) {
       console.log(e);
       throw e;
     }
   }
-  
+
+  async findAllPendingTask() {
+    try {
+      return await this.taskRepo.findAllPendingTask();
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  }
+
+  async updateStatusTask(
+    id_task: string,
+    status: StatusTaskEnum,
+    query?: QueryRunner,
+  ) {
+    try {
+      return await this.taskRepo.updateStatusTask(id_task, status, query);
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  async paginationStatusTypeTask(
+    id_user: string,
+    pageDto: TaskTypeStatusPageDto,
+    query?: QueryRunner,
+  ) {
+    try {
+      return await this.taskRepo.paginationStatusTypeTask(
+        id_user,
+        pageDto,
+        query,
+      );
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  }
+
+  async changeStatusToPending(
+    id_user: string,
+    id_task: string,
+    query?: QueryRunner,
+  ) {
+    try {
+      return await this.taskRepo.changeStatusToPending(id_user, id_task, query);
+    } catch (e) {
+      throw e;
+    }
+  }
+  async changeStatusToSuccess(
+    id_user: string,
+    id_task: string,
+    query?: QueryRunner,
+  ) {
+    try {
+      return await this.taskRepo.changeStatusToSuccess(id_user, id_task, query);
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  async allExpirationTask(pageDto: TaskPageDto, query?: QueryRunner) {
+    try {
+      return await this.taskRepo.allExpirationTask(pageDto, query);
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  async oneExpirationTask(
+    id_user: string,
+    pageDto: TaskPageDto,
+    query?: QueryRunner,
+  ) {
+    try {
+      return await this.taskRepo.oneExpirationTask(id_user, pageDto, query);
+    } catch (e) {
+      throw e;
+    }
+  }
 }

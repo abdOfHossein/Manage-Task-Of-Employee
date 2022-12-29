@@ -102,6 +102,7 @@ export class ProjectRepo {
     return new PageDto(result, pageMetaDto);
   }
 
+<<<<<<< HEAD
   async allProjectWithIdUSer(
     id_user: string,
     options?: FindOneOptions,
@@ -113,6 +114,12 @@ export class ProjectRepo {
     .leftJoinAndSelect('department.users','users')
     .where('users.id = :id_user',{id_user})
     .getMany()
+=======
+  async allProjectWithReq(): Promise<ProjectEnt[]> {
+    const project = await this.dataSource.manager.query(
+      `select *, (select count(r) from public."Req" r where r."projectId"= p.id and r.status = 'DONE') as done, (select count(r) from public."Req" r where r."projectId"= p.id) as total from public."Project" p  `,
+    );
+>>>>>>> f9fc725b7e98bd95aa8a4aa358e135b1857fcaae
     return project;
   }
 }

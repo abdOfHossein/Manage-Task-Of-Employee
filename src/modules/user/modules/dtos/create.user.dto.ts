@@ -16,7 +16,7 @@ export class CreateUserDto {
   @ApiHideProperty()
   id_department: string;
 
-  @ApiHideProperty()
+  @ApiProperty({default:true})
   role_default_status: boolean;
 
   @ApiHideProperty()

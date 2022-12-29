@@ -7,8 +7,6 @@ import { PageMetaDto } from 'src/common/dtos/page.meta.dto';
 import { PublicFunc } from 'src/common/function/public.func';
 import { HashService } from 'src/modules/hash/hash.service';
 import { RedisService } from 'src/modules/redis/redis.service';
-import { TaskEnt } from 'src/modules/task/modules/entities/task.entity';
-import { TypeTaskEnum } from 'src/modules/task/modules/enums/type-task.enum';
 import { TaskMapperPagination } from 'src/modules/task/modules/mapper/task.mapper.pagination';
 import { TaskPageDto } from 'src/modules/task/modules/paginations/task.page.dto';
 import { DataSource, FindOneOptions, QueryRunner } from 'typeorm';
@@ -35,8 +33,30 @@ export class UserRepo {
     private jwtService: JwtService,
   ) {}
 
-  //create Jwt
-  async _createJwt(data: string, roles: any) {
+  async _createJwt(data: string) {
+    let jwtPayloadInterface: JwtPayloadInterface = {};
+    const encryptTextInterface = await this.hashService.encrypt(data);
+    const code = randomstring.generate({
+      length: 64,
+      charset: process.env.RANDOM_STRING_HASH_JWT,
+    });
+    jwtPayloadInterface.data = encryptTextInterface.text;
+    jwtPayloadInterface.key = encryptTextInterface.key;
+    jwtPayloadInterface.unq = sha512(code);
+    const dataRedis = {
+      data: encryptTextInterface.text,
+      iv: encryptTextInterface.iv,
+    };
+    const result = this.jwtService.sign(jwtPayloadInterface);
+    await this.redisService.setKey(
+      `${this.PREFIX_TOKEN_AUTH}${jwtPayloadInterface.unq}`,
+      JSON.stringify(dataRedis),
+      10000000,
+    );
+    return result;
+  }
+
+  async createJwtSetRole(data: string, roles: any) {
     let jwtPayloadInterface: JwtPayloadInterface = {};
     const encryptTextInterface = await this.hashService.encrypt(data);
     const code = randomstring.generate({
@@ -61,7 +81,6 @@ export class UserRepo {
     return result;
   }
 
-  //register
   async createUser(
     createDto: CreateUserDto,
     query: QueryRunner | undefined,
@@ -240,19 +259,23 @@ export class UserRepo {
   async paginationTask(
     id_user: string,
     pageDto: TaskPageDto,
-  ): Promise<PageDto<TaskEnt>> {
+  ): Promise<PageDto<UserEnt>> {
     const queryBuilder = this.dataSource.manager
       .createQueryBuilder(UserEnt, 'user')
-      .where('user.id = : id_user', { id_user })
-      .leftJoinAndSelect('user.department', 'department')
-      .leftJoinAndSelect('department.department_rls', 'department_rls')
-      .leftJoinAndSelect('department_rls.tasks', 'tasks')
-      .subQuery()
-      .select('task.id')
-      .from(TaskEnt, 'task')
-      .where('task.type = :type', {
-        type: TypeTaskEnum.CANCELE || TypeTaskEnum.DONE || TypeTaskEnum.PUBLISH,
-      });
+      .where('user.id = :id_user', { id_user })
+      .leftJoinAndSelect('user.task', 'task')
+      .select([
+        'user.id',
+        'task.id',
+        'task.priority',
+        'task.tittle',
+        'task.head_id',
+        'task.do_date',
+        'task.remain_date',
+        'task.type',
+        'task.duration',
+        'task.status',
+      ]);
 
     if (pageDto.base) {
       const row = pageDto.base.row;
@@ -262,19 +285,19 @@ export class UserRepo {
 
     if (pageDto.filter) {
       if (pageDto.filter.priority)
-        queryBuilder.andWhere('user.priority LIKE :priority', {
+        queryBuilder.andWhere('task.priority LIKE :priority', {
           priority: `%${pageDto.filter.priority}%`,
         });
       if (pageDto.filter.tittle)
-        queryBuilder.andWhere('user.tittle LIKE :tittle', {
+        queryBuilder.andWhere('task.tittle LIKE :tittle', {
           tittle: `%${pageDto.filter.tittle}%`,
         });
       if (pageDto.filter.type)
-        queryBuilder.andWhere('user.type LIKE :type', {
+        queryBuilder.andWhere('task.type LIKE :type', {
           type: `%${pageDto.filter.type}%`,
         });
       if (pageDto.filter.status)
-        queryBuilder.andWhere('user.status LIKE :status', {
+        queryBuilder.andWhere('task.status LIKE :status', {
           status: `%${pageDto.filter.status}%`,
         });
     }
@@ -300,6 +323,7 @@ export class UserRepo {
     return new PageDto(result[0], pageMetaDto);
   }
 
+<<<<<<< HEAD
   async getUser(id_user: string, options?: FindOneOptions): Promise<UserEnt> {
     const result = await this.dataSource.manager
       .createQueryBuilder(UserEnt, 'user')
@@ -341,4 +365,95 @@ export class UserRepo {
       ])
       .getMany();
   }
+=======
+  async paginationTaskWithJwt(
+    id_user: string,
+    pageDto: TaskPageDto,
+  ): Promise<PageDto<UserEnt>> {
+    const queryBuilder = this.dataSource.manager
+      .createQueryBuilder(UserEnt, 'user')
+      .where('user.id = :id_user', { id_user })
+      .leftJoinAndSelect('user.task', 'task')
+      .select([
+        'user.id',
+        'task.id',
+        'task.priority',
+        'task.tittle',
+        'task.head_id',
+        'task.do_date',
+        'task.remain_date',
+        'task.type',
+        'task.duration',
+        'task.status',
+      ]);
+
+    if (pageDto.base) {
+      const row = pageDto.base.row;
+      const skip = PublicFunc.skipRow(pageDto.base.page, pageDto.base.row);
+      queryBuilder.skip(skip).take(row);
+    }
+
+    if (pageDto.filter) {
+      if (pageDto.filter.priority)
+        queryBuilder.andWhere('task.priority LIKE :priority', {
+          priority: `%${pageDto.filter.priority}%`,
+        });
+      if (pageDto.filter.tittle)
+        queryBuilder.andWhere('task.tittle LIKE :tittle', {
+          tittle: `%${pageDto.filter.tittle}%`,
+        });
+      if (pageDto.filter.type)
+        queryBuilder.andWhere('task.type LIKE :type', {
+          type: `%${pageDto.filter.type}%`,
+        });
+      if (pageDto.filter.status)
+        queryBuilder.andWhere('task.status LIKE :status', {
+          status: `%${pageDto.filter.status}%`,
+        });
+    }
+    if (pageDto.field) {
+      const mapper = TaskMapperPagination[pageDto.field];
+      if (!mapper)
+        throw new Error(
+          `${JSON.stringify({
+            section: 'public',
+            value: 'Column Not Exist',
+          })}`,
+        );
+      queryBuilder.addOrderBy(
+        `${TaskMapperPagination[pageDto.field]}`,
+        pageDto.base.order,
+      );
+    }
+    const result = await queryBuilder.getManyAndCount();
+    const pageMetaDto = new PageMetaDto({
+      baseOptionsDto: pageDto.base,
+      itemCount: result[1],
+    });
+    return new PageDto(result[0], pageMetaDto);
+  }
+  async paginationDoneTaskRecentDay(
+    id_user: string,
+    pageDto: TaskPageDto,
+  ): Promise<UserEnt[]> {
+    return this.dataSource.manager
+      .query(`select u.id,u.first_name ,u.last_name , (select  jsonb_agg(jsonb_build_object('id',id,'title',tittle,'status',status,'type',"type",'priority',priority,'duration',duration)) as text  from public.task t where cast (t."userId" as text) = cast(u.id as text) )  
+    from public."user" u where u.status ='active'
+    `);
+  }
+
+  async listOfTaskRecentDay(id_user: string): Promise<UserEnt[]> {
+    let nowDate = new Date(Date.now()).toUTCString();
+    const midnight = nowDate.split(' ')[4];
+    let previousDay = nowDate.replace(midnight, '00:00:00');
+    const result = this.dataSource.manager
+      .query(`select  * from  public."user" u 
+    left join  public.task t on u.id =t."userId" 
+    where  u.id ='${id_user}'
+    and t.update_at  between '${previousDay}' and '${nowDate}'
+    `);
+
+    return result;
+  }
+>>>>>>> f9fc725b7e98bd95aa8a4aa358e135b1857fcaae
 }

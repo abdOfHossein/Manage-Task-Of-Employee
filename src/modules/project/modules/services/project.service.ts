@@ -62,12 +62,23 @@ export class ProjectService {
       throw e;
     }
   }
+<<<<<<< HEAD
   
   async allProjectWithIdUSer(id_user: string) {
     try {
       return await this.projectRepo.allProjectWithIdUSer(id_user);
+=======
+
+  async allProjectWithReq() {
+    try {
+      return await this.projectRepo.allProjectWithReq();
+>>>>>>> f9fc725b7e98bd95aa8a4aa358e135b1857fcaae
     } catch (e) {
       throw e;
     }
   }
+<<<<<<< HEAD
+=======
+
+>>>>>>> f9fc725b7e98bd95aa8a4aa358e135b1857fcaae
 }

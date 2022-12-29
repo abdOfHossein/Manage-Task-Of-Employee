@@ -12,6 +12,7 @@ import { DepartmentRlService } from '../../modules/services/department-rl.servic
 export class DepartmentRlController {
   constructor(private departmentRl: DepartmentRlService) {}
 
+  @ApiOperation({ summary: 'create for departmentRl' })
   @Post()
   createDepartmentRl(
     @Query('req_id') req_id: string,
@@ -23,6 +24,7 @@ export class DepartmentRlController {
     return this.departmentRl.createDepartmentRl(createDepartmentRlDto);
   }
 
+  @ApiOperation({ summary: 'findOne departmentRl' })
   @Get('/')
   findOneDepartmentRl(
     @Query('id_departmentRl') id_departmentRl: string,
@@ -30,6 +32,7 @@ export class DepartmentRlController {
     return this.departmentRl.findOneDepartmentRl(id_departmentRl);
   }
 
+  @ApiOperation({ summary: 'update for departmentRl' })
   @Put()
   updateDepartmentRl(
     @Query('id_DepartmentRl') id_DepartmentRl: string,

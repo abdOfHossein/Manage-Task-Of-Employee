@@ -12,6 +12,7 @@ import { TaskBlockOperationService } from '../../modules/services/task-block-ope
 export class TaskBlockOperationController {
   constructor(private taskBlockOperation: TaskBlockOperationService) {}
 
+  @ApiOperation({ summary: 'create TaskBlockOperation' })
   @Post()
   createTaskBlockOperation(
     @Query('id_task') id_task: string,
@@ -23,6 +24,7 @@ export class TaskBlockOperationController {
     );
   }
 
+  @ApiOperation({ summary: 'findOne TaskBlockOperation' })
   @Get()
   findOneTaskBlockOperation(
     @Query('id_task_block_operation') id_task_block_operation: string,
@@ -32,6 +34,7 @@ export class TaskBlockOperationController {
     );
   }
 
+  @ApiOperation({ summary: 'update TaskBlockOperation' })
   @Put()
   updateTaskBlockOperation(
     @Query('id_task_block_operation') id_task_block_operation: string,
