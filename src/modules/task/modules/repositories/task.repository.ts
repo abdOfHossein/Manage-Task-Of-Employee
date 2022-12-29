@@ -476,7 +476,7 @@ export class TaskRepo {
 
   async dailyTask(): Promise<TaskEnt[]> {
     return await this.dataSource.manager.query(
-      `select *,(select u.username  from "user" u  where u.id = t."userId") from task as t where DATE(t.do_date) >= CURRENT_DATE AND DATE(t.do_date) < CURRENT_DATE + INTERVAL '1 DAY'      `,
+      `select *,(select u.username  from "user" u  where u.id = t."userId") from task as t where DATE(t.do_date) >= CURRENT_DATE AND DATE(t.do_date) < CURRENT_DATE + INTERVAL '1 DAY' `,
     );
   }
 
