@@ -25,9 +25,9 @@ import { CreateTaskDto } from '../../modules/dtos/create.task.dto';
 import { UpdateStatusTaskDto } from '../../modules/dtos/update.status.task.dto';
 import { UpdateTaskDto } from '../../modules/dtos/update.task.dto';
 import { TaskEnt } from '../../modules/entities/task.entity';
-import { ExpiredTaskPageDto } from '../../modules/paginations/expired.task.page.dto';
 import { ReportTaskPageDto } from '../../modules/paginations/report.page.dto';
 import { TaskPageDto } from '../../modules/paginations/task.page.dto';
+import { TaskTypeStatusPageDto } from '../../modules/paginations/task.status-type.page.dto';
 import { TaskTypePageDto } from '../../modules/paginations/task.type.page.dto';
 import { TaskService } from '../../modules/services/task.service';
 
@@ -38,12 +38,19 @@ import { TaskService } from '../../modules/services/task.service';
 export class TaskController {
   constructor(private task: TaskService) {}
 
-  @Post('/checkExpirationTask')
-  checkExpirationTask(
-    @Body() expiredTaskPageDto: ExpiredTaskPageDto,
-    @Query('id_user') id_user: string,
+  @ApiOperation({ summary: 'paginatio for all ExpiredTask' })
+  @Post('/all/ExpiredTask')
+  allExpirationTask(@Body() pageDto: TaskPageDto): Promise<PageDto<TaskEnt>> {
+    return this.task.allExpirationTask(pageDto);
+  }
+
+  @ApiOperation({ summary: 'paginatio for ExpiredTask with JWT' })
+  @Post('/one/ExpiredTask')
+  oneExpirationTask(
+    @Body() pageDto: TaskPageDto,
+    @GetUser() user: UserResponseJWTDto,
   ): Promise<PageDto<TaskEnt>> {
-    return this.task.checkExpirationTask(id_user, expiredTaskPageDto);
+    return this.task.oneExpirationTask(user.uid,pageDto);
   }
 
   @ApiOperation({ summary: 'create task' })
@@ -190,5 +197,32 @@ export class TaskController {
     @Body() updateStatusTaskDto: UpdateStatusTaskDto,
   ): Promise<TaskEnt> {
     return this.task.updateStatusTask(id_task, updateStatusTaskDto.status);
+  }
+
+  @ApiOperation({ summary: 'pagination of task based on status and type' })
+  @Post('/taskStatusType')
+  paginationStatusTypeTask(
+    @Body() pageDto: TaskTypeStatusPageDto,
+    @Req() req: any,
+  ): Promise<PageDto<TaskEnt>> {
+    return this.task.paginationStatusTypeTask(req.user.id_User, pageDto);
+  }
+
+  @ApiOperation({ summary: 'pagination of task based on status and type' })
+  @Get('/changeStatus/pending')
+  changeStatusToPending(
+    @Query('id_task') id_task: string,
+    @GetUser() user: UserResponseJWTDto,
+  ): Promise<TaskEnt> {
+    return this.task.changeStatusToPending(user.uid, id_task);
+  }
+
+  @ApiOperation({ summary: 'pagination of task based on status and type' })
+  @Get('/changeStatus/success')
+  changeStatusToSuccess(
+    @Query('id_task') id_task: string,
+    @GetUser() user: UserResponseJWTDto,
+  ): Promise<TaskEnt> {
+    return this.task.changeStatusToSuccess(user.uid, id_task);
   }
 }

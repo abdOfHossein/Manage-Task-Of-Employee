@@ -106,5 +106,4 @@ export class ReqController {
     return this.req.allReqWithoutTaskAdmin();
   }
 
-
 }
