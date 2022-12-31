@@ -11,6 +11,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { UserEnt } from '../../../user/modules/entities/user.entity';
+import { CheckStatusTaskEnum } from '../enums/check-status.enum';
 import { StatusTaskEnum } from '../enums/status-task.enum';
 import { TypeTaskEnum } from '../enums/type-task.enum';
 
@@ -42,6 +43,9 @@ export class TaskEnt extends BasicEnt {
 
   @Column({ nullable: true })
   status: StatusTaskEnum;
+
+  @Column({ nullable: true })
+  check_status: CheckStatusTaskEnum;
 
   @ManyToOne(() => DepartmentRlEnt, (department_rl) => department_rl.tasks)
   department_rl: DepartmentRlEnt;

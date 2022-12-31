@@ -23,6 +23,7 @@ import { RolesGuard } from 'src/modules/user/modules/guard/role.guard';
 import { GetUser } from '../../../../common/decorates/get.user.decorator';
 import { UserResponseJWTDto } from '../../../../common/dtos/user.dto';
 import { CreateTaskDto } from '../../modules/dtos/create.task.dto';
+import { UpdateCheckStatusTaskDto } from '../../modules/dtos/update.check-status.dto';
 import { UpdateStatusTaskDto } from '../../modules/dtos/update.status.task.dto';
 import { UpdateTaskDto } from '../../modules/dtos/update.task.dto';
 import { TaskEnt } from '../../modules/entities/task.entity';
@@ -233,5 +234,14 @@ export class TaskController {
     @GetUser() user: UserResponseJWTDto,
   ): Promise<TaskEnt> {
     return this.task.changeStatusToSuccess(user.uid, id_task);
+  }
+
+  @ApiOperation({ summary: 'change status of task to check' })
+  @Put('/status/ToCheck')
+  changeStatusToCheck(
+    @Body() updateCheckStatusTaskDto: UpdateCheckStatusTaskDto,
+    @GetUser() user: UserResponseJWTDto,
+  ){
+    // return this.task.changeStatusToCheck(user.uid, updateCheckStatusTaskDto);
   }
 }

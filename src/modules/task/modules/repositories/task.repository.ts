@@ -909,4 +909,72 @@ export class TaskRepo {
 
     return new PageDto(result[0], pageMetaDto);
   }
+
+  async changeStatusToCheck(
+    id_user: string,
+    id_task: string,
+    query?: QueryRunner,
+  ){
+
+
+  //   const req = await this.dataSource.manager
+  //     .createQueryBuilder(ReqEnt, 'req')
+  //     .leftJoinAndSelect('req.department_rls', 'department_rls')
+  //     .leftJoinAndSelect('department_rls.tasks', 'tasks')
+  //     .where(
+  //       'tasks.id = :id_task AND (tasks.status != :statusCancel OR tasks.status != :statusDone)',
+  //       {
+  //         id_task,
+  //         statusCancel: StatusTaskEnum.CANCEL,
+  //         statusDone: StatusTaskEnum.DONE,
+  //       },
+  //     )
+  //     .getMany();
+  //   if (!req) {
+  //     const result = await this.dataSource.manager
+  //       .createQueryBuilder(ReqEnt, 'req')
+  //       .leftJoinAndSelect('req.department_rls', 'department_rls')
+  //       .leftJoinAndSelect('department_rls.tasks', 'tasks')
+  //       .where(
+  //         'tasks.id = :id_task AND (tasks.status != :statusCancel OR tasks.status != :statusDone)',
+  //         {
+  //           id_task,
+  //           statusCancel: StatusTaskEnum.CANCEL,
+  //           statusDone: StatusTaskEnum.DONE,
+  //         },
+  //       )
+  //       .update(ReqEnt)
+  //       .set({
+  //         status: StatusReqEnum.DONE,
+  //       })
+  //       .execute();
+  //     console.log('result', result);
+  //   }
+
+  //   const checkTask =  this.dataSource.manager
+  //     .createQueryBuilder(UserEnt, 'user')
+  //     .leftJoinAndSelect('user.task', 'task')
+  //     .where('(task.id = :id_task) AND (user.id = :id_user)', {
+  //       id_task,
+  //       id_user,
+  //     });
+  //   // .getOne();
+  //   console.log(id_user);
+  //   console.log(id_task);
+  //   console.log(await checkTask.getOne());
+  //   console.log(checkTask.getSql());
+
+  //   if (!(await checkTask.getOne()))
+  //     throw new HttpException(
+  //       'This task is not for this user',
+  //       HttpStatus.FORBIDDEN,
+  //     );
+  //   const entity = await this.dataSource.manager.findOne(TaskEnt, {
+  //     where: { id: id_task },
+  //   });
+  //   entity.status = StatusTaskEnum.DONE;
+  //   if (query) return await query.manager.save(entity);
+  //   return await this.dataSource.manager.save(entity);
+  }
+
 }
