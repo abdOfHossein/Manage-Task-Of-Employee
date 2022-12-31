@@ -11,7 +11,7 @@ export class TaskGDto {
   priority: string;
 
   @ApiProperty()
-  tittle: string;
+  title: string;
 
   @ApiProperty()
   head_id: string;
@@ -31,7 +31,7 @@ export class TaskGDto {
   constructor(init?: Partial<TaskEnt>) {
     this.id_task = init.id;
     this.priority = init.priority;
-    this.tittle = init.tittle;
+    this.title = init.title;
     this.head_id = init.head_id;
     this.type = init.type;
     this.do_date = init.do_date;

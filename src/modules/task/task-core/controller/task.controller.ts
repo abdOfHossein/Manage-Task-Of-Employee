@@ -23,6 +23,7 @@ import { RolesGuard } from 'src/modules/user/modules/guard/role.guard';
 import { GetUser } from '../../../../common/decorates/get.user.decorator';
 import { UserResponseJWTDto } from '../../../../common/dtos/user.dto';
 import { CreateTaskDto } from '../../modules/dtos/create.task.dto';
+import { CreateTaskWithIdUserIdReqDto } from '../../modules/dtos/create.task.withIdUserIdReq.dto';
 import { UpdateStatusTaskDto } from '../../modules/dtos/update.status.task.dto';
 import { UpdateTaskDto } from '../../modules/dtos/update.task.dto';
 import { TaskEnt } from '../../modules/entities/task.entity';
@@ -233,5 +234,23 @@ export class TaskController {
     @GetUser() user: UserResponseJWTDto,
   ): Promise<TaskEnt> {
     return this.task.changeStatusToSuccess(user.uid, id_task);
+  }
+
+  @ApiOperation({
+    summary: 'create task based on id_User & id_req',
+  })
+  @Post('/createTaskWithIdUserAndIdReq')
+  createTaskWithIdUserAndIdReq(
+    @Query('id_req') id_req: string,
+    @Query('id_user') id_user: string,
+    @GetUser() user: UserResponseJWTDto,
+    @Body() createTaskWithIdUserIdReqDto: CreateTaskWithIdUserIdReqDto,
+  ): Promise<TaskEnt> {
+    return this.task.ceateTaskWithIdUserIdReqDto(
+      id_req,
+      id_user,
+      user.uid,
+      createTaskWithIdUserIdReqDto,
+    );
   }
 }

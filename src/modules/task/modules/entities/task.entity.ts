@@ -23,14 +23,14 @@ export class TaskEnt extends BasicEnt {
   priority: string;
 
   @Column({ nullable: true })
-  tittle: string;
+  title: string;
 
   @Column({ nullable: true })
   head_id: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, default: Date.now() })
   do_date: Date;
-  
+
   @Column({ nullable: true })
   remain_date: Date;
 

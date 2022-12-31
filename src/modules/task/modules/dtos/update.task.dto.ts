@@ -7,7 +7,7 @@ export class UpdateTaskDto {
   priority: string;
 
   @ApiProperty()
-  tittle: string;
+  title: string;
 
   @ApiProperty()
   duration: number;

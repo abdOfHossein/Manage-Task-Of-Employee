@@ -12,5 +12,5 @@ export class UpdateEventDto {
   end_date: Date;
 
   @ApiProperty()
-  tittle: string;
+  title: string;
 }

@@ -122,4 +122,14 @@ export class DepartmentController {
     console.log('ssss');
     return this.department.allReqWithoutTaskOfDepartment(user.uid);
   }
+
+  @UseGuards(JwtGuard)
+  @ApiBearerAuth('access-token')
+  @ApiOperation({ summary: 'findAll Department based on jwt' })
+  @Get('allDepartment/OfUser')
+  allDepartmentOfUser(
+    @GetUser() user: UserResponseJWTDto,
+  ): Promise<DepartmentEnt[]> {
+    return this.department.allDepartmentOfUser(user.uid);
+  }
 }

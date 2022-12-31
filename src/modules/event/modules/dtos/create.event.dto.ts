@@ -13,5 +13,5 @@ export class CreateEventDto {
   end_date: Date;
 
   @ApiProperty()
-  tittle: string;
+  title: string;
 }

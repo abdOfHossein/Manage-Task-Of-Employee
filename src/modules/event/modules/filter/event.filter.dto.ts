@@ -17,5 +17,5 @@ export class EventFilterDto {
 
   @ApiProperty()
   @Allow()
-  tittle: string;
+  title: string;
 }
