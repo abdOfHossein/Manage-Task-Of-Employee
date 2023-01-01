@@ -45,8 +45,8 @@ export class ReqService {
       throw e;
     }
   }
-  
-  async findAllReqWithIdProject(id_project:string): Promise<ReqEnt[]> {
+
+  async findAllReqWithIdProject(id_project: string): Promise<ReqEnt[]> {
     try {
       return await this.reqRepo.findAllReqWithIdProject(id_project);
     } catch (e) {
@@ -67,15 +67,15 @@ export class ReqService {
 
   async paginationReq(pageDto: ReqPageDto) {
     try {
-      return await this.reqRepo.paginationReq(pageDto)
+      return await this.reqRepo.paginationReq(pageDto);
     } catch (e) {
       throw e;
     }
   }
-  
-  async getAllReqAndTask(id_project:string,pageDto:ReqPageDto) {
+
+  async getAllReqAndTask(id_project: string, pageDto: ReqPageDto) {
     try {
-      return await this.reqRepo.getAllReqAndTask(id_project,pageDto);
+      return await this.reqRepo.getAllReqAndTask(id_project, pageDto);
     } catch (e) {
       throw e;
     }
@@ -95,8 +95,8 @@ export class ReqService {
     } catch (e) {
       throw e;
     }
-  } 
-  
+  }
+
   async allReqWithoutTaskAdmin() {
     try {
       return await this.reqRepo.allReqWithoutTaskAdmin();
@@ -104,6 +104,12 @@ export class ReqService {
       throw e;
     }
   }
-  
 
+  async allReqBasedOnUserId(id_user: string) {
+    try {
+      return await this.reqRepo.allReqBasedOnUserId(id_user);
+    } catch (e) {
+      throw e;
+    }
+  }
 }

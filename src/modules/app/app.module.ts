@@ -12,7 +12,7 @@ import { MessageUserCoreModule } from '../message-user/message-user-core/message
 import { MessageCoreModule } from '../message/message-core/message-core.module';
 import { ProjectCoreModule } from '../project/project-core/project-core.module';
 import { RelTaskCoreModule } from '../rel-task/rel-task-core/rel-task-core.module';
-import { ReqCoreModule } from '../req/task-core/req-core.module';
+import { ReqCoreModule } from '../req/req-core/req-core.module';
 import { RoleCoreModule } from '../role/role-core/role-core.module';
 import { TaskBlockOperationCoreModule } from '../task-cblock-operation/task-core/task-block-operation-core.module';
 import { TaskCoreModule } from '../task/task-core/task-core.module';
