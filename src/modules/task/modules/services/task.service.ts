@@ -296,12 +296,14 @@ export class TaskService {
   }
 
   async changeStatusToCheck(
+    id_task:string,
     id_user: string,
     updateCheckStatusTaskDto: UpdateCheckStatusTaskDto,
     query?: QueryRunner,
   ) {
     try {
       return await this.taskRepo.changeStatusToCheck(
+        id_task,
         id_user,
         updateCheckStatusTaskDto,
         query,

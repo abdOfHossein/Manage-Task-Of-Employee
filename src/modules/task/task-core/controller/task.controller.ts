@@ -240,10 +240,11 @@ export class TaskController {
   @ApiOperation({ summary: 'change status of task to check' })
   @Put('/status/ToCheck')
   changeStatusToCheck(
+    @Query('id_task') id_task: string,
     @Body() updateCheckStatusTaskDto: UpdateCheckStatusTaskDto,
     @GetUser() user: UserResponseJWTDto,
   ) {
-    return this.task.changeStatusToCheck(user.uid, updateCheckStatusTaskDto);
+    return this.task.changeStatusToCheck(id_task,user.uid, updateCheckStatusTaskDto);
   }
   @ApiOperation({
     summary: 'create task based on id_User & id_req',
