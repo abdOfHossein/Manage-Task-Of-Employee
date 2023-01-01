@@ -6,14 +6,14 @@ import {
   Put,
   Query,
   Req,
-  UseGuards,
+  UseGuards
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiOperation,
   ApiQuery,
   ApiResponse,
-  ApiTags,
+  ApiTags
 } from '@nestjs/swagger';
 import { PageDto } from 'src/common/dtos/page.dto';
 import { CreateRelTaskDto } from 'src/modules/rel-task/modules/dtos/create.rel-task.dto';
@@ -262,5 +262,14 @@ export class TaskController {
       user.uid,
       createTaskWithIdUserIdReqDto,
     );
+  }
+
+  @ApiOperation({ summary: 'pagination for task with CheckStatus' })
+  @Post('page/ofCheckStatusTask')
+  paginationTaskWithCheckStatus(
+    @GetUser() user: UserResponseJWTDto,
+    @Body() pageDto: TaskPageDto,
+  ): Promise<PageDto<TaskEnt>> {
+    return this.task.paginationTaskWithCheckStatus(user.uid,pageDto);
   }
 }

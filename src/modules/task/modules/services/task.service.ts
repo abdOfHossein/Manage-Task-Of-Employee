@@ -296,7 +296,7 @@ export class TaskService {
   }
 
   async changeStatusToCheck(
-    id_task:string,
+    id_task: string,
     id_user: string,
     updateCheckStatusTaskDto: UpdateCheckStatusTaskDto,
     query?: QueryRunner,
@@ -330,6 +330,23 @@ export class TaskService {
         query,
       );
     } catch (e) {
+      throw e;
+    }
+  }
+  
+  async paginationTaskWithCheckStatus(
+    id_user: string,
+    pageDto: TaskTypeStatusPageDto,
+    query?: QueryRunner,
+  ) {
+    try {
+      return await this.taskRepo.paginationTaskWithCheckStatus(
+        id_user,
+        pageDto,
+        query,
+      );
+    } catch (e) {
+      console.log(e);
       throw e;
     }
   }

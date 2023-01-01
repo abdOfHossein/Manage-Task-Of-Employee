@@ -974,4 +974,43 @@ export class TaskRepo {
     if (query) return await query.manager.save(taskEnt);
     return await this.dataSource.manager.save(taskEnt);
   }
+
+  async paginationTaskWithCheckStatus(
+    id_user: string,
+    pageDto: TaskTypeStatusPageDto,
+    query: QueryRunner | undefined,
+  ): Promise<PageDto<TaskEnt>> {
+    const queryBuilder = this.dataSource.manager
+      .createQueryBuilder(TaskEnt, 'task')
+      .where('task.head_id = :id_user AND task.status = :checkstatus', {
+        id_user,
+        checkstatus: StatusTaskEnum.CHECK,
+      });
+    if (pageDto.base) {
+      const row = pageDto.base.row;
+      const skip = PublicFunc.skipRow(pageDto.base.page, pageDto.base.row);
+      queryBuilder.skip(skip).take(row);
+    }
+    if (pageDto.field) {
+      const mapper = TaskMapperPagination[pageDto.field];
+      if (!mapper)
+        throw new Error(
+          `${JSON.stringify({
+            section: 'public',
+            value: 'Column Not Exist',
+          })}`,
+        );
+      queryBuilder.addOrderBy(
+        `${TaskMapperPagination[pageDto.field]}`,
+        pageDto.base.order,
+      );
+    }
+    const result = await queryBuilder.getManyAndCount();
+    const pageMetaDto = new PageMetaDto({
+      baseOptionsDto: pageDto.base,
+      itemCount: result[1],
+    });
+    console.log(result[0]);
+    return new PageDto(result[0], pageMetaDto);
+  }
 }

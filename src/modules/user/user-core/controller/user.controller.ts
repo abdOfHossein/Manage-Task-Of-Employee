@@ -54,11 +54,13 @@ export class UserController {
     return await this.user.createJwtSetRole(req.user.id_User, id_role);
   }
 
-  @PublicRole()
-  @Public()
+  // @PublicRole()
+  // @Public()
   @Post('login')
   @ApiOperation({ summary: 'sign in user by username and password' })
   async login(@Body() loginUserDto: LoginUserDto) {
+    console.log('hereeeeeeeeeeeeeeeeeeeeeeeeeeee');
+    
     return await this.user._createJwt(loginUserDto);
   }
 
@@ -100,14 +102,18 @@ export class UserController {
   }
 
   @UseGuards(RolesGuard)
+  @UseGuards(JwtGuard)
+  @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'pagination for user' })
   @Post('page')
   paginationUser(@Body() pageDto: UserPageDto): Promise<PageDto<UserEnt>> {
-    console.log(pageDto);
+    console.log('pageDtoooooooooooooooooooooooo');
     return this.user.paginationUser(pageDto);
   }
 
   @UseGuards(RolesGuard)
+  @UseGuards(JwtGuard)
+  @ApiBearerAuth('access-token')
   @Post('admin/password')
   @ApiOperation({ summary: 'change user password by vadmin' })
   async changePasswordAdmin(
