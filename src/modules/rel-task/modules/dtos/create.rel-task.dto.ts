@@ -8,7 +8,7 @@ export class CreateRelTaskDto {
   priority: string;
 
   @ApiProperty()
-  tittle: string;
+  title: string;
 
   @ApiProperty()
   duration: number;

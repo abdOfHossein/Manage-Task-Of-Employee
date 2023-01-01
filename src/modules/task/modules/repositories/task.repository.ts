@@ -12,6 +12,7 @@ import { StatusReqEnum } from 'src/modules/req/modules/enums/req.enum';
 import { UserEnt } from 'src/modules/user/modules/entities/user.entity';
 import { DataSource, FindOneOptions, QueryRunner } from 'typeorm';
 import { CreateTaskDto } from '../dtos/create.task.dto';
+import { CreateTaskWithIdUserIdReqDto } from '../dtos/create.task.withIdUserIdReq.dto';
 import { UpdateTaskDto } from '../dtos/update.task.dto';
 import { TaskEnt } from '../entities/task.entity';
 import { StatusTaskEnum } from '../enums/status-task.enum';
@@ -48,7 +49,7 @@ export class TaskRepo {
   //     // .where(`task.create_at > ( NOW() - new Date((task.create_at).setDate((task.create_at).getDay()+ task.duration))`)
   //     .select([
   //       'task.id',
-  //       'task.tittle',
+  //       'task.title',
   //       'task.priority',
   //       'task.head_id',
   //       'task.type',
@@ -102,7 +103,7 @@ export class TaskRepo {
       .where('task.head_id = :head_id', { head_id: id_user })
       .select([
         'task.id',
-        'task.tittle',
+        'task.title',
         'task.priority',
         'task.head_id',
         'task.type',
@@ -157,14 +158,14 @@ export class TaskRepo {
 
     const queryBuilder = this.dataSource.manager
       .createQueryBuilder(TaskEnt, 'task')
-      .leftJoinAndSelect('task.user','user')
+      .leftJoinAndSelect('task.user', 'user')
       .where('(user.id = :id_user) AND (task.status = :status)', {
-       id_user,
+        id_user,
         status: reportPage.filter.status,
       })
       .select([
         'task.id',
-        'task.tittle',
+        'task.title',
         'task.priority',
         'task.head_id',
         'task.type',
@@ -200,10 +201,10 @@ export class TaskRepo {
         reportPage.base.order,
       );
     }
-    
+
     const result = await queryBuilder.getManyAndCount();
     console.log(result);
-    
+
     const pageMetaDto = new PageMetaDto({
       baseOptionsDto: reportPage.base,
       itemCount: result[1],
@@ -243,7 +244,7 @@ export class TaskRepo {
     const taskEnt = new TaskEnt();
     taskEnt.head_id = createDto.head_id;
     taskEnt.priority = createDto.priority;
-    taskEnt.tittle = createDto.tittle;
+    taskEnt.title = createDto.title;
     taskEnt.duration = createDto.duration;
     taskEnt.status = createDto.status;
     taskEnt.type = createDto.type;
@@ -277,7 +278,7 @@ export class TaskRepo {
     taskEnt.user = createDto.userEnt;
     taskEnt.department_rl = createDto.departmentRlEnt;
     taskEnt.priority = createDto.priority;
-    taskEnt.tittle = createDto.tittle;
+    taskEnt.title = createDto.title;
     taskEnt.duration = createDto.duration;
     taskEnt.status = createDto.status;
     taskEnt.type = createDto.type;
@@ -304,7 +305,7 @@ export class TaskRepo {
   ): Promise<TaskEnt> {
     entity.head_id = updateDto.head_id;
     entity.priority = updateDto.priority;
-    entity.tittle = updateDto.tittle;
+    entity.title = updateDto.title;
     entity.duration = updateDto.duration;
     entity.status = updateDto.status;
     entity.type = updateDto.type;
@@ -334,7 +335,7 @@ export class TaskRepo {
       .select([
         'task.id',
         'task.priority',
-        'task.tittle',
+        'task.title',
         'task.head_id',
         'task.type',
         'task.duration',
@@ -351,9 +352,9 @@ export class TaskRepo {
           priority: `%${pageDto.filter.priority}%`,
         });
       }
-      if (pageDto.filter.tittle) {
-        queryBuilder.andWhere('task.tittle LIKE :tittle', {
-          tittle: `%${pageDto.filter.tittle}%`,
+      if (pageDto.filter.title) {
+        queryBuilder.andWhere('task.title LIKE :title', {
+          title: `%${pageDto.filter.title}%`,
         });
       }
       if (pageDto.filter.type) {
@@ -430,7 +431,7 @@ export class TaskRepo {
     const taskEnt = new TaskEnt();
     taskEnt.head_id = createDto.head_id;
     taskEnt.priority = createDto.priority;
-    taskEnt.tittle = createDto.tittle;
+    taskEnt.title = createDto.title;
     taskEnt.duration = createDto.duration;
     taskEnt.status = createDto.status;
     taskEnt.type = createDto.type;
@@ -487,7 +488,7 @@ export class TaskRepo {
     const taskEnt = new TaskEnt();
     taskEnt.head_id = createDto.head_id;
     taskEnt.priority = createDto.priority;
-    taskEnt.tittle = createDto.tittle;
+    taskEnt.title = createDto.title;
     taskEnt.duration = createDto.duration;
     taskEnt.status = createDto.status;
     taskEnt.type = createDto.type;
@@ -513,7 +514,7 @@ export class TaskRepo {
     const refTask = new TaskEnt();
     refTask.head_id = createDto.head_id;
     refTask.priority = createDto.priority;
-    refTask.tittle = createDto.tittle;
+    refTask.title = createDto.title;
     refTask.duration = createDto.duration;
     refTask.status = createDto.status;
     refTask.type = createDto.type;
@@ -574,7 +575,7 @@ export class TaskRepo {
     const taskEnt = new TaskEnt();
     taskEnt.head_id = createDto.head_id;
     taskEnt.priority = createDto.priority;
-    taskEnt.tittle = createDto.tittle;
+    taskEnt.title = createDto.title;
     taskEnt.duration = createDto.duration;
     taskEnt.status = createDto.status;
     taskEnt.type = createDto.type;
@@ -657,7 +658,7 @@ export class TaskRepo {
       .andWhere('user.id = :id_user', { id_user })
       .select([
         'task.id',
-        'task.tittle',
+        'task.title',
         'task.priority',
         'task.head_id',
         'task.type',
@@ -740,7 +741,7 @@ export class TaskRepo {
       console.log('result', result);
     }
 
-    const checkTask =  this.dataSource.manager
+    const checkTask = this.dataSource.manager
       .createQueryBuilder(UserEnt, 'user')
       .leftJoinAndSelect('user.task', 'task')
       .where('(task.id = :id_task) AND (user.id = :id_user)', {
@@ -795,7 +796,7 @@ export class TaskRepo {
   ): Promise<PageDto<TaskEnt>> {
     const queryBuilder = this.dataSource.manager
       .createQueryBuilder(TaskEnt, 'task')
-      .where(`(NOW() - task.do_date) > (task.duration * '1 sec'::interval)`)
+      .where(`(NOW() - task.do_date) > (task.duration * '1 sec'::interval)`);
     console.log(queryBuilder.getSql());
 
     if (pageDto.base) {
@@ -814,9 +815,9 @@ export class TaskRepo {
           priority: `%${pageDto.filter.priority}%`,
         });
       }
-      if (pageDto.filter.tittle) {
-        queryBuilder.andWhere('task.tittle LIKE :tittle', {
-          tittle: `%${pageDto.filter.tittle}%`,
+      if (pageDto.filter.title) {
+        queryBuilder.andWhere('task.title LIKE :title', {
+          title: `%${pageDto.filter.title}%`,
         });
       }
       if (pageDto.filter.type) {
@@ -866,7 +867,7 @@ export class TaskRepo {
       .andWhere('user.id = :id_user', { id_user })
       .select([
         'task.id',
-        'task.tittle',
+        'task.title',
         'task.priority',
         'task.head_id',
         'task.type',
@@ -977,4 +978,35 @@ export class TaskRepo {
   //   return await this.dataSource.manager.save(entity);
   }
 
+  async ceateTaskWithIdUserIdReqDto(
+    id_req: string,
+    id_user: string,
+    id_head: string,
+    createDto: CreateTaskWithIdUserIdReqDto,
+    query?: QueryRunner,
+  ): Promise<TaskEnt> {
+    const user = await this.dataSource.manager.findOne(UserEnt, {
+      where: { id: id_user },
+    });
+
+    const department_rl = await this.dataSource.manager
+      .createQueryBuilder(DepartmentRlEnt, 'department_rl')
+      .leftJoinAndSelect('department_rl.req', 'req')
+      .where('req.id = :id_req', { id_req })
+      .getOne();
+    console.log(department_rl);
+
+    const taskEnt = new TaskEnt();
+    taskEnt.head_id = createDto.head_id;
+    if (!createDto.priority) taskEnt.priority = '10';
+    taskEnt.title = createDto.title;
+    taskEnt.head_id = id_head;
+    taskEnt.duration = createDto.duration;
+    taskEnt.status = StatusTaskEnum.WAITING;
+    taskEnt.type = TypeTaskEnum.NEWTASK;
+    taskEnt.user = user;
+    taskEnt.department_rl = department_rl;
+    if (query) return await query.manager.save(taskEnt);
+    return await this.dataSource.manager.save(taskEnt);
+  }
 }

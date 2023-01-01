@@ -156,7 +156,7 @@ export class DepartmentRepo {
         'department_rls.id',
         'tasks.id',
         'tasks.priority',
-        'tasks.tittle',
+        'tasks.title',
         'tasks.head_id',
         'tasks.do_date',
         'tasks.remain_date',
@@ -209,7 +209,7 @@ export class DepartmentRepo {
         'users.id',
         'task.id',
         'task.priority',
-        'task.tittle',
+        'task.title',
         'task.head_id',
         'task.do_date',
         'task.remain_date',
@@ -225,7 +225,7 @@ export class DepartmentRepo {
   async allReqWithoutTaskOfDepartment(
     id_user: string,
   ): Promise<DepartmentEnt[]> {
-    const result =await this.dataSource.manager
+    const result = await this.dataSource.manager
       .createQueryBuilder(DepartmentEnt, 'department')
       .innerJoinAndSelect('department.department_rls', 'department_rls')
       .where('department.header_id = :id_user', {
@@ -255,5 +255,13 @@ export class DepartmentRepo {
       .getMany();
     console.log(result);
     return result;
+  }
+
+  async allDepartmentOfUser(id_user: string) {
+    return await this.dataSource.manager
+      .createQueryBuilder(DepartmentEnt, 'department')
+      .where('department.header_id = :id_user', { id_user })
+      .select(['department.id','department.header_id','department.name_department'])
+      .getMany();
   }
 }

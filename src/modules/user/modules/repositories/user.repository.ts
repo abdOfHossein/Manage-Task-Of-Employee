@@ -268,7 +268,7 @@ export class UserRepo {
         'user.id',
         'task.id',
         'task.priority',
-        'task.tittle',
+        'task.title',
         'task.head_id',
         'task.do_date',
         'task.remain_date',
@@ -288,9 +288,9 @@ export class UserRepo {
         queryBuilder.andWhere('task.priority LIKE :priority', {
           priority: `%${pageDto.filter.priority}%`,
         });
-      if (pageDto.filter.tittle)
-        queryBuilder.andWhere('task.tittle LIKE :tittle', {
-          tittle: `%${pageDto.filter.tittle}%`,
+      if (pageDto.filter.title)
+        queryBuilder.andWhere('task.title LIKE :title', {
+          title: `%${pageDto.filter.title}%`,
         });
       if (pageDto.filter.type)
         queryBuilder.andWhere('task.type LIKE :type', {
@@ -376,7 +376,7 @@ export class UserRepo {
         'user.id',
         'task.id',
         'task.priority',
-        'task.tittle',
+        'task.title',
         'task.head_id',
         'task.do_date',
         'task.remain_date',
@@ -396,9 +396,9 @@ export class UserRepo {
         queryBuilder.andWhere('task.priority LIKE :priority', {
           priority: `%${pageDto.filter.priority}%`,
         });
-      if (pageDto.filter.tittle)
-        queryBuilder.andWhere('task.tittle LIKE :tittle', {
-          tittle: `%${pageDto.filter.tittle}%`,
+      if (pageDto.filter.title)
+        queryBuilder.andWhere('task.title LIKE :title', {
+          title: `%${pageDto.filter.title}%`,
         });
       if (pageDto.filter.type)
         queryBuilder.andWhere('task.type LIKE :type', {
@@ -435,7 +435,7 @@ export class UserRepo {
     pageDto: TaskPageDto,
   ): Promise<UserEnt[]> {
     return this.dataSource.manager
-      .query(`select u.id,u.first_name ,u.last_name , (select  jsonb_agg(jsonb_build_object('id',id,'title',tittle,'status',status,'type',"type",'priority',priority,'duration',duration)) as text  from public.task t where cast (t."userId" as text) = cast(u.id as text) )  
+      .query(`select u.id,u.first_name ,u.last_name , (select  jsonb_agg(jsonb_build_object('id',id,'title',title,'status',status,'type',"type",'priority',priority,'duration',duration)) as text  from public.task t where cast (t."userId" as text) = cast(u.id as text) )  
     from public."user" u where u.status ='active'
     `);
   }

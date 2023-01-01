@@ -10,7 +10,7 @@ export class TaskFilterDto {
 
   @ApiProperty()
   @Allow()
-  tittle: string;
+  title: string;
 
   @ApiProperty()
   @Allow()

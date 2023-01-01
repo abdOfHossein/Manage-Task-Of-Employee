@@ -17,5 +17,5 @@ export class EventEnt extends BasicEnt {
   end_date: Date;
 
   @Column({ nullable: true })
-  tittle: string;
+  title: string;
 }

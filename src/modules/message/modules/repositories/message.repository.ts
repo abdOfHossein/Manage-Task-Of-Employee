@@ -33,7 +33,7 @@ export class MessageRepo {
   //     // .where(`Message.create_at > ( NOW() - new Date((Message.create_at).setDate((Message.create_at).getDay()+ Message.duration))`)
   //     .select([
   //       'Message.id',
-  //       'Message.tittle',
+  //       'Message.title',
   //       'Message.priority',
   //       'Message.head_id',
   //       'Message.type',
@@ -87,7 +87,7 @@ export class MessageRepo {
   //     .where('Message.head_id = :head_id', { head_id: id_user })
   //     .select([
   //       'Message.id',
-  //       'Message.tittle',
+  //       'Message.title',
   //       'Message.priority',
   //       'Message.head_id',
   //       'Message.type',
@@ -145,7 +145,7 @@ export class MessageRepo {
   //     .where('Message.head_id = :head_id', { head_id: id_user })
   //     .select([
   //       'Message.id',
-  //       'Message.tittle',
+  //       'Message.title',
   //       'Message.priority',
   //       'Message.head_id',
   //       'Message.type',
@@ -250,7 +250,7 @@ export class MessageRepo {
   //   MessageEnt.user = createDto.userEnt;
   //   MessageEnt.department_rl = createDto.departmentRlEnt;
   //   MessageEnt.priority = createDto.priority;
-  //   MessageEnt.tittle = createDto.tittle;
+  //   MessageEnt.title = createDto.title;
   //   MessageEnt.duration = createDto.duration;
   //   MessageEnt.status = createDto.status;
   //   MessageEnt.type = createDto.type;
@@ -274,7 +274,7 @@ export class MessageRepo {
   // ): Promise<MessageEnt> {
   //   entity.head_id = updateDto.head_id;
   //   entity.priority = updateDto.priority;
-  //   entity.tittle = updateDto.tittle;
+  //   entity.title = updateDto.title;
   //   entity.duration = updateDto.duration;
   //   entity.status = updateDto.status;
   //   entity.type = updateDto.type;
@@ -296,7 +296,7 @@ export class MessageRepo {
   //     .select([
   //       'Message.id',
   //       'Message.priority',
-  //       'Message.tittle',
+  //       'Message.title',
   //       'Message.head_id',
   //       'Message.type',
   //       'Message.duration',
@@ -313,9 +313,9 @@ export class MessageRepo {
   //         priority: `%${pageDto.filter.priority}%`,
   //       });
   //     }
-  //     if (pageDto.filter.tittle) {
-  //       queryBuilder.andWhere('Message.tittle LIKE :tittle', {
-  //         tittle: `%${pageDto.filter.tittle}%`,
+  //     if (pageDto.filter.title) {
+  //       queryBuilder.andWhere('Message.title LIKE :title', {
+  //         title: `%${pageDto.filter.title}%`,
   //       });
   //     }
   //     if (pageDto.filter.type) {
@@ -379,7 +379,7 @@ export class MessageRepo {
   //   const MessageEnt = new MessageEnt();
   //   MessageEnt.head_id = createDto.head_id;
   //   MessageEnt.priority = createDto.priority;
-  //   MessageEnt.tittle = createDto.tittle;
+  //   MessageEnt.title = createDto.title;
   //   MessageEnt.duration = createDto.duration;
   //   MessageEnt.status = createDto.status;
   //   MessageEnt.type = createDto.type;
@@ -424,7 +424,7 @@ export class MessageRepo {
   //   const MessageEnt = new MessageEnt();
   //   MessageEnt.head_id = createDto.head_id;
   //   MessageEnt.priority = createDto.priority;
-  //   MessageEnt.tittle = createDto.tittle;
+  //   MessageEnt.title = createDto.title;
   //   MessageEnt.duration = createDto.duration;
   //   MessageEnt.status = createDto.status;
   //   MessageEnt.type = createDto.type;
@@ -450,7 +450,7 @@ export class MessageRepo {
   //   const refMessage = new MessageEnt();
   //   refMessage.head_id = createDto.head_id;
   //   refMessage.priority = createDto.priority;
-  //   refMessage.tittle = createDto.tittle;
+  //   refMessage.title = createDto.title;
   //   refMessage.duration = createDto.duration;
   //   refMessage.status = createDto.status;
   //   refMessage.type = createDto.type;

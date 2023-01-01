@@ -16,7 +16,7 @@ export class EventRepo {
     query: QueryRunner | undefined,
   ): Promise<EventEnt> {
     const eventEnt = new EventEnt();
-    eventEnt.tittle = createDto.tittle;
+    eventEnt.title = createDto.title;
     eventEnt.priority = createDto.priority;
     eventEnt.start_date = createDto.start_date;
     eventEnt.end_date = createDto.end_date;
@@ -41,7 +41,7 @@ export class EventRepo {
     updateDto: UpdateEventDto,
     query?: QueryRunner,
   ): Promise<EventEnt> {
-    entity.tittle = updateDto.tittle;
+    entity.title = updateDto.title;
     entity.priority = updateDto.priority;
     entity.start_date = updateDto.start_date;
     entity.end_date = updateDto.end_date;

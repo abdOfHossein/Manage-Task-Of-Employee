@@ -25,6 +25,7 @@ export class DepartmentService {
       console.log(e);
     }
   }
+
   async findOneDepartment(searchDto: string, options?: FindOneOptions) {
     try {
       return await this.departmentRepo.findOneDepartment(searchDto, options);
@@ -99,6 +100,15 @@ export class DepartmentService {
   async allReqWithoutTaskOfDepartment(id_user:string) {
     try {
       return await this.departmentRepo.allReqWithoutTaskOfDepartment(id_user);
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  
+  async allDepartmentOfUser(id_user:string) {
+    try {
+      return await this.departmentRepo.allDepartmentOfUser(id_user);
     } catch (e) {
       throw e;
     }

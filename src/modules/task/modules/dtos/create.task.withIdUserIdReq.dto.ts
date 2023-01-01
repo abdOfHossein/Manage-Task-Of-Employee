@@ -8,12 +8,12 @@ import { UserEnt } from '../../../user/modules/entities/user.entity';
 import { StatusTaskEnum } from '../enums/status-task.enum';
 import { TypeTaskEnum } from '../enums/type-task.enum';
 
-export class CreateTaskDto {
-  @ApiHideProperty()
-  id_department_rl: string;
-
+export class CreateTaskWithIdUserIdReqDto {
   @ApiHideProperty()
   departmentRl: DepartmentRlEnt;
+
+  @ApiHideProperty()
+  userEnt?: UserEnt;
 
   @ApiProperty()
   priority: string;
@@ -27,42 +27,6 @@ export class CreateTaskDto {
   @ApiProperty()
   head_id: string;
 
-  @ApiHideProperty()
-  id_project?: string;
-
-  @ApiHideProperty()
-  id_req?: string;
-
-  @ApiHideProperty()
-  id_department?: string;
-
-  @ApiHideProperty()
-  departmentEnt: DepartmentEnt;
-
-  @ApiHideProperty()
-  departmentRlEnt: DepartmentRlEnt;
-
-  @ApiHideProperty()
-  id_user?: UserResponseJWTDto | any;
-
-  @ApiHideProperty()
-  userEnt?: UserEnt;
-
-  @ApiHideProperty()
-  projectEnt?: ProjectEnt;
-
-  @ApiHideProperty()
-  reqEnt?: ReqEnt;
-
-  @ApiProperty({ default: TypeTaskEnum.NEWTASK })
-  type: TypeTaskEnum;
-  
   @ApiProperty()
-  do_date:Date
-
-  @ApiProperty()
-  remain_date:Date
-
-  @ApiProperty({ default: StatusTaskEnum.DOING })
-  status: StatusTaskEnum;
+  do_date: Date;
 }

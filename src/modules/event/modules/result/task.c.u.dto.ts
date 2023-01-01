@@ -15,13 +15,13 @@ export class EventCUDto {
   end_date: Date;
 
   @ApiProperty()
-  tittle: string;
+  title: string;
 
   constructor(init?: Partial<EventEnt>) {
     this.id_Event = init.id;
     this.priority = init.priority;
     this.start_date = init.start_date;
     this.end_date = init.end_date;
-    this.tittle = init.tittle;
+    this.title = init.title;
   }
 }

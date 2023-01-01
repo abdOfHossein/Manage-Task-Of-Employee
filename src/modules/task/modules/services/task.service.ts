@@ -5,6 +5,7 @@ import { DepartmentRlService } from '../../../department-rl/modules/services/dep
 import { ProjectService } from '../../../project/modules/services/project.service';
 import { ReqService } from '../../../req/modules/services/req.service';
 import { CreateTaskDto } from '../dtos/create.task.dto';
+import { CreateTaskWithIdUserIdReqDto } from '../dtos/create.task.withIdUserIdReq.dto';
 import { UpdateCheckStatusTaskDto } from '../dtos/update.check-status.dto';
 import { UpdateTaskDto } from '../dtos/update.task.dto';
 import { TaskEnt } from '../entities/task.entity';
@@ -293,14 +294,39 @@ export class TaskService {
       throw e;
     }
   }
-  
+
   async changeStatusToCheck(
     id_user: string,
     updateCheckStatusTaskDto: UpdateCheckStatusTaskDto,
     query?: QueryRunner,
   ) {
     try {
-      // return await this.taskRepo.changeStatusToCheck(id_user, updateCheckStatusTaskDto, query);
+      return await this.taskRepo.changeStatusToCheck(
+        id_user,
+        updateCheckStatusTaskDto,
+        query,
+      );
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  }
+
+  async ceateTaskWithIdUserIdReqDto(
+    id_req: string,
+    id_user: string,
+    id_head: string,
+    ceateTaskWithIdUserIdReqDto: CreateTaskWithIdUserIdReqDto,
+    query?: QueryRunner,
+  ) {
+    try {
+      return await this.taskRepo.ceateTaskWithIdUserIdReqDto(
+        id_req,
+        id_user,
+        id_head,
+        ceateTaskWithIdUserIdReqDto,
+        query,
+      );
     } catch (e) {
       throw e;
     }
