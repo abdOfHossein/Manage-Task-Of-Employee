@@ -29,7 +29,7 @@ export class TaskEnt extends BasicEnt {
   @Column({ nullable: true })
   head_id: string;
 
-  @Column({ nullable: true, default: Date.now() })
+  @Column({ nullable: true, default: new Date() })
   do_date: Date;
 
   @Column({ nullable: true })

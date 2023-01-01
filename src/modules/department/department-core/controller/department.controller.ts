@@ -132,4 +132,5 @@ export class DepartmentController {
   ): Promise<DepartmentEnt[]> {
     return this.department.allDepartmentOfUser(user.uid);
   }
+
 }

@@ -24,7 +24,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      secretOrKey: process.env.JWT_SECRET || 'secret',
+      secretOrKey:'secret',
     });
   }
 
@@ -36,8 +36,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: any) {
-    console.log('here');
-    
     const result = await this.redisService.getKey(
       `${this.PREFIX_TOKEN_AUTH}${payload.unq}`,
     );

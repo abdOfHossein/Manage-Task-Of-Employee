@@ -6,14 +6,14 @@ import {
   Put,
   Query,
   Req,
-  UseGuards,
+  UseGuards
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiOperation,
   ApiQuery,
   ApiResponse,
-  ApiTags,
+  ApiTags
 } from '@nestjs/swagger';
 import { PageDto } from 'src/common/dtos/page.dto';
 import { CreateRelTaskDto } from 'src/modules/rel-task/modules/dtos/create.rel-task.dto';
@@ -240,10 +240,11 @@ export class TaskController {
   @ApiOperation({ summary: 'change status of task to check' })
   @Put('/status/ToCheck')
   changeStatusToCheck(
+    @Query('id_task') id_task: string,
     @Body() updateCheckStatusTaskDto: UpdateCheckStatusTaskDto,
     @GetUser() user: UserResponseJWTDto,
   ) {
-    return this.task.changeStatusToCheck(user.uid, updateCheckStatusTaskDto);
+    return this.task.changeStatusToCheck(id_task,user.uid, updateCheckStatusTaskDto);
   }
   @ApiOperation({
     summary: 'create task based on id_User & id_req',
@@ -261,5 +262,14 @@ export class TaskController {
       user.uid,
       createTaskWithIdUserIdReqDto,
     );
+  }
+
+  @ApiOperation({ summary: 'pagination for task with CheckStatus' })
+  @Post('page/ofCheckStatusTask')
+  paginationTaskWithCheckStatus(
+    @GetUser() user: UserResponseJWTDto,
+    @Body() pageDto: TaskPageDto,
+  ): Promise<PageDto<TaskEnt>> {
+    return this.task.paginationTaskWithCheckStatus(user.uid,pageDto);
   }
 }

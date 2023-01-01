@@ -1,4 +1,9 @@
-import { BadGatewayException, HttpException, HttpStatus } from '@nestjs/common';
+import {
+  BadGatewayException,
+  BadRequestException,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PageDto } from 'src/common/dtos/page.dto';
 import { PageMetaDto } from 'src/common/dtos/page.meta.dto';
@@ -913,66 +918,29 @@ export class TaskRepo {
   }
 
   async changeStatusToCheck(
+    id_task: string,
     id_user: string,
     updateCheckStatusTaskDto: UpdateCheckStatusTaskDto,
     query?: QueryRunner,
   ) {
-    //   const req = await this.dataSource.manager
-    //     .createQueryBuilder(ReqEnt, 'req')
-    //     .leftJoinAndSelect('req.department_rls', 'department_rls')
-    //     .leftJoinAndSelect('department_rls.tasks', 'tasks')
-    //     .where(
-    //       'tasks.id = :id_task AND (tasks.status != :statusCancel OR tasks.status != :statusDone)',
-    //       {
-    //         id_task,
-    //         statusCancel: StatusTaskEnum.CANCEL,
-    //         statusDone: StatusTaskEnum.DONE,
-    //       },
-    //     )
-    //     .getMany();
-    //   if (!req) {
-    //     const result = await this.dataSource.manager
-    //       .createQueryBuilder(ReqEnt, 'req')
-    //       .leftJoinAndSelect('req.department_rls', 'department_rls')
-    //       .leftJoinAndSelect('department_rls.tasks', 'tasks')
-    //       .where(
-    //         'tasks.id = :id_task AND (tasks.status != :statusCancel OR tasks.status != :statusDone)',
-    //         {
-    //           id_task,
-    //           statusCancel: StatusTaskEnum.CANCEL,
-    //           statusDone: StatusTaskEnum.DONE,
-    //         },
-    //       )
-    //       .update(ReqEnt)
-    //       .set({
-    //         status: StatusReqEnum.DONE,
-    //       })
-    //       .execute();
-    //     console.log('result', result);
-    //   }
-    //   const checkTask =  this.dataSource.manager
-    //     .createQueryBuilder(UserEnt, 'user')
-    //     .leftJoinAndSelect('user.task', 'task')
-    //     .where('(task.id = :id_task) AND (user.id = :id_user)', {
-    //       id_task,
-    //       id_user,
-    //     });
-    //   // .getOne();
-    //   console.log(id_user);
-    //   console.log(id_task);
-    //   console.log(await checkTask.getOne());
-    //   console.log(checkTask.getSql());
-    //   if (!(await checkTask.getOne()))
-    //     throw new HttpException(
-    //       'This task is not for this user',
-    //       HttpStatus.FORBIDDEN,
-    //     );
-    //   const entity = await this.dataSource.manager.findOne(TaskEnt, {
-    //     where: { id: id_task },
-    //   });
-    //   entity.status = StatusTaskEnum.DONE;
-    //   if (query) return await query.manager.save(entity);
-    //   return await this.dataSource.manager.save(entity);
+    const ckeckTask = await this.dataSource.manager
+      .createQueryBuilder(TaskEnt, 'task')
+      .leftJoinAndSelect('task.user', 'user')
+      .where('user.id = :id_user', { id_user })
+      .getOne();
+    console.log(ckeckTask);
+    if (!ckeckTask)
+      throw new BadRequestException({
+        message: 'You can not Update because,This Task is Not for This User',
+      });
+    const entity = await this.dataSource.manager.findOne(TaskEnt, {
+      where: { id: id_task },
+    });
+
+    entity.status = StatusTaskEnum.CHECK;
+    entity.check_status = updateCheckStatusTaskDto.check_status;
+    if (query) return await query.manager.save(entity);
+    return await this.dataSource.manager.save(entity);
   }
 
   async ceateTaskWithIdUserIdReqDto(
@@ -1005,5 +973,44 @@ export class TaskRepo {
     taskEnt.department_rl = department_rl;
     if (query) return await query.manager.save(taskEnt);
     return await this.dataSource.manager.save(taskEnt);
+  }
+
+  async paginationTaskWithCheckStatus(
+    id_user: string,
+    pageDto: TaskTypeStatusPageDto,
+    query: QueryRunner | undefined,
+  ): Promise<PageDto<TaskEnt>> {
+    const queryBuilder = this.dataSource.manager
+      .createQueryBuilder(TaskEnt, 'task')
+      .where('task.head_id = :id_user AND task.status = :checkstatus', {
+        id_user,
+        checkstatus: StatusTaskEnum.CHECK,
+      });
+    if (pageDto.base) {
+      const row = pageDto.base.row;
+      const skip = PublicFunc.skipRow(pageDto.base.page, pageDto.base.row);
+      queryBuilder.skip(skip).take(row);
+    }
+    if (pageDto.field) {
+      const mapper = TaskMapperPagination[pageDto.field];
+      if (!mapper)
+        throw new Error(
+          `${JSON.stringify({
+            section: 'public',
+            value: 'Column Not Exist',
+          })}`,
+        );
+      queryBuilder.addOrderBy(
+        `${TaskMapperPagination[pageDto.field]}`,
+        pageDto.base.order,
+      );
+    }
+    const result = await queryBuilder.getManyAndCount();
+    const pageMetaDto = new PageMetaDto({
+      baseOptionsDto: pageDto.base,
+      itemCount: result[1],
+    });
+    console.log(result[0]);
+    return new PageDto(result[0], pageMetaDto);
   }
 }
