@@ -111,9 +111,11 @@ export class ReqRepo {
   }
 
   async paginationReq(pageDto: ReqPageDto): Promise<PageDto<ReqEnt>> {
-    const queryBuilder = this.dataSource.manager
-      .createQueryBuilder(ReqEnt, 'req')
-      // .select(['req.id', 'req.status']);
+    const queryBuilder = this.dataSource.manager.createQueryBuilder(
+      ReqEnt,
+      'req',
+    );
+    // .select(['req.id', 'req.status']);
     if (pageDto.base) {
       const row = pageDto.base.row;
       const skip = PublicFunc.skipRow(pageDto.base.page, pageDto.base.row);
@@ -241,5 +243,15 @@ export class ReqRepo {
     return result;
   }
 
-
+  async allReqBasedOnUserId(id_user: string): Promise<ReqEnt[]> {
+    const result = await this.dataSource.manager
+      .createQueryBuilder(ReqEnt, 'req')
+      .leftJoinAndSelect('req.department_rls', 'department_rls')
+      .leftJoinAndSelect('department_rls.department', 'department')
+      .where('department.header_id = :id_user', {
+        id_user,
+      })
+      .getMany();
+    return result;
+  }
 }

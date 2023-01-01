@@ -176,17 +176,17 @@ export class DepartmentRepo {
         id_user,
       })
       .leftJoinAndSelect('department.users', 'users')
-      .select([
-        'department.id',
-        'users.id',
-        'users.first_name',
-        'users.last_name',
-        'users.username',
-        'users.phonenumber',
-        'users.email',
-        'users.status',
-        'users.role_default_status',
-      ])
+      // .select([
+      //   'department.id',
+      //   'users.id',
+      //   'users.first_name',
+      //   'users.last_name',
+      //   'users.username',
+      //   'users.phonenumber',
+      //   'users.email',
+      //   'users.status',
+      //   'users.role_default_status',
+      // ])
       .getMany();
     console.log(result);
     return result;
@@ -261,7 +261,11 @@ export class DepartmentRepo {
     return await this.dataSource.manager
       .createQueryBuilder(DepartmentEnt, 'department')
       .where('department.header_id = :id_user', { id_user })
-      .select(['department.id','department.header_id','department.name_department'])
+      .select([
+        'department.id',
+        'department.header_id',
+        'department.name_department',
+      ])
       .getMany();
   }
 }

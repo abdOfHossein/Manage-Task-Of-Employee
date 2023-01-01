@@ -106,4 +106,16 @@ export class ReqController {
     return this.req.allReqWithoutTaskAdmin();
   }
 
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtGuard)
+  @ApiBearerAuth('access-token')
+  @ApiOperation({
+    summary: 'findAll Req that userId is equal with headerId in Department',
+  })
+  @Get('allReq/BasedOnUserId')
+  allReqBasedOnUserId(
+    @GetUser() user: UserResponseJWTDto
+  ): Promise<ReqEnt[]> {
+    return this.req.allReqBasedOnUserId(user.uid);
+  }
 }
