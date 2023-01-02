@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Put, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post, Put, Query } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { PageDto } from 'src/common/dtos/page.dto';
 import { CreateProjectDto } from '../../modules/dtos/create.project.dto';
@@ -58,5 +58,13 @@ export class ProjectController {
   @Get('all/withReqs')
   allProjectWithReq(): Promise<ProjectEnt[]> {
     return this.project.allProjectWithReq();
+  }
+
+  @ApiOperation({ summary: 'delete Project' })
+  @Delete()
+  deleteProject(
+    @Query('id_projectt') id_projectt: string,
+  ): Promise<ProjectEnt> {
+    return this.project.deleteProject(id_projectt);
   }
 }

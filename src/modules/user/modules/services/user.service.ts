@@ -22,6 +22,8 @@ export class UserService {
 
   async createUser(createDt: CreateUserDto, query?: QueryRunner) {
     try {
+      console.log('hereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee in Service');
+      
       const file = await this.dataSource
         .getRepository(FileEnt)
         .findOne({ where: { unq_file: createDt.unq_file } });
@@ -41,6 +43,8 @@ export class UserService {
       }
       return await this.userRepo.createUser(createDt, query);
     } catch (e) {
+      console.log('hereeeeeeeeeeeeeeeeeeeeeeeeeeeeee');
+      
       console.log(e);
       if (
         e.message.indexOf('duplicate key value violates unique constraint') == 0
@@ -193,5 +197,13 @@ export class UserService {
 
   async listOfTaskRecentDay(id_user: string) {
     return await this.userRepo.listOfTaskRecentDay(id_user);
+  }
+
+  async deleteUser(id_user:string) {
+    try {
+      return await this.userRepo.deleteUser(id_user);
+    } catch (e) {
+      throw e;
+    }
   }
 }

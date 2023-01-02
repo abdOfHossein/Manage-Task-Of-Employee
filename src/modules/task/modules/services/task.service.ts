@@ -350,4 +350,12 @@ export class TaskService {
       throw e;
     }
   }
+
+  async deleteTask(id_task:string) {
+    try {
+      return await this.taskRepo.deleteTask(id_task);
+    } catch (e) {
+      throw e;
+    }
+  }
 }

@@ -254,4 +254,13 @@ export class ReqRepo {
       .getMany();
     return result;
   }
+
+  async deleteReq(id_req: string) {
+    const req = await this.dataSource.manager.findOne(ReqEnt, {
+      where: { id: id_req },
+    });
+    req.delete_at = new Date();
+    return await this.dataSource.manager.save(req);
+  }
+  
 }

@@ -66,12 +66,6 @@ export class AppConfigService {
     return numbers.reduce((partialSum, a) => partialSum * a);
   }
 
-  // i18n
-  get translateClassValidation(): boolean {
-    const res = this.configService.get<string>('i18n.translateClassValidation');
-    return res.toLocaleLowerCase() === 'true';
-  }
-
   // security
   get saltOrRounds(): number {
     return Number(this.configService.get<string>('security.saltOrRounds'));

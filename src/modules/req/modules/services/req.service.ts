@@ -112,4 +112,12 @@ export class ReqService {
       throw e;
     }
   }
+
+  async deleteReq(id_req:string) {
+    try {
+      return await this.reqRepo.deleteReq(id_req);
+    } catch (e) {
+      throw e;
+    }
+  }
 }

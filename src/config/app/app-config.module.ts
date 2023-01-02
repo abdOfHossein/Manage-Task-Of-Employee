@@ -10,19 +10,8 @@ import { AppConfigService } from './app-config.service';
       isGlobal: true,
       load: [
         appConfiguration,
-        // verificationConfiguration,
-        // tokenConfiguration,
-        // i18nConfiguration,
-        // securityConfiguration,
+
       ],
-      // validationSchema: Joi.object({
-      //   // APP_ENV: Joi.string()
-      //   //   .valid('debug', 'test', 'release')
-      //   //   .required().default('debug'),
-      //   APP_NAME: Joi.string().default('no name'),
-      //   APP_PORT: Joi.number().default(3000),
-      //   APP_API_GLOBAL_PREFIX: Joi.string(),
-      // }),
     }),
   ],
   providers: [ConfigService, AppConfigService],

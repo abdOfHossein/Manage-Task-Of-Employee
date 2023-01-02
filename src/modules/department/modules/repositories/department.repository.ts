@@ -268,4 +268,12 @@ export class DepartmentRepo {
       ])
       .getMany();
   }
+
+  async deleteDepartmen(id_department: string) {
+    const department = await this.dataSource.manager.findOne(DepartmentEnt, {
+      where: { id: id_department },
+    });
+    department.delete_at = new Date();
+    return await this.dataSource.manager.save(department);
+  }
 }

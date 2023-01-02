@@ -20,28 +20,28 @@ export class UserEnt extends BasicEnt {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: false })
   first_name: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: false })
   last_name: string;
 
-  @Column({ nullable: true, unique: true })
+  @Column({ nullable: false, unique: true })
   username: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: false })
   password: string;
 
-  @Column({ nullable: true, unique: true })
+  @Column({ nullable: false, unique: true })
   email: string;
 
-  @Column({ nullable: true, unique: true })
+  @Column({ nullable: false, unique: true })
   phonenumber: string;
 
   @Column({ type: 'enum', enum: UserStatus, default: UserStatus.ACTIVE})
   status: UserStatus;
 
-  @Column({ nullable: true, default: true })
+  @Column({ nullable: false, default: true })
   role_default_status: boolean;
 
   @ManyToOne(() => DepartmentEnt, (department) => department.users)

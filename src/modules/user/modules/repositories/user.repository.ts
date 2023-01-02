@@ -85,18 +85,26 @@ export class UserRepo {
     createDto: CreateUserDto,
     query: QueryRunner | undefined,
   ): Promise<UserEnt> {
-    const userEnt = new UserEnt();
-    userEnt.first_name = createDto.first_name;
-    userEnt.role = createDto.roleEnt;
-    userEnt.email = createDto.email;
-    userEnt.last_name = createDto.last_name;
-    userEnt.password = createDto.password;
-    userEnt.phonenumber = createDto.phonenumber;
-    userEnt.username = createDto.username;
-    userEnt.department = createDto.departmentEnt;
-    userEnt.files = [createDto.file];
-    if (query) return await query.manager.save(userEnt);
-    return await this.dataSource.manager.save(userEnt);
+    try {
+      console.log('in Repo');
+
+      const userEnt = new UserEnt();
+      userEnt.first_name = createDto.first_name;
+      userEnt.role = createDto.roleEnt;
+      userEnt.email = createDto.email;
+      userEnt.last_name = createDto.last_name;
+      userEnt.password = createDto.password;
+      userEnt.phonenumber = createDto.phonenumber;
+      userEnt.username = createDto.username;
+      userEnt.department = createDto.departmentEnt;
+      userEnt.files = [createDto.file];
+      if (query) return await query.manager.save(userEnt);
+      return await this.dataSource.manager.save(userEnt);
+    } catch (e) {
+      console.log('hereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee2');
+      console.log(e);
+      throw e;
+    }
   }
 
   async validateUser(
@@ -364,6 +372,7 @@ export class UserRepo {
       ])
       .getMany();
   }
+
   async paginationTaskWithJwt(
     id_user: string,
     pageDto: TaskPageDto,
@@ -430,6 +439,7 @@ export class UserRepo {
     });
     return new PageDto(result[0], pageMetaDto);
   }
+
   async paginationDoneTaskRecentDay(
     id_user: string,
     pageDto: TaskPageDto,
@@ -452,5 +462,13 @@ export class UserRepo {
     `);
 
     return result;
+  }
+
+  async deleteUser(id_user: string) {
+    const user = await this.dataSource.manager.findOne(UserEnt, {
+      where: { id: id_user },
+    });
+    user.delete_at = new Date();
+    return await this.dataSource.manager.save(user);
   }
 }

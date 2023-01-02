@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Post,
   Put,
@@ -113,9 +114,13 @@ export class ReqController {
     summary: 'findAll Req that userId is equal with headerId in Department',
   })
   @Get('allReq/BasedOnUserId')
-  allReqBasedOnUserId(
-    @GetUser() user: UserResponseJWTDto
-  ): Promise<ReqEnt[]> {
+  allReqBasedOnUserId(@GetUser() user: UserResponseJWTDto): Promise<ReqEnt[]> {
     return this.req.allReqBasedOnUserId(user.uid);
+  }
+
+  @ApiOperation({ summary: 'delete Req' })
+  @Delete()
+  deleteReq(@Query('id_req') id_req: string): Promise<ReqEnt> {
+    return this.req.deleteReq(id_req);
   }
 }

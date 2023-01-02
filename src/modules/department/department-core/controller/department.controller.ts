@@ -7,6 +7,7 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
+import { Delete } from '@nestjs/common/decorators';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { GetUser } from 'src/common/decorates/get.user.decorator';
 import { PageDto } from 'src/common/dtos/page.dto';
@@ -131,5 +132,13 @@ export class DepartmentController {
     @GetUser() user: UserResponseJWTDto,
   ): Promise<DepartmentEnt[]> {
     return this.department.allDepartmentOfUser(user.uid);
+  }
+
+  @ApiOperation({ summary: 'delete Department' })
+  @Delete()
+  deleteDepartmen(
+    @Query('id_department') id_department: string,
+  ): Promise<DepartmentEnt> {
+    return this.department.deleteDepartmen(id_department);
   }
 }

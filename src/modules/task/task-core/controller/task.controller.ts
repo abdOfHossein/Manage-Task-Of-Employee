@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Post,
   Put,
@@ -271,5 +272,11 @@ export class TaskController {
     @Body() pageDto: TaskPageDto,
   ): Promise<PageDto<TaskEnt>> {
     return this.task.paginationTaskWithCheckStatus(user.uid,pageDto);
+  }
+
+  @ApiOperation({ summary: 'delete task' })
+  @Delete()
+  deleteTask(@Query('id_task') id_task: string): Promise<TaskEnt> {
+    return this.task.deleteTask(id_task);
   }
 }

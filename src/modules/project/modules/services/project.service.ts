@@ -77,4 +77,12 @@ export class ProjectService {
       throw e;
     }
   }
+
+  async deleteProject(id_projectt:string) {
+    try {
+      return await this.projectRepo.deleteProject(id_projectt);
+    } catch (e) {
+      throw e;
+    }
+  }
 }

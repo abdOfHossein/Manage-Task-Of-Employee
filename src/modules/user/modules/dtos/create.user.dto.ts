@@ -1,27 +1,35 @@
 import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
+import { IsNotEmpty } from 'class-validator';
 import { DepartmentEnt } from 'src/modules/department/modules/entities/department.entity';
 import { FileEnt } from 'src/modules/file/modules/entities/file.entity';
 import { RoleEnt } from 'src/modules/role/modules/entities/role.entity';
 
 export class CreateUserDto {
+  @IsNotEmpty()
   @ApiHideProperty()
-  unq_file:string;
+  unq_file: string;
 
+  @IsNotEmpty()
   @ApiHideProperty()
-  file:FileEnt;
+  file: FileEnt;
 
+  @IsNotEmpty()
   @ApiHideProperty()
   departmentEnt: DepartmentEnt;
 
+  @IsNotEmpty()
   @ApiHideProperty()
   id_department: string;
 
-  @ApiProperty({default:true})
+  @IsNotEmpty()
+  @ApiProperty({ default: true })
   role_default_status: boolean;
 
+  @IsNotEmpty()
   @ApiHideProperty()
   roleEnt: RoleEnt;
 
+  @IsNotEmpty()
   @ApiHideProperty()
   id_role: string;
 

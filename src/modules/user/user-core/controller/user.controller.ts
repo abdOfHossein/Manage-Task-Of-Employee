@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Post,
   Put,
@@ -9,7 +10,6 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { Public } from 'src/common/decorates/public.decorator';
 import { PageDto } from 'src/common/dtos/page.dto';
 import { TaskPageDto } from 'src/modules/task/modules/paginations/task.page.dto';
 import { GetUser } from '../../../../common/decorates/get.user.decorator';
@@ -60,7 +60,7 @@ export class UserController {
   @ApiOperation({ summary: 'sign in user by username and password' })
   async login(@Body() loginUserDto: LoginUserDto) {
     console.log('hereeeeeeeeeeeeeeeeeeeeeeeeeeee');
-    
+
     return await this.user._createJwt(loginUserDto);
   }
 
@@ -190,5 +190,11 @@ export class UserController {
   @Post('/lsit/previousDay')
   listOfTaskRecentDay(@GetUser() id_user: UserResponseJWTDto) {
     return this.user.listOfTaskRecentDay(id_user.uid);
+  }
+
+  @ApiOperation({ summary: 'delete User' })
+  @Delete()
+  deleteUser(@Query('id_user') id_user: string): Promise<UserEnt> {
+    return this.user.deleteUser(id_user);
   }
 }

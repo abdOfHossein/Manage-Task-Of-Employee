@@ -1013,4 +1013,12 @@ export class TaskRepo {
     console.log(result[0]);
     return new PageDto(result[0], pageMetaDto);
   }
+
+  async deleteTask(id_task: string) {
+    const task = await this.dataSource.manager.findOne(TaskEnt, {
+      where: { id: id_task },
+    });
+    task.delete_at = new Date();
+    return await this.dataSource.manager.save(task);
+  }
 }

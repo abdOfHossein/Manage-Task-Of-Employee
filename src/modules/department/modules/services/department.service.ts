@@ -114,4 +114,11 @@ export class DepartmentService {
     }
   }
   
+  async deleteDepartmen(id_department:string) {
+    try {
+      return await this.departmentRepo.deleteDepartmen(id_department);
+    } catch (e) {
+      throw e;
+    }
+  }
 }
