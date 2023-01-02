@@ -471,4 +471,7 @@ export class UserRepo {
     user.delete_at = new Date();
     return await this.dataSource.manager.save(user);
   }
+  async getAllUser(){
+    return await this.dataSource.manager.find(UserEnt);
+  }
 }

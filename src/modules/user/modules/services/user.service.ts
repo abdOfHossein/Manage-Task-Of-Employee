@@ -22,12 +22,12 @@ export class UserService {
 
   async createUser(createDt: CreateUserDto, query?: QueryRunner) {
     try {
-      console.log('hereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee in Service');
-      
-      const file = await this.dataSource
-        .getRepository(FileEnt)
-        .findOne({ where: { unq_file: createDt.unq_file } });
-      createDt.file = file;
+        if (createDt.unq_file) {
+          const file = await this.dataSource
+          .getRepository(FileEnt)
+          .findOne({ where: { unq_file: createDt.unq_file } });
+        createDt.file = file;
+        }
       createDt.departmentEnt = await this.dataSource
         .getRepository(DepartmentEnt)
         .findOne({ where: { id: createDt.id_department } });
@@ -53,6 +53,10 @@ export class UserService {
       }
       throw e;
     }
+  }
+
+  async getAllUser() {
+    return await this.userRepo.getAllUser();
   }
 
   async createJwtSetRole(id_user: string, id_role: string) {

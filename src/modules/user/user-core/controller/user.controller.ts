@@ -39,11 +39,9 @@ export class UserController {
   @ApiOperation({ summary: 'sign up user with department' })
   register(
     @Query('id_department') id_department: string,
-    @Query('unq_file') unq_file: string,
     @Body() createUserDto: CreateUserDto,
   ): Promise<UserEnt> {
     createUserDto.id_department = id_department;
-    createUserDto.unq_file = unq_file;
     return this.user.createUser(createUserDto);
   }
 
@@ -77,6 +75,14 @@ export class UserController {
   async blockUser(@Query('id_user') id_user: string) {
     return await this.user.blockUser(id_user);
   }
+
+  // @UseGuards(RolesGuard)
+  @Get('/all')
+  @ApiOperation({ summary: 'get all Users just for you baby(hadi<3)' })
+  async getAllUser() {
+    return await this.user.getAllUser();
+  }
+  
 
   @UseGuards(RolesGuard)
   @Post('password')

@@ -5,9 +5,8 @@ import { FileEnt } from 'src/modules/file/modules/entities/file.entity';
 import { RoleEnt } from 'src/modules/role/modules/entities/role.entity';
 
 export class CreateUserDto {
-  @IsNotEmpty()
-  @ApiHideProperty()
-  unq_file: string;
+  @ApiProperty()
+  unq_file?:string;
 
   @IsNotEmpty()
   @ApiHideProperty()
