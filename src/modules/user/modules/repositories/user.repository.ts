@@ -86,8 +86,6 @@ export class UserRepo {
     query: QueryRunner | undefined,
   ): Promise<UserEnt> {
     try {
-      console.log('in Repo');
-
       const userEnt = new UserEnt();
       userEnt.first_name = createDto.first_name;
       userEnt.role = createDto.roleEnt;
@@ -471,7 +469,7 @@ export class UserRepo {
     user.delete_at = new Date();
     return await this.dataSource.manager.save(user);
   }
-  async getAllUser(){
+  async getAllUser() {
     return await this.dataSource.manager.find(UserEnt);
   }
 }

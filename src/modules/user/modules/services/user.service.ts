@@ -20,31 +20,37 @@ import { UserRepo } from '../repositories/user.repository';
 export class UserService {
   constructor(private userRepo: UserRepo, private dataSource: DataSource) {}
 
-  async createUser(createDt: CreateUserDto, query?: QueryRunner) {
+  async createUser(createDto: CreateUserDto, query?: QueryRunner) {
     try {
-        if (createDt.unq_file) {
-          const file = await this.dataSource
+      if (createDto.unq_file) {
+        const file = await this.dataSource
           .getRepository(FileEnt)
-          .findOne({ where: { unq_file: createDt.unq_file } });
-        createDt.file = file;
-        }
-      createDt.departmentEnt = await this.dataSource
-        .getRepository(DepartmentEnt)
-        .findOne({ where: { id: createDt.id_department } });
-
-      if (createDt.role_default_status === true) {
-        createDt.roleEnt = await this.dataSource
-          .getRepository(RoleEnt)
-          .findOne({ where: { role_type: RoleTypeEnum.USER } });
-      } else {
-        createDt.roleEnt = await this.dataSource
-          .getRepository(RoleEnt)
-          .findOne({ where: { role_type: RoleTypeEnum.ADMIN } });
+          .findOne({ where: { unq_file: createDto.unq_file } });
+        createDto.file = file;
       }
-      return await this.userRepo.createUser(createDt, query);
+      createDto.departmentEnt = await this.dataSource
+        .getRepository(DepartmentEnt)
+        .findOne({ where: { id: createDto.id_department } });
+      if (!createDto.id_role) {
+        if (createDto.role_default_status === true) {
+          createDto.roleEnt = await this.dataSource
+            .getRepository(RoleEnt)
+            .findOne({ where: { role_type: RoleTypeEnum.USER } });
+        } else {
+          createDto.roleEnt = await this.dataSource
+            .getRepository(RoleEnt)
+            .findOne({ where: { role_type: RoleTypeEnum.ADMIN } });
+        }
+      } else {
+        createDto.roleEnt = await this.dataSource.manager.findOne(RoleEnt, {
+          where: { id: createDto.id_role },
+        });
+      }
+
+      return await this.userRepo.createUser(createDto, query);
     } catch (e) {
       console.log('hereeeeeeeeeeeeeeeeeeeeeeeeeeeeee');
-      
+
       console.log(e);
       if (
         e.message.indexOf('duplicate key value violates unique constraint') == 0
@@ -203,7 +209,7 @@ export class UserService {
     return await this.userRepo.listOfTaskRecentDay(id_user);
   }
 
-  async deleteUser(id_user:string) {
+  async deleteUser(id_user: string) {
     try {
       return await this.userRepo.deleteUser(id_user);
     } catch (e) {

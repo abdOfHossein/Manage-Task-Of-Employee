@@ -12,7 +12,6 @@ import { UpdateDepartmentDto } from '../dtos/update.department.dto';
 import { DepartmentEnt } from '../entities/department.entity';
 import { DepartmentMapperPagination } from '../mapper/department.mapper.pagination';
 import { DepartmentPageDto } from '../paginations/department.page.dto';
-
 export class DepartmentRepo {
   constructor(
     @InjectRepository(DepartmentEnt)
@@ -86,11 +85,7 @@ export class DepartmentRepo {
   ): Promise<PageDto<DepartmentEnt>> {
     const queryBuilder = this.dataSource.manager
       .createQueryBuilder(DepartmentEnt, 'department')
-      .select([
-        'department.id',
-        'department.header_id',
-        'department.name_department',
-      ]);
+      .loadRelationCountAndMap('department.usersCount', 'department.users');
     if (pageDto.base) {
       const row = pageDto.base.row;
       const skip = PublicFunc.skipRow(pageDto.base.page, pageDto.base.row);
