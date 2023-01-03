@@ -23,4 +23,8 @@ export class RoleService {
   async paginationRole(pageDto: RolePageDto) {
     return await this.roleRepo.paginationRole(pageDto);
   }
+
+  async findAllRole() {
+    return await this.roleRepo.findAllRole();
+  }
 }

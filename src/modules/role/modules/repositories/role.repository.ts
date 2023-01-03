@@ -74,4 +74,11 @@ export class RoleRepo {
     });
     return new PageDto(result[0], pageMetaDto);
   }
+
+  async findAllRole(): Promise<RoleEnt[]> {
+    const result = await this.dataSource.manager.find(RoleEnt, {
+      where: {},
+    });
+    return result;
+  }
 }

@@ -28,4 +28,10 @@ export class RoleController {
   paginationRole(@Body() pageDto: RolePageDto): Promise<PageDto<RoleEnt>> {
     return this.role.paginationRole(pageDto);
   }
+
+  @ApiOperation({ summary: 'lst all Role' })
+  @Get()
+  findAllRole(): Promise<RoleEnt[]> {
+    return this.role.findAllRole();
+  }
 }
