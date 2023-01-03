@@ -33,7 +33,7 @@ export class RoleController {
   }
 
   @ApiOperation({ summary: 'lst all Role' })
-  @Get()
+  @Get('all')
   findAllRole(): Promise<RoleEnt[]> {
     return this.role.findAllRole();
   }

@@ -78,9 +78,8 @@ export class RoleRepo {
   }
 
   async findAllRole(): Promise<RoleEnt[]> {
-    const result = await this.dataSource.manager.find(RoleEnt, {
-      where: {},
-    });
+    const result = await this.dataSource.manager.find(RoleEnt);
+    console.log(result);
     return result;
   }
 
