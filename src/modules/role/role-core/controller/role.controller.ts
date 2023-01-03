@@ -2,6 +2,7 @@ import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { Delete, Put } from '@nestjs/common/decorators';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { PageDto } from 'src/common/dtos/page.dto';
+import { UserEnt } from 'src/modules/user/modules/entities/user.entity';
 import { ConfigRoleDto } from '../../modules/dtos/config.roele.dto';
 import { CreateRoleDto } from '../../modules/dtos/create.role.dto';
 import { RoleEnt } from '../../modules/entities/role.entity';
@@ -42,7 +43,7 @@ export class RoleController {
   configRole(
     @Query('id_user') id_user: string,
     @Body() configRoleDto: ConfigRoleDto,
-  ): Promise<RoleEnt> {
+  ): Promise<UserEnt> {
     return this.role.configRole(id_user, configRoleDto);
   }
 

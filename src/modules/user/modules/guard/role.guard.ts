@@ -18,18 +18,17 @@ export class RolesGuard implements CanActivate {
         relations: { role: true },
       });
 
-      const role = await this.dataSource.getRepository(RoleEnt).findOne({
-        where: {
-          id: user.role.id,
-        },
-      });
-      for (const key of role.role_type) {
-        if (key == RoleTypeEnum.ADMIN) {
+      for (const key of user.role) {
+        const role = await this.dataSource.getRepository(RoleEnt).findOne({
+          where: {
+            id: key.id,
+          },
+        });
+        if (role.role_type == RoleTypeEnum.ADMIN) {
           user.role_default_status = false;
           return true;
         }
       }
-
       return;
     } catch (e) {
       console.log(e);

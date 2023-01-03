@@ -5,5 +5,5 @@ import { RoleTypeEnum } from '../enum/role.enum';
 export class RoleFilterDto {
   @ApiProperty({ default: RoleTypeEnum.USER })
   @Allow()
-    role_type: RoleTypeEnum[];;
+    role_type: RoleTypeEnum;
 }

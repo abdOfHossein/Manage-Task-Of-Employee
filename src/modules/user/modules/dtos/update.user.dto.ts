@@ -26,11 +26,11 @@ export class UpdateUserDto {
 
   @IsNotEmpty()
   @ApiHideProperty()
-  roleEnt: RoleEnt;
+  roleEnt: RoleEnt[];
 
   @IsNotEmpty()
-  @ApiHideProperty()
-  id_role: string;
+  @ApiProperty()
+  id_role: string[];
 
   @ApiProperty()
   first_name: string;

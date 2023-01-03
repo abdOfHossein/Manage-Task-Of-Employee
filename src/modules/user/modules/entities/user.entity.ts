@@ -6,6 +6,7 @@ import {
   BeforeInsert,
   Column,
   Entity,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -47,8 +48,8 @@ export class UserEnt extends BasicEnt {
   @ManyToOne(() => DepartmentEnt, (department) => department.users)
   department: DepartmentEnt;
 
-  @ManyToOne(() => RoleEnt, (role) => role.users)
-  role: RoleEnt;
+  @ManyToMany(() => RoleEnt, (role) => role.users)
+  role: RoleEnt[];
   
   @OneToMany(() => FileEnt, (files) => files.user)
   files: FileEnt[];

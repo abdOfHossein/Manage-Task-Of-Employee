@@ -33,24 +33,29 @@ export class UserService {
         .findOne({ where: { id: createDto.id_department } });
       if (!createDto.id_role) {
         if (createDto.role_default_status === true) {
-          createDto.roleEnt = await this.dataSource
+          const role = await this.dataSource
             .getRepository(RoleEnt)
-            .findOne({ where: {   role_type: RoleTypeEnum.USER } });
+            .findOne({ where: { role_type: RoleTypeEnum.USER } });
+          createDto.roleEnt = [role];
         } else {
-          createDto.roleEnt = await this.dataSource
+          const role = await this.dataSource
             .getRepository(RoleEnt)
-            .findOne({ where: {   role_type: RoleTypeEnum.ADMIN } });
+            .findOne({ where: { role_type: RoleTypeEnum.ADMIN } });
+          createDto.roleEnt = [role];
         }
       } else {
-        createDto.roleEnt = await this.dataSource.manager.findOne(RoleEnt, {
-          where: { id: createDto.id_role },
-        });
+        const roles: any = [];
+        for (const id_role of createDto.id_role) {
+          let role = await this.dataSource.manager.findOne(RoleEnt, {
+            where: { id: id_role },
+          });
+          roles.push(role);
+        }
+        createDto.roleEnt = roles;
       }
 
       return await this.userRepo.createUser(createDto, query);
     } catch (e) {
-      console.log('hereeeeeeeeeeeeeeeeeeeeeeeeeeeeee');
-
       console.log(e);
       if (
         e.message.indexOf('duplicate key value violates unique constraint') == 0
@@ -121,12 +126,19 @@ export class UserService {
       .getRepository(FileEnt)
       .findOne({ where: { unq_file: updateDt.unq_file } });
     updateDt.file = file;
+
     updateDt.departmentEnt = await this.dataSource
       .getRepository(DepartmentEnt)
       .findOne({ where: { id: updateDt.id_department } });
-    updateDt.roleEnt = await this.dataSource
+
+      let roles=[]
+      for (const id_role of updateDt.id_role ) {
+      const role= await this.dataSource
       .getRepository(RoleEnt)
-      .findOne({ where: { id: updateDt.id_role } });
+      .findOne({ where: { id: id_role } });
+      roles.push(role)
+      }
+    updateDt.roleEnt = roles
     const uerEnt = <UserEnt>await this.findOneUser(User_Id);
     return await this.userRepo.updateUser(uerEnt, updateDt, query);
   }
