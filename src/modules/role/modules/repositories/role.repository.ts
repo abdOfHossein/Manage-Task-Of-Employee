@@ -4,6 +4,7 @@ import { PageDto } from 'src/common/dtos/page.dto';
 import { PageMetaDto } from 'src/common/dtos/page.meta.dto';
 import { PublicFunc } from 'src/common/function/public.func';
 import { DataSource, FindOneOptions, QueryRunner } from 'typeorm';
+import { ConfigRoleDto } from '../dtos/config.roele.dto';
 import { CreateRoleDto } from '../dtos/create.role.dto';
 import { RoleEnt } from '../entities/role.entity';
 import { RoleMapperPagination } from '../mapper/role.mapper.pagination';
@@ -80,5 +81,41 @@ export class RoleRepo {
       where: {},
     });
     return result;
+  }
+
+  async configRole(
+    id_user: string,
+    configRoleDto: ConfigRoleDto,
+    query?: QueryRunner,
+  ): Promise<RoleEnt> {
+    let roles = [];
+    for (const roel_id of configRoleDto.roles) {
+      const role = await this.dataSource.manager.findOne(RoleEnt, {
+        where: { id: roel_id },
+      });
+      roles.push(role.role_type);
+    }
+    console.log(roles);
+
+    const role = await this.dataSource.manager
+      .createQueryBuilder(RoleEnt, 'role')
+      .leftJoinAndSelect('role.users', 'users')
+      .where('users.id = :id_user', { id_user })
+      .getOne();
+    role.role_type = roles;
+    if (query) return await query.manager.save(role);
+    return await this.dataSource.manager.save(role);
+  }
+
+  
+  async deleteRole(
+    id_role: string,
+    query?: QueryRunner,
+  ): Promise<RoleEnt> {
+    const roleEnt = await this.dataSource.manager.findOne(RoleEnt, {
+      where: { id: id_role },
+    });
+    roleEnt.delete_at = new Date();
+    return await this.dataSource.manager.save(roleEnt);
   }
 }

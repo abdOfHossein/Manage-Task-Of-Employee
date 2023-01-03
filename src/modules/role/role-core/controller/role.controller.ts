@@ -1,6 +1,8 @@
 import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Delete, Put } from '@nestjs/common/decorators';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { PageDto } from 'src/common/dtos/page.dto';
+import { ConfigRoleDto } from '../../modules/dtos/config.roele.dto';
 import { CreateRoleDto } from '../../modules/dtos/create.role.dto';
 import { RoleEnt } from '../../modules/entities/role.entity';
 import { RolePageDto } from '../../modules/paginations/role.page.dto';
@@ -33,5 +35,20 @@ export class RoleController {
   @Get()
   findAllRole(): Promise<RoleEnt[]> {
     return this.role.findAllRole();
+  }
+
+  @ApiOperation({ summary: 'change Role' })
+  @Put('configRole')
+  configRole(
+    @Query('id_user') id_user: string,
+    @Body() configRoleDto: ConfigRoleDto,
+  ): Promise<RoleEnt> {
+    return this.role.configRole(id_user, configRoleDto);
+  }
+
+  @ApiOperation({ summary: 'delete Role' })
+  @Delete('deleteRole')
+  deleteRole(@Query('id_role') id_role: string): Promise<RoleEnt> {
+    return this.role.deleteRole(id_role);
   }
 }

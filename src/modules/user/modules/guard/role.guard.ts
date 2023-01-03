@@ -12,19 +12,24 @@ export class RolesGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     try {
       const request = context.switchToHttp().getRequest();
-      
-      const user =await this.dataSource.getRepository(UserEnt).findOne({where:{id:request.user.id_User},relations:{role:true}});
+
+      const user = await this.dataSource.getRepository(UserEnt).findOne({
+        where: { id: request.user.id_User },
+        relations: { role: true },
+      });
 
       const role = await this.dataSource.getRepository(RoleEnt).findOne({
         where: {
           id: user.role.id,
         },
       });
-
-      if (role.role_type == RoleTypeEnum.ADMIN) {
-        user.role_default_status = false;
-        return true;
+      for (const key of role.role_type) {
+        if (key == RoleTypeEnum.ADMIN) {
+          user.role_default_status = false;
+          return true;
+        }
       }
+
       return;
     } catch (e) {
       console.log(e);

@@ -1,9 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Allow } from 'class-validator';
 import { RoleTypeEnum } from '../enum/role.enum';
 
-export class RoleFilterDto {
+export class ConfigRoleDto {
   @ApiProperty({ default: RoleTypeEnum.USER })
-  @Allow()
-    role_type: RoleTypeEnum[];;
+  roles: string[];
 }

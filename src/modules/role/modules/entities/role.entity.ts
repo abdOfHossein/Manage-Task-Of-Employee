@@ -8,8 +8,8 @@ export class RoleEnt extends BasicEnt {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ default: RoleTypeEnum.USER })
-  role_type: RoleTypeEnum;
+  @Column('text',{ array: true, default:RoleTypeEnum.ADMIN})
+  role_type: RoleTypeEnum[];
 
   @OneToMany(() => UserEnt, (users) => users.role)
   users: UserEnt[];

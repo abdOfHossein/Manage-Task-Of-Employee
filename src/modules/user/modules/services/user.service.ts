@@ -35,11 +35,11 @@ export class UserService {
         if (createDto.role_default_status === true) {
           createDto.roleEnt = await this.dataSource
             .getRepository(RoleEnt)
-            .findOne({ where: { role_type: RoleTypeEnum.USER } });
+            .findOne({ where: {   role_type: RoleTypeEnum.USER } });
         } else {
           createDto.roleEnt = await this.dataSource
             .getRepository(RoleEnt)
-            .findOne({ where: { role_type: RoleTypeEnum.ADMIN } });
+            .findOne({ where: {   role_type: RoleTypeEnum.ADMIN } });
         }
       } else {
         createDto.roleEnt = await this.dataSource.manager.findOne(RoleEnt, {
