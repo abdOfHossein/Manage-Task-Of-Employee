@@ -72,20 +72,28 @@ export class UserService {
 
   async createJwtSetRole(id_user: string, id_role: string) {
     try {
-      console.log(id_user);
-      console.log(id_role);
-
       const user = await this.dataSource.getRepository(UserEnt).findOne({
         where: { id: id_user },
       });
-      console.log(user);
-      const role = await this.dataSource
-        .getRepository(RoleEnt)
+      const roles = await this.dataSource
+        .getRepository(UserEnt)
+        .createQueryBuilder('user')
+        .leftJoinAndSelect('user.role', 'role')
+        .where('rolee = :userRole', { userRole: user.role })
+        .select(['role.id'])
+        .getMany();
+      const currentRole = await this.dataSource
+        .getMongoRepository(RoleEnt)
         .findOne({ where: { id: id_role } });
+
       if (!user || user.status == UserStatus.BLOCK) {
         throw new BadRequestException('User does not exist');
       }
-      return await this.userRepo.createJwtSetRole(user.id, role);
+      return await this.userRepo.createJwtSetRole(
+        user.id,
+        roles,
+        currentRole.id,
+      );
     } catch (e) {
       console.log(e);
       throw e;
@@ -97,8 +105,14 @@ export class UserService {
       const user = await this.dataSource.getRepository(UserEnt).findOne({
         where: { username: loginUserDto.username },
       });
-      console.log(user);
 
+      const roles = await this.dataSource
+        .getRepository(UserEnt)
+        .createQueryBuilder('user')
+        .leftJoinAndSelect('user.role', 'role')
+        .where('role = :userRole', { userRole: user.role })
+        .select(['role.id'])
+        .getMany();
       if (
         !user ||
         !(await user.validatePassword(loginUserDto.password)) ||
@@ -106,7 +120,7 @@ export class UserService {
       ) {
         throw new BadRequestException('User does not exist');
       }
-      return await this.userRepo._createJwt(user.id);
+      return await this.userRepo._createJwt(user.id, roles);
     } catch (e) {
       console.log(e);
       throw e;
@@ -131,14 +145,14 @@ export class UserService {
       .getRepository(DepartmentEnt)
       .findOne({ where: { id: updateDt.id_department } });
 
-      let roles=[]
-      for (const id_role of updateDt.id_role ) {
-      const role= await this.dataSource
-      .getRepository(RoleEnt)
-      .findOne({ where: { id: id_role } });
-      roles.push(role)
-      }
-    updateDt.roleEnt = roles
+    let roles = [];
+    for (const id_role of updateDt.id_role) {
+      const role = await this.dataSource
+        .getRepository(RoleEnt)
+        .findOne({ where: { id: id_role } });
+      roles.push(role);
+    }
+    updateDt.roleEnt = roles;
     const uerEnt = <UserEnt>await this.findOneUser(User_Id);
     return await this.userRepo.updateUser(uerEnt, updateDt, query);
   }
@@ -190,11 +204,17 @@ export class UserService {
         where: { id: id_user },
       });
       console.log(user);
-
+      const roles = await this.dataSource
+        .getRepository(UserEnt)
+        .createQueryBuilder('user')
+        .leftJoinAndSelect('user.role', 'role')
+        .where('role = :userRole', { userRole: user.role })
+        .select(['role.id'])
+        .getMany();
       if (!user || user.status == UserStatus.BLOCK) {
         throw new BadRequestException('User does not exist');
       }
-      return await this.userRepo._createJwt(user.id);
+      return await this.userRepo._createJwt(user.id, roles);
     } catch (e) {
       console.log(e);
       throw e;

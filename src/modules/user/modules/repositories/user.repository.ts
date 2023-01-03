@@ -33,7 +33,7 @@ export class UserRepo {
     private jwtService: JwtService,
   ) {}
 
-  async _createJwt(data: string) {
+  async _createJwt(data: string, roles: any) {
     let jwtPayloadInterface: JwtPayloadInterface = {};
     const encryptTextInterface = await this.hashService.encrypt(data);
     const code = randomstring.generate({
@@ -46,6 +46,7 @@ export class UserRepo {
     const dataRedis = {
       data: encryptTextInterface.text,
       iv: encryptTextInterface.iv,
+      roles: roles,
     };
     const result = this.jwtService.sign(jwtPayloadInterface);
     await this.redisService.setKey(
@@ -56,7 +57,7 @@ export class UserRepo {
     return result;
   }
 
-  async createJwtSetRole(data: string, roles: any) {
+  async createJwtSetRole(data: string, roles: any,currentRole:string) {
     let jwtPayloadInterface: JwtPayloadInterface = {};
     const encryptTextInterface = await this.hashService.encrypt(data);
     const code = randomstring.generate({
@@ -71,6 +72,7 @@ export class UserRepo {
       data: encryptTextInterface.text,
       iv: encryptTextInterface.iv,
       roles: roles,
+      currentRole
     };
     const result = this.jwtService.sign(jwtPayloadInterface);
     await this.redisService.setKey(
