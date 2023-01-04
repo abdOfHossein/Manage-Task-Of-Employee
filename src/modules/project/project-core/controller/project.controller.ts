@@ -63,8 +63,8 @@ export class ProjectController {
   @ApiOperation({ summary: 'delete Project' })
   @Delete()
   deleteProject(
-    @Query('id_projectt') id_projectt: string,
+    @Query('id_project') id_project: string,
   ): Promise<ProjectEnt> {
-    return this.project.deleteProject(id_projectt);
+    return this.project.deleteProject(id_project);
   }
 }

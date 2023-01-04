@@ -5,7 +5,7 @@ import { UserModule } from '../modules/user.module';
 import { UserController } from './controller/user.controller';
 
 @Module({
-  imports: [UserModule, RedisModule.forRoot('127.0.0.1', 6379),
+  imports: [UserModule, RedisModule.forRoot('192.168.10.200', 6379),
   HashModule],
   controllers: [UserController],
 })
