@@ -24,7 +24,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      secretOrKey:'secret',
+      ignoreExpiration: false,
+      secretOrKey: 'secret',
     });
   }
 
@@ -36,9 +37,12 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: any) {
+    console.log(payload);
+
     const result = await this.redisService.getKey(
       `${this.PREFIX_TOKEN_AUTH}${payload.unq}`,
     );
+    console.log(result);
 
     if (result == null) throw new UnauthorizedException();
     const encryptTextInterface: EncryptTextInterface = {
@@ -47,6 +51,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       key: payload.key,
     };
     const rs: any = await this.hashService.decrypt(encryptTextInterface);
+    console.log(rs);
+
     const user = await this.dataSource.getRepository(UserEnt).findOne({
       where: {
         id: rs,
@@ -55,6 +61,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         role: true,
       },
     });
+    console.log(user);
 
     return {
       id_User: user.id,

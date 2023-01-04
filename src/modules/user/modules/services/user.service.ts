@@ -75,13 +75,19 @@ export class UserService {
       const user = await this.dataSource.getRepository(UserEnt).findOne({
         where: { id: id_user },
       });
-      const roles = await this.dataSource
+      const roles: any = await this.dataSource
         .getRepository(UserEnt)
         .createQueryBuilder('user')
         .leftJoinAndSelect('user.role', 'role')
         .where('role = :userRole', { userRole: user.role })
         .select(['role.id'])
         .getMany();
+
+      if (roles.indexOf(id_role) == -1) {
+        throw new BadRequestException({
+          message: 'you don not have this role',
+        });
+      }
       const currentRole = await this.dataSource
         .getRepository(RoleEnt)
         .findOne({ where: { id: id_role } });
@@ -105,7 +111,7 @@ export class UserService {
       const user = await this.dataSource.getRepository(UserEnt).findOne({
         where: { username: loginUserDto.username },
       });
-console.log(user);
+      console.log(user);
 
       const roles = await this.dataSource
         .getRepository(UserEnt)
@@ -122,7 +128,7 @@ console.log(user);
         throw new BadRequestException('User does not exist');
       }
       console.log(roles);
-      
+
       return await this.userRepo._createJwt(user.id, roles);
     } catch (e) {
       console.log(e);
@@ -135,29 +141,39 @@ console.log(user);
   }
 
   async updateUser(
-    User_Id: string,
+    id_user: string,
     updateDt: UpdateUserDto,
     query?: QueryRunner,
   ) {
-    const file = await this.dataSource
-      .getRepository(FileEnt)
-      .findOne({ where: { unq_file: updateDt.unq_file } });
-    updateDt.file = file;
+    try {
+      console.log(2222222222);
 
-    updateDt.departmentEnt = await this.dataSource
-      .getRepository(DepartmentEnt)
-      .findOne({ where: { id: updateDt.id_department } });
+      const file = await this.dataSource
+        .getRepository(FileEnt)
+        .findOne({ where: { unq_file: updateDt.unq_file } });
+      updateDt.file = file;
 
-    let roles = [];
-    for (const id_role of updateDt.id_role) {
-      const role = await this.dataSource
-        .getRepository(RoleEnt)
-        .findOne({ where: { id: id_role } });
-      roles.push(role);
+      updateDt.departmentEnt = await this.dataSource
+        .getRepository(DepartmentEnt)
+        .findOne({ where: { id: updateDt.id_department } });
+      console.log(33333333);
+
+      let roles = [];
+      for (const id_role of updateDt.id_role) {
+        const role = await this.dataSource
+          .getRepository(RoleEnt)
+          .findOne({ where: { id: id_role } });
+        roles.push(role);
+      }
+      console.log(444444444);
+      updateDt.roleEnt = roles;
+      const uerEnt = <UserEnt>await this.findOneUser(id_user);
+      console.log(5555555);
+      return await this.userRepo.updateUser(uerEnt, updateDt, query);
+    } catch (e) {
+      console.log(e);
+      throw e;
     }
-    updateDt.roleEnt = roles;
-    const uerEnt = <UserEnt>await this.findOneUser(User_Id);
-    return await this.userRepo.updateUser(uerEnt, updateDt, query);
   }
 
   async paginationUser(pageDto: UserPageDto) {

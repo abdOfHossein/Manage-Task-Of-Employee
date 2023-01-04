@@ -35,7 +35,7 @@ export class UserRepo {
 
   async _createJwt(data: string, roles: any) {
     console.log(1111111111111111111);
-    
+
     let jwtPayloadInterface: JwtPayloadInterface = {};
     const encryptTextInterface = await this.hashService.encrypt(data);
     const code = randomstring.generate({
@@ -56,7 +56,7 @@ export class UserRepo {
 
     const result = this.jwtService.sign(jwtPayloadInterface);
     console.log(result);
-    
+
     await this.redisService.setKey(
       `${this.PREFIX_TOKEN_AUTH}${jwtPayloadInterface.unq}`,
       JSON.stringify(dataRedis),
@@ -67,7 +67,7 @@ export class UserRepo {
     return result;
   }
 
-  async createJwtSetRole(data: string, roles: any,currentRole:string) {
+  async createJwtSetRole(data: string, roles: any, currentRole: string) {
     let jwtPayloadInterface: JwtPayloadInterface = {};
     const encryptTextInterface = await this.hashService.encrypt(data);
     const code = randomstring.generate({
@@ -82,7 +82,7 @@ export class UserRepo {
       data: encryptTextInterface.text,
       iv: encryptTextInterface.iv,
       roles: roles,
-      currentRole
+      currentRole,
     };
     const result = this.jwtService.sign(jwtPayloadInterface);
     await this.redisService.setKey(
@@ -158,6 +158,7 @@ export class UserRepo {
     updateDto: UpdateUserDto,
     query?: QueryRunner,
   ): Promise<UserEnt> {
+    console.log(66666);
     entity.department = updateDto.departmentEnt;
     entity.first_name = updateDto.first_name;
     entity.email = updateDto.email;
@@ -167,6 +168,7 @@ export class UserRepo {
     entity.phonenumber = updateDto.phonenumber;
     entity.username = updateDto.username;
     entity.files = [updateDto.file];
+    console.log(entity);
     if (query) return await query.manager.save(entity);
     return await this.dataSource.manager.save(entity);
   }

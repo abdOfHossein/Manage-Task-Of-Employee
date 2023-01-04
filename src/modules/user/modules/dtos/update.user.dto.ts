@@ -17,7 +17,7 @@ export class UpdateUserDto {
   @ApiHideProperty()
   departmentEnt: DepartmentEnt;
 
-  @ApiProperty()
+  @ApiHideProperty()
   id_department: string;
 
   @IsNotEmpty()

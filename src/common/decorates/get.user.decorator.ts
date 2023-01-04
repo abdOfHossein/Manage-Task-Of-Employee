@@ -6,6 +6,8 @@ export const GetUser = createParamDecorator((data, request) : UserResponseJWTDto
   const response : UserResponseJWTDto = {
     uid : req1.user.id_User,
   }
+  console.log(response);
+  
   if (req1.user.roles) {
     response.roles = req1.user.roles;
   }

@@ -21,6 +21,7 @@ import { ReqPageDto } from '../paginations/req.page.dto';
 export class ReqRepo {
   constructor(
     @InjectRepository(ReqEnt)
+    @InjectRepository(DepartmentRlEnt)
     @InjectRepository(ProjectEnt)
     private dataSource: DataSource,
   ) {}
@@ -56,9 +57,8 @@ export class ReqRepo {
         department,
         req: result,
       });
-      await this.dataSource
-        .getRepository(DepartmentRlEnt)
-        .save(DepartmentRlEnt);
+      await this.dataSource.manager
+        .save(departmentRl);
     }
     return result;
   }

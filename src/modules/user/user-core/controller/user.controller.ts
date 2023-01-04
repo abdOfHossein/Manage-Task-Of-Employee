@@ -59,12 +59,13 @@ export class UserController {
   async login(@Body() loginUserDto: LoginUserDto) {
     return await this.user._createJwt(loginUserDto);
   }
-
+  
+  @UseGuards(JwtGuard)
+  @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'test Jwt' })
-  @UseGuards(RolesGuard)
   @Get('/protected')
-  protected(@Req() req) {
-    return req.user;
+  protected(@GetUser() user: UserResponseJWTDto) {
+    return user;
   }
 
   @UseGuards(RolesGuard)
@@ -99,12 +100,14 @@ export class UserController {
     @Query('unq_file') unq_file: string,
     @Body() updateUserDto: UpdateUserDto,
   ): Promise<UserEnt> {
+    console.log(1111111111);
+
     updateUserDto.id_department = id_department;
     updateUserDto.unq_file = unq_file;
     return this.user.updateUser(id_user, updateUserDto);
   }
 
-  @UseGuards(RolesGuard)
+  // @UseGuards(RolesGuard)
   @UseGuards(JwtGuard)
   @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'pagination for user' })

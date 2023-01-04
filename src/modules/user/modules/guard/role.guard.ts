@@ -12,11 +12,13 @@ export class RolesGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     try {
       const request = context.switchToHttp().getRequest();
+      console.log(request.user);
 
       const user = await this.dataSource.getRepository(UserEnt).findOne({
         where: { id: request.user.id_User },
         relations: { role: true },
       });
+      console.log(user);
 
       for (const key of user.role) {
         const role = await this.dataSource.getRepository(RoleEnt).findOne({
