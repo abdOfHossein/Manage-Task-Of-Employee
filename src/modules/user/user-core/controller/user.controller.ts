@@ -45,6 +45,8 @@ export class UserController {
     return this.user.createUser(createUserDto);
   }
 
+  @UseGuards(JwtGuard)
+  @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'set Role for user' })
   @PublicRole()
   @Get('setRole')
@@ -52,13 +54,9 @@ export class UserController {
     return await this.user.createJwtSetRole(req.user.id_User, id_role);
   }
 
-  // @PublicRole()
-  // @Public()
   @Post('login')
   @ApiOperation({ summary: 'sign in user by username and password' })
   async login(@Body() loginUserDto: LoginUserDto) {
-    console.log('hereeeeeeeeeeeeeeeeeeeeeeeeeeee');
-
     return await this.user._createJwt(loginUserDto);
   }
 
