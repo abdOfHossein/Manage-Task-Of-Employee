@@ -29,15 +29,17 @@ export class DepartmentRepo {
     departmentEnt.name_department = createDto.name_department;
     if (query) return await query.manager.save(departmentEnt);
     const result = await this.dataSource.manager.save(departmentEnt);
+
+
     const reqs = await this.dataSource.manager.find(ReqEnt, {});
     console.log(reqs);
-
     for (const req of reqs) {
       const departmentRl = this.dataSource.manager.create(DepartmentRlEnt, {
         req,
         department: result,
       });
       await this.dataSource.manager.save(departmentRl);
+      if (query) return await query.manager.save(departmentEnt);
     }
     return result;
   }

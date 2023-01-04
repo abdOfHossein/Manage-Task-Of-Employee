@@ -79,11 +79,11 @@ export class UserService {
         .getRepository(UserEnt)
         .createQueryBuilder('user')
         .leftJoinAndSelect('user.role', 'role')
-        .where('rolee = :userRole', { userRole: user.role })
+        .where('role = :userRole', { userRole: user.role })
         .select(['role.id'])
         .getMany();
       const currentRole = await this.dataSource
-        .getMongoRepository(RoleEnt)
+        .getRepository(RoleEnt)
         .findOne({ where: { id: id_role } });
 
       if (!user || user.status == UserStatus.BLOCK) {
@@ -105,6 +105,7 @@ export class UserService {
       const user = await this.dataSource.getRepository(UserEnt).findOne({
         where: { username: loginUserDto.username },
       });
+console.log(user);
 
       const roles = await this.dataSource
         .getRepository(UserEnt)
@@ -120,6 +121,8 @@ export class UserService {
       ) {
         throw new BadRequestException('User does not exist');
       }
+      console.log(roles);
+      
       return await this.userRepo._createJwt(user.id, roles);
     } catch (e) {
       console.log(e);

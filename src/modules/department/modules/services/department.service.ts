@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { FindOneOptions, QueryRunner } from 'typeorm';
+import { DataSource, FindOneOptions, QueryRunner } from 'typeorm';
 import { CreateDepartmentDto } from '../dtos/create.department.dto';
 import { UpdateDepartmentDto } from '../dtos/update.department.dto';
 import { DepartmentEnt } from '../entities/department.entity';
@@ -8,13 +8,22 @@ import { DepartmentRepo } from '../repositories/department.repository';
 
 @Injectable()
 export class DepartmentService {
-  constructor(private departmentRepo: DepartmentRepo) {}
+  constructor(
+    private departmentRepo: DepartmentRepo,
+    private dataSource: DataSource,
+  ) {}
 
   async createDepartment(createDt: CreateDepartmentDto, query?: QueryRunner) {
+    const queryRunner = this.dataSource.createQueryRunner();
     try {
-      return await this.departmentRepo.createDepartment(createDt, query);
+      await queryRunner.startTransaction();
+      return await this.departmentRepo.createDepartment(createDt, queryRunner);
     } catch (e) {
+      console.log(e);
+      await queryRunner.rollbackTransaction();
       throw e;
+    } finally {
+      await queryRunner.release();
     }
   }
 
@@ -65,23 +74,23 @@ export class DepartmentService {
     }
   }
 
-  async allReqOfDepartment(id_user:string) {
+  async allReqOfDepartment(id_user: string) {
     try {
       return await this.departmentRepo.allReqOfDepartment(id_user);
     } catch (e) {
       throw e;
     }
   }
-  
-  async allTaskOfDepartment(id_user:string) {
+
+  async allTaskOfDepartment(id_user: string) {
     try {
       return await this.departmentRepo.allTaskOfDepartment(id_user);
     } catch (e) {
       throw e;
     }
   }
-  
-  async allUsersOfDepartment(id_user:string) {
+
+  async allUsersOfDepartment(id_user: string) {
     try {
       return await this.departmentRepo.allUsersOfDepartment(id_user);
     } catch (e) {
@@ -89,15 +98,15 @@ export class DepartmentService {
     }
   }
 
-  async allTaskOfUser(id_header:string,id_user:string) {
+  async allTaskOfUser(id_header: string, id_user: string) {
     try {
-      return await this.departmentRepo.allTaskOfUser(id_header,id_user);
+      return await this.departmentRepo.allTaskOfUser(id_header, id_user);
     } catch (e) {
       throw e;
     }
   }
-  
-  async allReqWithoutTaskOfDepartment(id_user:string) {
+
+  async allReqWithoutTaskOfDepartment(id_user: string) {
     try {
       return await this.departmentRepo.allReqWithoutTaskOfDepartment(id_user);
     } catch (e) {
@@ -105,16 +114,15 @@ export class DepartmentService {
     }
   }
 
-  
-  async allDepartmentOfUser(id_user:string) {
+  async allDepartmentOfUser(id_user: string) {
     try {
       return await this.departmentRepo.allDepartmentOfUser(id_user);
     } catch (e) {
       throw e;
     }
   }
-  
-  async deleteDepartmen(id_department:string) {
+
+  async deleteDepartmen(id_department: string) {
     try {
       return await this.departmentRepo.deleteDepartmen(id_department);
     } catch (e) {
