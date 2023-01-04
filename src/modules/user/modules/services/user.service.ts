@@ -105,6 +105,7 @@ export class UserService {
       const user = await this.dataSource.getRepository(UserEnt).findOne({
         where: { username: loginUserDto.username },
       });
+console.log(user);
 
       const roles = await this.dataSource
         .getRepository(UserEnt)
@@ -120,6 +121,8 @@ export class UserService {
       ) {
         throw new BadRequestException('User does not exist');
       }
+      console.log(roles);
+      
       return await this.userRepo._createJwt(user.id, roles);
     } catch (e) {
       console.log(e);

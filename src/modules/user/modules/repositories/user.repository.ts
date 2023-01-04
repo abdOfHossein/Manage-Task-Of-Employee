@@ -34,12 +34,16 @@ export class UserRepo {
   ) {}
 
   async _createJwt(data: string, roles: any) {
+    console.log(1111111111111111111);
+    
     let jwtPayloadInterface: JwtPayloadInterface = {};
     const encryptTextInterface = await this.hashService.encrypt(data);
     const code = randomstring.generate({
       length: 64,
       charset: process.env.RANDOM_STRING_HASH_JWT,
     });
+    console.log(22222222222222);
+
     jwtPayloadInterface.data = encryptTextInterface.text;
     jwtPayloadInterface.key = encryptTextInterface.key;
     jwtPayloadInterface.unq = sha512(code);
@@ -48,12 +52,18 @@ export class UserRepo {
       iv: encryptTextInterface.iv,
       roles: roles,
     };
+    console.log(3333333333333333);
+
     const result = this.jwtService.sign(jwtPayloadInterface);
+    console.log(result);
+    
     await this.redisService.setKey(
       `${this.PREFIX_TOKEN_AUTH}${jwtPayloadInterface.unq}`,
       JSON.stringify(dataRedis),
       10000000,
     );
+    console.log(44444444444444444444);
+
     return result;
   }
 
