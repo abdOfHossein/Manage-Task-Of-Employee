@@ -23,6 +23,7 @@ export class ReqRepo {
     @InjectRepository(ReqEnt)
     @InjectRepository(DepartmentRlEnt)
     @InjectRepository(ProjectEnt)
+    @InjectRepository(DepartmentRlEnt)
     private dataSource: DataSource,
   ) {}
 

@@ -13,7 +13,7 @@ import { UserService } from './services/User.service';
 @Module({
   imports: [
     HashModule,
-    RedisModule.forRoot('127.0.0.1', 6379),
+    RedisModule.forRoot('192.168.10.200', 6379),
     TypeOrmModule.forFeature([UserEnt]),
     PassportModule,
     JwtModule.register({
