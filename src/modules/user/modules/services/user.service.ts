@@ -75,19 +75,28 @@ export class UserService {
       const user = await this.dataSource.getRepository(UserEnt).findOne({
         where: { id: id_user },
       });
-      const roles: any = await this.dataSource
-        .getRepository(UserEnt)
-        .createQueryBuilder('user')
-        .leftJoinAndSelect('user.role', 'role')
-        .where('role = :userRole', { userRole: user.role })
-        .select(['role.id'])
-        .getMany();
+      console.log('user.role==>', user);
 
-      if (roles.indexOf(id_role) == -1) {
+      const roles: any = await this.dataSource
+        .getRepository(RoleEnt)
+        .createQueryBuilder('role')
+        .leftJoinAndSelect('role.users', 'users')
+        .where('users.id = :id_user', { id_user: user.id })
+        // .select(['role.id'])
+        .getMany();
+        let id_roles = [];
+      console.log('roles.users ===>',roles );
+      for (const role of roles) {
+        id_roles.push(role.id)
+      }
+      console.log('id_roles',id_roles);
+      
+      if (id_roles.indexOf(id_role) == -1) {
         throw new BadRequestException({
           message: 'you don not have this role',
         });
       }
+
       const currentRole = await this.dataSource
         .getRepository(RoleEnt)
         .findOne({ where: { id: id_role } });

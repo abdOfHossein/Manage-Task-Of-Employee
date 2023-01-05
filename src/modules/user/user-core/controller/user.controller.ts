@@ -35,12 +35,15 @@ export class UserController {
   @UseGuards(RolesGuard)
   @UseGuards(JwtGuard)
   @ApiBearerAuth('access-token')
-  @Post('/register')
   @ApiOperation({ summary: 'sign up user with department' })
+  @Post('/register')
   register(
     @Query('id_department') id_department: string,
     @Body() createUserDto: CreateUserDto,
   ): Promise<UserEnt> {
+    console.log(id_department);
+    console.log(createUserDto);
+    
     createUserDto.id_department = id_department;
     return this.user.createUser(createUserDto);
   }

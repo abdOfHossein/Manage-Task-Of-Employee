@@ -8,15 +8,12 @@ export class CreateUserDto {
   @ApiProperty()
   unq_file?:string;
 
-  @IsNotEmpty()
   @ApiHideProperty()
   file: FileEnt;
 
-  @IsNotEmpty()
   @ApiHideProperty()
   departmentEnt: DepartmentEnt;
 
-  @IsNotEmpty()
   @ApiHideProperty()
   id_department: string;
 
@@ -24,7 +21,6 @@ export class CreateUserDto {
   @ApiProperty({ default: true })
   role_default_status: boolean;
 
-  @IsNotEmpty()
   @ApiHideProperty()
   roleEnt: RoleEnt[];
 

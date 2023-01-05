@@ -35,16 +35,16 @@ export class TaskEnt extends BasicEnt {
   @Column({ nullable: true })
   remain_date: Date;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true,type:"enum",enum:TypeTaskEnum })
   type: TypeTaskEnum;
 
   @Column({ nullable: true })
   duration: number;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true,type:"enum",enum:StatusTaskEnum })
   status: StatusTaskEnum;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true ,type:"enum",enum:CheckStatusTaskEnum})
   check_status: CheckStatusTaskEnum;
 
   @ManyToOne(() => DepartmentRlEnt, (department_rl) => department_rl.tasks)

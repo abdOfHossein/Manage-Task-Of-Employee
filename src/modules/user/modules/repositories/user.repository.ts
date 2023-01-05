@@ -47,6 +47,7 @@ export class UserRepo {
     jwtPayloadInterface.data = encryptTextInterface.text;
     jwtPayloadInterface.key = encryptTextInterface.key;
     jwtPayloadInterface.unq = sha512(code);
+    jwtPayloadInterface.roles = roles;
     const dataRedis = {
       data: encryptTextInterface.text,
       iv: encryptTextInterface.iv,
@@ -78,6 +79,7 @@ export class UserRepo {
     jwtPayloadInterface.key = encryptTextInterface.key;
     jwtPayloadInterface.roles = roles;
     jwtPayloadInterface.unq = sha512(code);
+    jwtPayloadInterface.currentRole = currentRole;
     const dataRedis = {
       data: encryptTextInterface.text,
       iv: encryptTextInterface.iv,
@@ -85,6 +87,8 @@ export class UserRepo {
       currentRole,
     };
     const result = this.jwtService.sign(jwtPayloadInterface);
+    console.log(result);
+    
     await this.redisService.setKey(
       `${this.PREFIX_TOKEN_AUTH}${jwtPayloadInterface.unq}`,
       JSON.stringify(dataRedis),
