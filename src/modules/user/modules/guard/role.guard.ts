@@ -26,10 +26,10 @@ export class RolesGuard implements CanActivate {
             id: key.id,
           },
         });
-        if (role.role_type == RoleTypeEnum.ADMIN) {
-          user.role_default_status = false;
-          return true;
-        }
+        // if (role.role_type == RoleTypeEnum.ADMIN) {
+        //   user.role_default_status = false;
+        //   return true;
+        // }
       }
       return;
     } catch (e) {

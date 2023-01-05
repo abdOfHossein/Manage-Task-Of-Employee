@@ -123,6 +123,11 @@ export class ProjectRepo {
     return project;
   }
 
+  async getAllProject() {
+    return await this.dataSource.manager
+    .createQueryBuilder(ProjectEnt, 'project').getMany();
+  }
+
   async deleteProject(id_projectt: string) {
     const project = await this.dataSource.manager.findOne(ProjectEnt, {
       where: { id: id_projectt },

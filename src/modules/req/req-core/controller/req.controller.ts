@@ -31,10 +31,8 @@ export class ReqController {
   @ApiOperation({ summary: 'create req' })
   @Post()
   createReq(
-    @Query('project_id') project_id: string,
     @Body() createReqDto: CreateReqDto,
   ): Promise<ReqEnt> {
-    createReqDto.project_id = project_id;
     return this.req.createReq(createReqDto);
   }
 

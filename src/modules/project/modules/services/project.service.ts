@@ -37,6 +37,10 @@ export class ProjectService {
     }
   }
 
+  async getAllProject() {
+    return await this.projectRepo.getAllProject();
+  }
+
   async updateProject(
     Project_Id: string,
     updateDt: UpdateProjectDto,
