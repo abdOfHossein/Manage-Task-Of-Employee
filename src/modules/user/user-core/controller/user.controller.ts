@@ -51,7 +51,6 @@ export class UserController {
   @UseGuards(JwtGuard)
   @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'set Role for user' })
-  @PublicRole()
   @Get('setRole')
   async setRole(@Query('id_role') id_role: string, @Req() req: any) {
     return await this.user.createJwtSetRole(req.user.id_User, id_role);
@@ -63,9 +62,9 @@ export class UserController {
     return await this.user._createJwt(loginUserDto);
   }
   
+  @ApiOperation({ summary: 'test Jwt' })
   @UseGuards(JwtGuard)
   @ApiBearerAuth('access-token')
-  @ApiOperation({ summary: 'test Jwt' })
   @Get('/protected')
   protected(@GetUser() user: UserResponseJWTDto) {
     return user;
@@ -120,7 +119,7 @@ export class UserController {
     return this.user.paginationUser(pageDto);
   }
 
-  @UseGuards(RolesGuard)
+  // @UseGuards(RolesGuard)
   @UseGuards(JwtGuard)
   @ApiBearerAuth('access-token')
   @Post('admin/password')
@@ -137,7 +136,7 @@ export class UserController {
     return await this.user.changePasswordAdmin(user, changePasswordUserDto);
   }
 
-  @UseGuards(RolesGuard)
+  // @UseGuards(RolesGuard)
   @UseGuards(JwtGuard)
   @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'pagination for task of user wiht recieve id_user' })

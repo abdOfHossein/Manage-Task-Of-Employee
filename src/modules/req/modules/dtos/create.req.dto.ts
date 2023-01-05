@@ -15,7 +15,7 @@ export class CreateReqDto {
   @ApiProperty()
   description: string;
 
-  @ApiHideProperty()
+  @ApiProperty()
   project_id: string;
 
   @ApiHideProperty()

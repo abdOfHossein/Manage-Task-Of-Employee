@@ -54,12 +54,18 @@ export class ReqRepo {
       const department = await this.dataSource.manager.findOne(DepartmentEnt, {
         where: { id: id_department },
       });
+
+      console.log("department=====");      console.log(department);
+      
       const departmentRl = this.dataSource.manager.create(DepartmentRlEnt, {
         department,
         req: result,
       });
-      await this.dataSource.manager
+      let x = await this.dataSource.manager
         .save(departmentRl);
+
+        console.log("x---------");        console.log(x);
+        
     }
     return result;
   }
@@ -115,8 +121,9 @@ export class ReqRepo {
     const queryBuilder = this.dataSource.manager.createQueryBuilder(
       ReqEnt,
       'req',
-    );
-    // .select(['req.id', 'req.status']);
+    ).leftJoinAndSelect('req.project', 'project')
+    .leftJoinAndSelect('req.department_rls', 'department_rls')
+    .leftJoinAndSelect('department_rls.department', 'department')
     if (pageDto.base) {
       const row = pageDto.base.row;
       const skip = PublicFunc.skipRow(pageDto.base.page, pageDto.base.row);

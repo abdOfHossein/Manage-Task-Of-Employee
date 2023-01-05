@@ -26,6 +26,12 @@ export class ProjectController {
     return this.project.findOneProject(id_project);
   }
 
+  @ApiOperation({ summary: 'Get All Projects' })
+  @Get('all')
+  async getAllProject(): Promise<ProjectEnt[]> {
+    return this.project.getAllProject();
+  }
+
   @ApiOperation({ summary: 'update Project' })
   @Put()
   updateProject(
