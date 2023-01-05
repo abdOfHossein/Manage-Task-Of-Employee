@@ -3,6 +3,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { PageDto } from 'src/common/dtos/page.dto';
 import { PageMetaDto } from 'src/common/dtos/page.meta.dto';
 import { PublicFunc } from 'src/common/function/public.func';
+import { FileEnt } from 'src/modules/file/modules/entities/file.entity';
+import { ReqEnt } from 'src/modules/req/modules/entities/req.entity';
+import { StatusReqEnum } from 'src/modules/req/modules/enums/req.enum';
 import { DataSource, FindOneOptions, QueryRunner } from 'typeorm';
 import { CreateProjectDto } from '../dtos/create.project.dto';
 import { UpdateProjectDto } from '../dtos/update.project.dto';
@@ -13,6 +16,8 @@ import { ProjectPageDto } from '../paginations/project.page.dto';
 export class ProjectRepo {
   constructor(
     @InjectRepository(ProjectEnt)
+    @InjectRepository(ReqEnt)
+    @InjectRepository(FileEnt)
     private dataSource: DataSource,
   ) {}
 
@@ -20,6 +25,11 @@ export class ProjectRepo {
     createDto: CreateProjectDto,
     query: QueryRunner | undefined,
   ): Promise<ProjectEnt> {
+    const req = this.dataSource.manager.create(ReqEnt, {
+      status: StatusReqEnum.OPEN,
+      isDefault: true,
+    });
+    await this.dataSource.manager.save(req);
     const projectEnt = new ProjectEnt();
     projectEnt.project_name = createDto.project_name;
     if (query) return await query.manager.save(projectEnt);
@@ -43,6 +53,10 @@ export class ProjectRepo {
     updateDto: UpdateProjectDto,
     query?: QueryRunner,
   ): Promise<ProjectEnt> {
+    const file = await this.dataSource.manager.findOne(FileEnt, {
+      where: { unq_file: updateDto.unq_file },
+    });
+    updateDto.file = file;
     entity.project_name = updateDto.project_name;
     entity.file = updateDto.file;
     if (query) return await query.manager.save(entity);
@@ -125,7 +139,8 @@ export class ProjectRepo {
 
   async getAllProject() {
     return await this.dataSource.manager
-    .createQueryBuilder(ProjectEnt, 'project').getMany();
+      .createQueryBuilder(ProjectEnt, 'project')
+      .getMany();
   }
 
   async deleteProject(id_projectt: string) {

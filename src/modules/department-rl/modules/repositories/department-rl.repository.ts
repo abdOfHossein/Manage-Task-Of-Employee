@@ -3,6 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { PageDto } from 'src/common/dtos/page.dto';
 import { PageMetaDto } from 'src/common/dtos/page.meta.dto';
 import { PublicFunc } from 'src/common/function/public.func';
+import { DepartmentEnt } from 'src/modules/department/modules/entities/department.entity';
+import { ReqEnt } from 'src/modules/req/modules/entities/req.entity';
 import { DataSource, FindOneOptions, QueryRunner } from 'typeorm';
 import { CreateDepartmentRlDto } from '../dtos/create.department-rl.dto';
 import { UpdateDepartmentRlDto } from '../dtos/update.department-rl.dto';
@@ -13,6 +15,8 @@ import { DepartmentRlPageDto } from '../paginations/department-rl.page.dto';
 export class DepartmentRlRepo {
   constructor(
     @InjectRepository(DepartmentRlEnt)
+    @InjectRepository(ReqEnt)
+    @InjectRepository(DepartmentEnt)
     private dataSource: DataSource,
   ) {}
 
@@ -47,14 +51,16 @@ export class DepartmentRlRepo {
     id_department: string,
     options?: FindOneOptions,
   ): Promise<DepartmentRlEnt> {
-    const queryBuilder = await this.dataSource.manager.createQueryBuilder(DepartmentRlEnt,'departmentRl')
+    const queryBuilder = await this.dataSource.manager
+      .createQueryBuilder(DepartmentRlEnt, 'departmentRl')
       .innerJoinAndSelect('departmentRl.department', 'department')
       .innerJoinAndSelect('department.user', 'user')
       .innerJoinAndSelect('departmentRl.req', 'req')
       .where('user.id = : id_user AND req.id = :id_req', {
         id_req,
-        id_department
-      }).getOne()
+        id_department,
+      })
+      .getOne();
     if (!queryBuilder)
       throw new BadGatewayException({ message: 'DepartmentRl does not exits' });
     return queryBuilder;
@@ -65,6 +71,13 @@ export class DepartmentRlRepo {
     updateDto: UpdateDepartmentRlDto,
     query?: QueryRunner,
   ): Promise<DepartmentRlEnt> {
+    updateDto.reqEnt = await this.dataSource.manager.findOne(ReqEnt, {
+      where: { id: updateDto.req_id },
+    });
+    updateDto.departmentEnt = await this.dataSource.manager.findOne(
+      DepartmentEnt,
+      { where: { id: updateDto.department_id } },
+    );
     entity.req = updateDto.reqEnt;
     entity.department = updateDto.departmentEnt;
     if (query) return await query.manager.save(entity);

@@ -35,7 +35,7 @@ export class DepartmentRlController {
   @ApiOperation({ summary: 'update for departmentRl' })
   @Put()
   updateDepartmentRl(
-    @Query('id_DepartmentRl') id_DepartmentRl: string,
+    @Query('id_departmen_rl') id_departmen_rl: string,
     @Query('req_id') req_id: string,
     @Query('department_id') department_id: string,
     @Body() updateDepartmentRlDto: UpdateDepartmentRlDto,
@@ -43,7 +43,7 @@ export class DepartmentRlController {
     updateDepartmentRlDto.req_id = req_id;
     updateDepartmentRlDto.department_id = department_id;
     return this.departmentRl.updateDepartmentRl(
-      id_DepartmentRl,
+      id_departmen_rl,
       updateDepartmentRlDto,
     );
   }

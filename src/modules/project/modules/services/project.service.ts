@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { FileEnt } from 'src/modules/file/modules/entities/file.entity';
-import { ReqEnt } from 'src/modules/req/modules/entities/req.entity';
-import { StatusReqEnum } from 'src/modules/req/modules/enums/req.enum';
 import { DataSource, FindOneOptions, QueryRunner } from 'typeorm';
 import { CreateProjectDto } from '../dtos/create.project.dto';
 import { UpdateProjectDto } from '../dtos/update.project.dto';
@@ -12,17 +11,14 @@ import { ProjectRepo } from '../repositories/project.repository';
 @Injectable()
 export class ProjectService {
   constructor(
-    private projectRepo: ProjectRepo,
+    @InjectRepository(FileEnt)
     private dataSource: DataSource,
+    private projectRepo: ProjectRepo,
+
   ) {}
 
   async createProject(createDt: CreateProjectDto, query?: QueryRunner) {
     try {
-      const req = this.dataSource.getRepository(ReqEnt).create({
-        status: StatusReqEnum.OPEN,
-        isDefault: true,
-      });
-      await this.dataSource.getRepository(ReqEnt).save(req);
       return await this.projectRepo.createProject(createDt, query);
     } catch (e) {
       throw e;
@@ -42,16 +38,16 @@ export class ProjectService {
   }
 
   async updateProject(
-    Project_Id: string,
+    id_project: string,
     updateDt: UpdateProjectDto,
     query?: QueryRunner,
   ) {
     try {
-      const projectEnt = <ProjectEnt>await this.findOneProject(Project_Id);
-      const file = await this.dataSource
-        .getRepository(FileEnt)
-        .findOne({ where: { unq_file: updateDt.unq_file } });
-      updateDt.file = file;
+      const projectEnt = await this.dataSource.manager.findOne(ProjectEnt, {
+        where: {
+          id: id_project,
+        },
+      });
       return await this.projectRepo.updateProject(projectEnt, updateDt, query);
     } catch (e) {
       throw e;
@@ -82,7 +78,7 @@ export class ProjectService {
     }
   }
 
-  async deleteProject(id_projectt:string) {
+  async deleteProject(id_projectt: string) {
     try {
       return await this.projectRepo.deleteProject(id_projectt);
     } catch (e) {

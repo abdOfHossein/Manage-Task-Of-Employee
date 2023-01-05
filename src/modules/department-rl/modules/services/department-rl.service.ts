@@ -11,7 +11,7 @@ import { DepartmentRlRepo } from '../repositories/department-rl.repository';
 @Injectable()
 export class DepartmentRlService {
   constructor(
-    private DepartmentRlRepo: DepartmentRlRepo,
+    private departmentRlRepo: DepartmentRlRepo,
     private dataSource: DataSource,
   ) {}
 
@@ -20,7 +20,7 @@ export class DepartmentRlService {
     query?: QueryRunner,
   ) {
     try {
-      return await this.DepartmentRlRepo.createDepartmentRl(createDt, query);
+      return await this.departmentRlRepo.createDepartmentRl(createDt, query);
     } catch (e) {
       throw e;
     }
@@ -28,7 +28,7 @@ export class DepartmentRlService {
 
   async findOneDepartmentRl(searchDto: string, options?: FindOneOptions) {
     try {
-      return await this.DepartmentRlRepo.findOneDepartmentRl(
+      return await this.departmentRlRepo.findOneDepartmentRl(
         searchDto,
         options,
       );
@@ -38,26 +38,21 @@ export class DepartmentRlService {
   }
 
   async findByDepartmentRequest(id_req: string, id_department: string) {
-    return await this.DepartmentRlRepo.findByDepartmentRequest(id_req, id_department)
+    return await this.departmentRlRepo.findByDepartmentRequest(id_req, id_department)
   }
 
   async updateDepartmentRl(
-    DepartmentRl_Id: string,
+    id_departmen_rl: string,
     updateDt: UpdateDepartmentRlDto,
     query?: QueryRunner,
   ) {
     try {
-      updateDt.reqEnt = await this.dataSource
-        .getRepository(ReqEnt)
-        .findOne({ where: { id: updateDt.req_id } });
-      updateDt.departmentEnt = await this.dataSource
-        .getRepository(DepartmentEnt)
-        .findOne({ where: { id: updateDt.department_id } });
-      const DepartmentRlEnt = <DepartmentRlEnt>(
-        await this.findOneDepartmentRl(DepartmentRl_Id)
-      );
-      return await this.DepartmentRlRepo.updateDepartmentRl(
-        DepartmentRlEnt,
+     
+      const department_rl = await this.dataSource.manager.findOne(DepartmentRlEnt,{where:{
+        id:id_departmen_rl
+      }})
+      return await this.departmentRlRepo.updateDepartmentRl(
+        department_rl,
         updateDt,
         query,
       );
@@ -68,7 +63,7 @@ export class DepartmentRlService {
 
   async paginationDepartmentRl(pageDto: DepartmentRlPageDto) {
     try {
-      return await this.DepartmentRlRepo.paginationDepartmentRl(pageDto);
+      return await this.departmentRlRepo.paginationDepartmentRl(pageDto);
     } catch (e) {
       throw e;
     }
