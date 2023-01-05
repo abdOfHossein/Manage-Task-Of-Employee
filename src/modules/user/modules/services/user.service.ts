@@ -77,19 +77,20 @@ export class UserService {
       });
       console.log('user.role==>', user);
 
-      const roles: any = await this.dataSource
+      const rolesEnt: any = await this.dataSource
         .getRepository(RoleEnt)
         .createQueryBuilder('role')
         .leftJoinAndSelect('role.users', 'users')
         .where('users.id = :id_user', { id_user: user.id })
-        // .select(['role.id'])
         .getMany();
+      let roles = [];
       let id_roles = [];
-      console.log('roles.users ===>', roles);
-      for (const role of roles) {
+      console.log('roles.users ===>', rolesEnt);
+      for (const role of rolesEnt) {
+        roles.push({ id: role.id, title: role.role_type });
         id_roles.push(role.id);
       }
-      console.log('id_roles', id_roles);
+      console.log('id_roles', roles);
 
       if (id_roles.indexOf(id_role) == -1) {
         throw new BadRequestException({
@@ -106,7 +107,7 @@ export class UserService {
       }
       return await this.userRepo.createJwtSetRole(
         user.id,
-        id_roles,
+        roles,
         currentRole.id,
       );
     } catch (e) {
@@ -121,16 +122,16 @@ export class UserService {
         where: { username: loginUserDto.username },
       });
 
-      const roles: any = await this.dataSource
+      const rolesEnt: any = await this.dataSource
         .getRepository(RoleEnt)
         .createQueryBuilder('role')
         .leftJoinAndSelect('role.users', 'users')
         .where('users.id = :id_user', { id_user: user.id })
         .getMany();
-      let id_roles = [];
+      let roles = [];
       console.log('roles.users ===>', roles);
-      for (const role of roles) {
-        id_roles.push(role.id);
+      for (const role of rolesEnt) {
+        roles.push({ id: role.id, title: role.role_type });
       }
       if (
         !user ||
@@ -141,7 +142,7 @@ export class UserService {
       }
       console.log(roles);
 
-      return await this.userRepo._createJwt(user.id, id_roles);
+      return await this.userRepo._createJwt(user.id, roles);
     } catch (e) {
       console.log(e);
       throw e;
@@ -235,21 +236,21 @@ export class UserService {
         where: { id: id_user },
       });
 
-      const roles: any = await this.dataSource
+      const rolesEnt: any = await this.dataSource
         .getRepository(RoleEnt)
         .createQueryBuilder('role')
         .leftJoinAndSelect('role.users', 'users')
         .where('users.id = :id_user', { id_user: user.id })
         .getMany();
-      let id_roles = [];
-      console.log('roles.users ===>', roles);
-      for (const role of roles) {
-        id_roles.push(role.id);
+      let roles = [];
+      console.log('roles.users ===>', rolesEnt);
+      for (const role of rolesEnt) {
+        roles.push({ id: role.id, title: role.role_type });
       }
       if (!user || user.status == UserStatus.BLOCK) {
         throw new BadRequestException('User does not exist');
       }
-      return await this.userRepo._createJwt(user.id, id_roles);
+      return await this.userRepo._createJwt(user.id, roles);
     } catch (e) {
       console.log(e);
       throw e;
