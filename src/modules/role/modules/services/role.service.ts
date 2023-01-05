@@ -34,6 +34,7 @@ export class RoleService {
   }
 
   async findAllRole() {
+    
     try {
       return await this.roleRepo.findAllRole();
     } catch (e) {

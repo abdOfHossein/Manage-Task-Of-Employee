@@ -14,7 +14,7 @@ export class RoleEnt extends BasicEnt {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({default: RoleTypeEnum.ADMIN} )
+  @Column({default: RoleTypeEnum.ADMIN ,type:"enum",enum:RoleTypeEnum} )
   role_type: RoleTypeEnum;
 
   @ManyToMany(() => UserEnt, (users) => users.role)

@@ -5,7 +5,7 @@ import {
   Entity,
   ManyToOne,
   OneToMany,
-  PrimaryGeneratedColumn,
+  PrimaryGeneratedColumn
 } from 'typeorm';
 import { UserEnt } from '../../../user/modules/entities/user.entity';
 import { MessageTypeEnum } from '../enum/message.type.enum';
@@ -25,10 +25,10 @@ export class MessageEnt extends BasicEnt {
   @Column({ nullable: true })
   content: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true,type:'enum',enum:RecieveTypeMessageEnum })
   recieve_type: RecieveTypeMessageEnum;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true,type:'enum',enum:MessageTypeEnum })
   message_type: MessageTypeEnum;
 
   @Column({ nullable: true })

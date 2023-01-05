@@ -89,7 +89,7 @@ export class RoleRepo {
     query?: QueryRunner,
   ): Promise<UserEnt> {
     let roles:any = [];
-    for (const roel_id of configRoleDto.roles) {
+    for (const roel_id of configRoleDto.id_roles) {
       const role = await this.dataSource.manager.findOne(RoleEnt, {
         where: { id: roel_id },
       });

@@ -5,26 +5,21 @@ import { FileEnt } from 'src/modules/file/modules/entities/file.entity';
 import { RoleEnt } from 'src/modules/role/modules/entities/role.entity';
 
 export class UpdateUserDto {
-  @IsNotEmpty()
   @ApiHideProperty()
   unq_file: string;
 
-  @IsNotEmpty()
   @ApiHideProperty()
   file: FileEnt;
 
-  @IsNotEmpty()
   @ApiHideProperty()
   departmentEnt: DepartmentEnt;
 
   @ApiHideProperty()
   id_department: string;
 
-  @IsNotEmpty()
   @ApiHideProperty()
   role_default_status: boolean;
 
-  @IsNotEmpty()
   @ApiHideProperty()
   roleEnt: RoleEnt[];
 
