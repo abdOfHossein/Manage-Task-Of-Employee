@@ -19,9 +19,7 @@ export class TaskBlockOperationService {
     query?: QueryRunner,
   ) {
     try {
-      createDt.taskEnt = await this.dataSource
-        .getRepository(TaskEnt)
-        .findOne({ where: { id: createDt.id_task } });
+
       return await this.taskBlockOperationRepo.createTaskBlockOperation(
         createDt,
         query,
@@ -48,9 +46,7 @@ export class TaskBlockOperationService {
     query?: QueryRunner,
   ) {
     try {
-      updateDt.taskEnt = await this.dataSource
-        .getRepository(TaskEnt)
-        .findOne({ where: { id: updateDt.id_task } });
+
       const uerEnt = <TaskBlockOperationEnt>(
         await this.findOneTaskBlockOperation(TaskBlockOperation_Id)
       );

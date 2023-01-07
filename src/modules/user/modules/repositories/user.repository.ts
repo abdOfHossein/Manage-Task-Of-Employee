@@ -200,6 +200,7 @@ export class UserRepo {
   async changePasswordAdmin(
     id_user: UserResponseJWTDto,
     changePasswordUserDto: ChangePasswordAdminDto,
+    query?:QueryRunner
   ): Promise<UserEnt> {
     const userEntity = await this.dataSource.manager.findOne(UserEnt, {
       where: { id: id_user.uid },
@@ -210,6 +211,7 @@ export class UserRepo {
     if (!userEntity)
       throw new BadRequestException({ message: 'user does not exits' });
     userEntity.password = sha512(changePasswordUserDto.new_password);
+    if (query) return await query.manager.save(userEntity);
     return await this.dataSource.manager.save(userEntity);
   }
 

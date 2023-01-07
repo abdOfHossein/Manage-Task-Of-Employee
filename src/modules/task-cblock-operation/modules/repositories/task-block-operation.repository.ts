@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { PageDto } from 'src/common/dtos/page.dto';
 import { PageMetaDto } from 'src/common/dtos/page.meta.dto';
 import { PublicFunc } from 'src/common/function/public.func';
+import { TaskEnt } from 'src/modules/task/modules/entities/task.entity';
 import { DataSource, FindOneOptions, QueryRunner } from 'typeorm';
 import { CreateTaskBlockOperationDto } from '../dtos/create.task-block-operation.dto';
 import { UpdateTaskBlockOperationDto } from '../dtos/update.task-block-operation.dto';
@@ -13,6 +14,7 @@ import { TaskBlockOperationPageDto } from '../paginations/task-block-operation.p
 export class TaskBlockOperationRepo {
   constructor(
     @InjectRepository(TaskBlockOperationEnt)
+    @InjectRepository(TaskEnt)
     private dataSource: DataSource,
   ) {}
 
@@ -20,6 +22,9 @@ export class TaskBlockOperationRepo {
     createDto: CreateTaskBlockOperationDto,
     query: QueryRunner | undefined,
   ): Promise<TaskBlockOperationEnt> {
+    createDto.taskEnt = await this.dataSource.manager.findOne(TaskEnt, {
+      where: { id: createDto.id_task },
+    });
     const taskBlockOperationEnt = new TaskBlockOperationEnt();
     taskBlockOperationEnt.name_task_block_operation =
       createDto.name_task_block_operation;
@@ -52,6 +57,9 @@ export class TaskBlockOperationRepo {
     updateDto: UpdateTaskBlockOperationDto,
     query?: QueryRunner,
   ): Promise<TaskBlockOperationEnt> {
+    updateDto.taskEnt = await this.dataSource.manager.findOne(TaskEnt, {
+      where: { id: updateDto.id_task },
+    });
     entity.name_task_block_operation = updateDto.name_task_block_operation;
     entity.desription_task_block_operation =
       updateDto.desription_task_block_operation;

@@ -3,6 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { PageDto } from 'src/common/dtos/page.dto';
 import { PageMetaDto } from 'src/common/dtos/page.meta.dto';
 import { PublicFunc } from 'src/common/function/public.func';
+import { TaskEnt } from 'src/modules/task/modules/entities/task.entity';
+import { StatusTaskEnum } from 'src/modules/task/modules/enums/status-task.enum';
 import { DataSource, FindOneOptions, QueryRunner } from 'typeorm';
 import { CreateRelTaskDto } from '../dtos/create.rel-task.dto';
 import { UpdateRelTaskDto } from '../dtos/update.rel-task.dto';
@@ -13,6 +15,7 @@ import { RelTaskPageDto } from '../paginations/rel-task.page.dto';
 export class RelTaskRepo {
   constructor(
     @InjectRepository(RelTaskEnt)
+    @InjectRepository(TaskEnt)
     private dataSource: DataSource,
   ) {}
 
@@ -20,6 +23,12 @@ export class RelTaskRepo {
     createDto: CreateRelTaskDto,
     query: QueryRunner | undefined,
   ): Promise<RelTaskEnt> {
+    createDto.srcEnt = await this.dataSource.manager.findOne(TaskEnt, {
+      where: { id: createDto.id_src },
+    });
+    createDto.refEnt = await this.dataSource.manager.findOne(TaskEnt, {
+      where: { id: createDto.id_ref },
+    });
     const relTaskEnt = new RelTaskEnt();
     relTaskEnt.comment = createDto.comment;
     relTaskEnt.src = createDto.srcEnt;
@@ -45,6 +54,18 @@ export class RelTaskRepo {
     updateDto: UpdateRelTaskDto,
     query?: QueryRunner,
   ): Promise<RelTaskEnt> {
+    updateDto.srcEnt = await this.dataSource.manager.findOne(TaskEnt, {
+      where: { id: updateDto.id_src },
+    });
+    await this.dataSource.manager.update(
+      TaskEnt,
+      { id: updateDto.id_src },
+      { status: StatusTaskEnum.DONE },
+    );
+    updateDto.refEnt = await this.dataSource.manager.findOne(TaskEnt, {
+      where: { id: updateDto.id_ref },
+    });
+
     entity.comment = updateDto.comment;
     entity.src = updateDto.srcEnt;
     entity.ref = updateDto.refEnt;

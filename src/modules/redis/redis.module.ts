@@ -17,7 +17,7 @@ export class RedisModule {
               useFactory: () => {
                 return {
                   store: redisStore,
-                  host:  '192.168.10.200',
+                  host:  '127.0.0.1',
                   port:  6379,
                 };
               },

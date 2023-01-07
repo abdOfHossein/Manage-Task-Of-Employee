@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { ProjectEnt } from 'src/modules/project/modules/entities/project.entity';
 import { DataSource, FindOneOptions, QueryRunner } from 'typeorm';
 import { CreateReqDto } from '../dtos/create.req.dto';
 import { DoneReqDto } from '../dtos/done.req.dto';
@@ -13,13 +12,15 @@ export class ReqService {
   constructor(private reqRepo: ReqRepo, private dataSource: DataSource) {}
 
   async createReq(createDt: CreateReqDto, query?: QueryRunner) {
+    const queryRunner = this.dataSource.createQueryRunner();
     try {
-      createDt.projectEnt = await this.dataSource
-        .getRepository(ProjectEnt)
-        .findOne({ where: { id: createDt.project_id } });
-      return await this.reqRepo.createReq(createDt, query);
+      await queryRunner.startTransaction();
+      return await this.reqRepo.createReq(createDt, queryRunner);
     } catch (e) {
+      await queryRunner.rollbackTransaction();
       throw e;
+    } finally {
+      await queryRunner.release();
     }
   }
 
@@ -55,9 +56,6 @@ export class ReqService {
   }
   async updateReq(Req_Id: string, updateDt: UpdateReqDto, query?: QueryRunner) {
     try {
-      updateDt.projectEnt = await this.dataSource
-        .getRepository(ProjectEnt)
-        .findOne({ where: { id: updateDt.project_id } });
       const reqEnt = <ReqEnt>await this.findOneReq(Req_Id);
       return await this.reqRepo.updateReq(reqEnt, updateDt, query);
     } catch (e) {
@@ -113,7 +111,7 @@ export class ReqService {
     }
   }
 
-  async deleteReq(id_req:string) {
+  async deleteReq(id_req: string) {
     try {
       return await this.reqRepo.deleteReq(id_req);
     } catch (e) {

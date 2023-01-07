@@ -6,6 +6,7 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { Cache } from 'cache-manager';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { HashService } from 'src/modules/hash/hash.service';
@@ -20,6 +21,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     private redisService: RedisService,
     @Inject(CACHE_MANAGER)
     private _cacheManager: Cache,
+    @InjectRepository(UserEnt)
     private dataSource: DataSource,
   ) {
     super({
@@ -53,7 +55,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     const rs: any = await this.hashService.decrypt(encryptTextInterface);
     console.log(rs);
 
-    const user = await this.dataSource.getRepository(UserEnt).findOne({
+    const user = await this.dataSource.manager.findOne(UserEnt, {
       where: {
         id: rs,
       },

@@ -31,6 +31,9 @@ export class ReqRepo {
     createDto: CreateReqDto,
     query: QueryRunner | undefined,
   ): Promise<ReqEnt> {
+    createDto.projectEnt = await this.dataSource.manager.findOne(ProjectEnt, {
+      where: { id: createDto.project_id },
+    });
     const reqEnt = new ReqEnt();
     reqEnt.status = createDto.status;
     reqEnt.name = createDto.name;
@@ -55,17 +58,17 @@ export class ReqRepo {
         where: { id: id_department },
       });
 
-      console.log("department=====");      console.log(department);
-      
+      console.log('department=====');
+      console.log(department);
+
       const departmentRl = this.dataSource.manager.create(DepartmentRlEnt, {
         department,
         req: result,
       });
-      let x = await this.dataSource.manager
-        .save(departmentRl);
+      let x = await this.dataSource.manager.save(departmentRl);
 
-        console.log("x---------");        console.log(x);
-        
+      console.log('x---------');
+      console.log(x);
     }
     return result;
   }
@@ -109,6 +112,8 @@ export class ReqRepo {
     updateDto: UpdateReqDto,
     query?: QueryRunner,
   ): Promise<ReqEnt> {
+    updateDto.projectEnt = await this.dataSource.manager
+    .findOne(ProjectEnt,{ where: { id: updateDto.project_id } });
     entity.status = updateDto.status;
     entity.project = updateDto.projectEnt;
     entity.name = updateDto.name;
@@ -118,12 +123,11 @@ export class ReqRepo {
   }
 
   async paginationReq(pageDto: ReqPageDto): Promise<PageDto<ReqEnt>> {
-    const queryBuilder = this.dataSource.manager.createQueryBuilder(
-      ReqEnt,
-      'req',
-    ).leftJoinAndSelect('req.project', 'project')
-    .leftJoinAndSelect('req.department_rls', 'department_rls')
-    .leftJoinAndSelect('department_rls.department', 'department')
+    const queryBuilder = this.dataSource.manager
+      .createQueryBuilder(ReqEnt, 'req')
+      .leftJoinAndSelect('req.project', 'project')
+      .leftJoinAndSelect('req.department_rls', 'department_rls')
+      .leftJoinAndSelect('department_rls.department', 'department');
     if (pageDto.base) {
       const row = pageDto.base.row;
       const skip = PublicFunc.skipRow(pageDto.base.page, pageDto.base.row);
@@ -270,5 +274,4 @@ export class ReqRepo {
     req.delete_at = new Date();
     return await this.dataSource.manager.save(req);
   }
-  
 }

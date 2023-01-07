@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateRelTaskDto } from 'src/modules/rel-task/modules/dtos/create.rel-task.dto';
-import { FindOneOptions, QueryRunner } from 'typeorm';
+import { DataSource, FindOneOptions, QueryRunner } from 'typeorm';
 import { DepartmentRlService } from '../../../department-rl/modules/services/department-rl.service';
 import { ProjectService } from '../../../project/modules/services/project.service';
 import { ReqService } from '../../../req/modules/services/req.service';
@@ -24,6 +24,7 @@ export class TaskService {
     private projectService: ProjectService,
     private reqService: ReqService,
     private departmentRlService: DepartmentRlService,
+    private dataSource: DataSource,
   ) {}
 
   async taskTypePagination(
@@ -67,29 +68,28 @@ export class TaskService {
   }
 
   async createTask(createDt: CreateTaskDto, query?: QueryRunner) {
+    const queryRunner = this.dataSource.createQueryRunner();
     try {
-      return await this.taskRepo.createTask(createDt, query);
+      await queryRunner.startTransaction();
+      return await this.taskRepo.createTask(createDt, queryRunner);
     } catch (e) {
+      await queryRunner.rollbackTransaction();
       throw e;
+    } finally {
+      await queryRunner.release();
     }
   }
 
   async createTaskByProject(createDt: CreateTaskDto, query?: QueryRunner) {
+    const queryRunner = this.dataSource.createQueryRunner();
     try {
-      createDt.projectEnt = await this.projectService.findOneProject(
-        createDt.id_project,
-      );
-      if (!createDt.id_req)
-        createDt.reqEnt = await this.reqService.findDefaultReq();
-      else createDt.reqEnt = await this.reqService.findOneReq(createDt.id_req);
-      createDt.departmentRlEnt =
-        await this.departmentRlService.findByDepartmentRequest(
-          createDt.id_req,
-          createDt.id_user.uid,
-        );
-      return await this.taskRepo.createTaskByProject(createDt, query);
+      await queryRunner.startTransaction();
+      return await this.taskRepo.createTaskByProject(createDt, queryRunner);
     } catch (e) {
+      await queryRunner.rollbackTransaction();
       throw e;
+    } finally {
+      await queryRunner.release();
     }
   }
 
@@ -180,18 +180,22 @@ export class TaskService {
     createDto: CreateRelTaskDto,
     query?: QueryRunner,
   ) {
+    const queryRunner = this.dataSource.createQueryRunner();
     try {
+      await queryRunner.startTransaction();
       if (createDto.type !== TypeTaskEnum.FORWARD) {
         throw new BadRequestException({ message: 'type must be FORWARD' });
       }
       return await this.taskRepo.forwardTask(
         id_prevoise_task,
         createDto,
-        query,
+        queryRunner,
       );
     } catch (e) {
-      console.log(e);
+      await queryRunner.rollbackTransaction();
       throw e;
+    } finally {
+      await queryRunner.release();
     }
   }
 
@@ -333,7 +337,7 @@ export class TaskService {
       throw e;
     }
   }
-  
+
   async paginationTaskWithCheckStatus(
     id_user: string,
     pageDto: TaskTypeStatusPageDto,
@@ -351,7 +355,7 @@ export class TaskService {
     }
   }
 
-  async deleteTask(id_task:string) {
+  async deleteTask(id_task: string) {
     try {
       return await this.taskRepo.deleteTask(id_task);
     } catch (e) {

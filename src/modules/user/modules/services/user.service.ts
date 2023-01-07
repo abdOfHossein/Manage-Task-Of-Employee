@@ -1,4 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { DepartmentEnt } from 'src/modules/department/modules/entities/department.entity';
 import { FileEnt } from 'src/modules/file/modules/entities/file.entity';
 import { RoleEnt } from 'src/modules/role/modules/entities/role.entity';
@@ -18,29 +19,37 @@ import { UserRepo } from '../repositories/user.repository';
 
 @Injectable()
 export class UserService {
-  constructor(private userRepo: UserRepo, private dataSource: DataSource) {}
+  constructor(
+    private userRepo: UserRepo,
+    @InjectRepository(FileEnt)
+    @InjectRepository(UserEnt)
+    @InjectRepository(RoleEnt)
+    @InjectRepository(DepartmentEnt)
+    private dataSource: DataSource,
+  ) {}
 
   async createUser(createDto: CreateUserDto, query?: QueryRunner) {
     try {
       if (createDto.unq_file) {
-        const file = await this.dataSource
-          .getRepository(FileEnt)
-          .findOne({ where: { unq_file: createDto.unq_file } });
+        const file = await this.dataSource.manager.findOne(FileEnt, {
+          where: { unq_file: createDto.unq_file },
+        });
         createDto.file = file;
       }
-      createDto.departmentEnt = await this.dataSource
-        .getRepository(DepartmentEnt)
-        .findOne({ where: { id: createDto.id_department } });
+      createDto.departmentEnt = await this.dataSource.manager.findOne(
+        DepartmentEnt,
+        { where: { id: createDto.id_department } },
+      );
       if (!createDto.id_role) {
         if (createDto.role_default_status === true) {
-          const role = await this.dataSource
-            .getRepository(RoleEnt)
-            .findOne({ where: { role_type: RoleTypeEnum.USER } });
+          const role = await this.dataSource.manager.findOne(RoleEnt, {
+            where: { role_type: RoleTypeEnum.USER },
+          });
           createDto.roleEnt = [role];
         } else {
-          const role = await this.dataSource
-            .getRepository(RoleEnt)
-            .findOne({ where: { role_type: RoleTypeEnum.ADMIN } });
+          const role = await this.dataSource.manager.findOne(RoleEnt, {
+            where: { role_type: RoleTypeEnum.ADMIN },
+          });
           createDto.roleEnt = [role];
         }
       } else {
@@ -72,14 +81,14 @@ export class UserService {
 
   async createJwtSetRole(id_user: string, id_role: string) {
     try {
-      const user = await this.dataSource.getRepository(UserEnt).findOne({
+      const user = await this.dataSource.manager.findOne(UserEnt, {
         where: { id: id_user },
       });
       console.log('user.role==>', user);
 
       const rolesEnt: any = await this.dataSource
-        .getRepository(RoleEnt)
-        .createQueryBuilder('role')
+        .manager
+        .createQueryBuilder(RoleEnt,'role')
         .leftJoinAndSelect('role.users', 'users')
         .where('users.id = :id_user', { id_user: user.id })
         .getMany();
@@ -99,8 +108,8 @@ export class UserService {
       }
 
       const currentRole = await this.dataSource
-        .getRepository(RoleEnt)
-        .findOne({ where: { id: id_role } });
+        .manager
+        .findOne(RoleEnt,{ where: { id: id_role } });
 
       if (!user || user.status == UserStatus.BLOCK) {
         throw new BadRequestException('User does not exist');
@@ -118,13 +127,13 @@ export class UserService {
 
   async _createJwt(loginUserDto: LoginUserDto) {
     try {
-      const user = await this.dataSource.getRepository(UserEnt).findOne({
+      const user = await this.dataSource.manager.findOne(UserEnt,{
         where: { username: loginUserDto.username },
       });
 
       const rolesEnt: any = await this.dataSource
-        .getRepository(RoleEnt)
-        .createQueryBuilder('role')
+        .manager
+        .createQueryBuilder(RoleEnt,'role')
         .leftJoinAndSelect('role.users', 'users')
         .where('users.id = :id_user', { id_user: user.id })
         .getMany();
@@ -162,20 +171,20 @@ export class UserService {
       console.log(2222222222);
 
       const file = await this.dataSource
-        .getRepository(FileEnt)
-        .findOne({ where: { unq_file: updateDt.unq_file } });
+        .manager
+        .findOne(FileEnt,{ where: { unq_file: updateDt.unq_file } });
       updateDt.file = file;
 
       updateDt.departmentEnt = await this.dataSource
-        .getRepository(DepartmentEnt)
-        .findOne({ where: { id: updateDt.id_department } });
+        .manager
+        .findOne(DepartmentEnt,{ where: { id: updateDt.id_department } });
       console.log(33333333);
 
       let roles = [];
       for (const id_role of updateDt.id_role) {
         const role = await this.dataSource
-          .getRepository(RoleEnt)
-          .findOne({ where: { id: id_role } });
+          .manager
+          .findOne(RoleEnt,{ where: { id: id_role } });
         roles.push(role);
       }
       console.log(444444444);
@@ -232,13 +241,13 @@ export class UserService {
 
   async jwtAdmin(id_user: string) {
     try {
-      const user = await this.dataSource.getRepository(UserEnt).findOne({
+      const user = await this.dataSource.manager.findOne(UserEnt,{
         where: { id: id_user },
       });
 
       const rolesEnt: any = await this.dataSource
-        .getRepository(RoleEnt)
-        .createQueryBuilder('role')
+        .manager
+        .createQueryBuilder(RoleEnt,'role')
         .leftJoinAndSelect('role.users', 'users')
         .where('users.id = :id_user', { id_user: user.id })
         .getMany();

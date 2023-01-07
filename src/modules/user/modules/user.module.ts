@@ -2,8 +2,11 @@ import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { DepartmentEnt } from 'src/modules/department/modules/entities/department.entity';
+import { FileEnt } from 'src/modules/file/modules/entities/file.entity';
 import { HashModule } from 'src/modules/hash/hash.module';
 import { RedisModule } from 'src/modules/redis/redis.module';
+import { RoleEnt } from 'src/modules/role/modules/entities/role.entity';
 import { JwtGuard } from './auth/guards/jwt.guard';
 import { JwtStrategy } from './auth/strategy/jwt.strategy';
 import { UserEnt } from './entities/user.entity';
@@ -14,10 +17,10 @@ import { UserService } from './services/User.service';
   imports: [
     HashModule,
     RedisModule.forRoot('192.168.10.200', 6379),
-    TypeOrmModule.forFeature([UserEnt]),
+    TypeOrmModule.forFeature([UserEnt, FileEnt, RoleEnt, DepartmentEnt]),
     PassportModule,
     JwtModule.register({
-      secret:'secret',
+      secret: 'secret',
       signOptions: { expiresIn: '6000s' },
     }),
   ],

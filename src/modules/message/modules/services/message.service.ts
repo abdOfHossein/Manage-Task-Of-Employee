@@ -5,21 +5,28 @@ import { MessageRepo } from '../repositories/message.repository';
 
 @Injectable()
 export class MessageService {
-  constructor(private messageRepo:MessageRepo){}
+  constructor(
+    private messageRepo: MessageRepo,
+    private dataSource: DataSource,
+  ) {}
   //     return await this.MessageRepo.getReportMessage(id_user, reportPage, query);
   //   } catch (e) {
   //     throw e;
   //   }
   // }
   async createMessage(createDt: CreateMessageDto, query?: QueryRunner) {
+    const queryRunner = this.dataSource.createQueryRunner();
     try {
-      return await this.messageRepo.createMessage(createDt, query);
+      await queryRunner.startTransaction();
+      return await this.messageRepo.createMessage(createDt, queryRunner);
     } catch (e) {
+      await queryRunner.rollbackTransaction();
       throw e;
+    } finally {
+      await queryRunner.release();
     }
   }
 
-  
   async delelteMessage(id_message: string, query?: QueryRunner) {
     try {
       return await this.messageRepo.delelteMessage(id_message);

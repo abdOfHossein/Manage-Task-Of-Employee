@@ -9,11 +9,14 @@ import { PageDto } from 'src/common/dtos/page.dto';
 import { PageMetaDto } from 'src/common/dtos/page.meta.dto';
 import { PublicFunc } from 'src/common/function/public.func';
 import { DepartmentRlEnt } from 'src/modules/department-rl/modules/entities/department-rl.entity';
+import { DepartmentRlService } from 'src/modules/department-rl/modules/services/department-rl.service';
 import { DepartmentEnt } from 'src/modules/department/modules/entities/department.entity';
+import { ProjectService } from 'src/modules/project/modules/services/project.service';
 import { CreateRelTaskDto } from 'src/modules/rel-task/modules/dtos/create.rel-task.dto';
 import { RelTaskEnt } from 'src/modules/rel-task/modules/entities/rel-task.entity';
 import { ReqEnt } from 'src/modules/req/modules/entities/req.entity';
 import { StatusReqEnum } from 'src/modules/req/modules/enums/req.enum';
+import { ReqService } from 'src/modules/req/modules/services/req.service';
 import { UserEnt } from 'src/modules/user/modules/entities/user.entity';
 import { DataSource, FindOneOptions, QueryRunner } from 'typeorm';
 import { CreateTaskDto } from '../dtos/create.task.dto';
@@ -31,6 +34,9 @@ import { TaskTypePageDto } from '../paginations/task.type.page.dto';
 
 export class TaskRepo {
   constructor(
+    private departmentRlService: DepartmentRlService,
+    private projectService: ProjectService,
+    private reqService: ReqService,
     @InjectRepository(TaskEnt)
     private dataSource: DataSource,
   ) {}
@@ -265,6 +271,18 @@ export class TaskRepo {
     createDto: CreateTaskDto,
     query: QueryRunner | undefined,
   ) {
+    createDto.projectEnt = await this.projectService.findOneProject(
+      createDto.id_project,
+    );
+    if (!createDto.id_req)
+      createDto.reqEnt = await this.reqService.findDefaultReq();
+    else createDto.reqEnt = await this.reqService.findOneReq(createDto.id_req);
+    createDto.departmentRlEnt =
+      await this.departmentRlService.findByDepartmentRequest(
+        createDto.id_req,
+        createDto.id_user.uid,
+      );
+
     const queryBuilder = await this.dataSource.manager
       .createQueryBuilder(TaskEnt, 'task')
       .innerJoinAndSelect('task.department_rl', 'department_rl')
