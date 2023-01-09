@@ -26,11 +26,13 @@ export class FileManagerController {
   findOneFileManager(
     @Query('destination_id') destination_id: string,
     @Query('recieve_type') recieve_type: RecieveTypeEnum,
-  ): Promise<FileManagerEnt> {
-    let findFileManagerDto: FindFileManagerDto;
+  ): Promise<FileManagerEnt[]> {
+    console.log(destination_id, recieve_type);
+
+    let findFileManagerDto: any = {};
     findFileManagerDto.destination_id = destination_id;
     findFileManagerDto.reciverType = recieve_type;
-
+    console.log('findFileManagerDto', findFileManagerDto);
     return this.fileManager.findOneFileManager(findFileManagerDto);
   }
 

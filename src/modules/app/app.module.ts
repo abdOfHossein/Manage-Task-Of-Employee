@@ -41,7 +41,8 @@ import { AppService } from './app.service';
         password: process.env.DB_PASSWORD || '774936188',
         entities: ['dist/**/*.entity.js', '**/*.entity.js'],
         migrations: ['dist/migrations/*{.ts,.js}'],
-        synchronize: false,
+        synchronize: true,
+        autoLoadEntities: true,
       }),
       dataSourceFactory: async (options) => {
         const dataSource = await new DataSource(options).initialize();

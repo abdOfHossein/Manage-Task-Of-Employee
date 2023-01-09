@@ -33,26 +33,32 @@ export class FileManagerRepo {
   async findOneFileManager(
     findFileManagerDto: FindFileManagerDto,
     options?: FindOneOptions,
-  ): Promise<FileManagerEnt> {
+  ): Promise<FileManagerEnt[]> {
     const fileManager = await this.dataSource.manager
       .createQueryBuilder(FileManagerEnt, 'file_manager')
       .where(
-        'file_manager.destination_id = :destination_id AND file_manager.reciverType = :reciverType',
+        'file_manager.destination_id = :destination_id AND (file_manager.reciverType = :reciverType)',
         {
           destination_id: findFileManagerDto.destination_id,
           reciverType: findFileManagerDto.reciverType,
         },
       )
-      .getOne();
+      .getMany();
+    console.log('fileManager', fileManager);
+
     if (!fileManager)
       throw new BadGatewayException({ message: 'FileManager does not exits' });
     return fileManager;
   }
 
   async deleteFileManager(id_fileManager: string) {
+    console.log('id_fileManager', id_fileManager);
+
     const fileManager = await this.dataSource.manager.findOne(FileManagerEnt, {
       where: { id: id_fileManager },
     });
+
+    console.log('fileManager', fileManager);
     fileManager.delete_at = new Date();
     return await this.dataSource.manager.save(fileManager);
   }

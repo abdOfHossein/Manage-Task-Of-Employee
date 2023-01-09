@@ -13,7 +13,7 @@ import { TypeFileEnum } from '../enums/type.file.enum';
 import { ProjectEnt } from 'src/modules/project/modules/entities/project.entity';
 var randomstring = require('randomstring');
 
-@Entity({ schema: 'public', name: 'file_manager' })
+@Entity({ schema: 'public', name: 'file' })
 export class FileEnt extends BasicEnt {
   @PrimaryGeneratedColumn('uuid')
   id: string;

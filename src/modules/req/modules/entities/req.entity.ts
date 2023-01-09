@@ -15,7 +15,7 @@ export class ReqEnt extends BasicEnt {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ type:"enum",enum:StatusReqEnum})
+  @Column({ type:"enum",enum:StatusReqEnum,nullable:true})
   status: StatusReqEnum;
 
   @Column({nullable:true})

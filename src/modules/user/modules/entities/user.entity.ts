@@ -30,7 +30,7 @@ export class UserEnt extends BasicEnt {
   @Column({ nullable: false, unique: true })
   username: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: false })
   password: string;
 
   @Column({ nullable: false, unique: true })
