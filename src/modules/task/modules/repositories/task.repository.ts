@@ -349,7 +349,7 @@ export class TaskRepo {
       .getMany();
   }
 
-  async paginationTask(
+  async paginationAdmin(
     id_user: string,
     pageDto: TaskPageDto,
   ): Promise<PageDto<TaskEnt>> {
@@ -414,6 +414,68 @@ export class TaskRepo {
     return new PageDto(result[0], pageMetaDto);
   }
 
+  async pagination(
+    pageDto: TaskPageDto,
+  ): Promise<PageDto<TaskEnt>> {
+    const queryBuilder = this.dataSource.manager
+      .createQueryBuilder(TaskEnt, 'task')
+      .select([
+        'task.id',
+        'task.priority',
+        'task.title',
+        'task.head_id',
+        'task.type',
+        'task.duration',
+        'task.status',
+      ]);
+    if (pageDto.base) {
+      const row = pageDto.base.row;
+      const skip = PublicFunc.skipRow(pageDto.base.page, pageDto.base.row);
+      queryBuilder.skip(skip).take(row);
+    }
+    if (pageDto.filter) {
+      if (pageDto.filter.priority) {
+        queryBuilder.andWhere('task.priority LIKE :priority', {
+          priority: `%${pageDto.filter.priority}%`,
+        });
+      }
+      if (pageDto.filter.title) {
+        queryBuilder.andWhere('task.title LIKE :title', {
+          title: `%${pageDto.filter.title}%`,
+        });
+      }
+      if (pageDto.filter.type) {
+        queryBuilder.andWhere('task.type LIKE :type', {
+          type: `%${pageDto.filter.type}%`,
+        });
+      }
+      if (pageDto.filter.status) {
+        queryBuilder.andWhere('task.status LIKE :status', {
+          status: `%${pageDto.filter.status}%`,
+        });
+      }
+    }
+    if (pageDto.field) {
+      const mapper = TaskMapperPagination[pageDto.field];
+      if (!mapper)
+        throw new Error(
+          `${JSON.stringify({
+            section: 'public',
+            value: 'Column Not Exist',
+          })}`,
+        );
+      queryBuilder.addOrderBy(
+        `${TaskMapperPagination[pageDto.field]}`,
+        pageDto.base.order,
+      );
+    }
+    const result = await queryBuilder.getManyAndCount();
+    const pageMetaDto = new PageMetaDto({
+      baseOptionsDto: pageDto.base,
+      itemCount: result[1],
+    });
+    return new PageDto(result[0], pageMetaDto);
+  }
   async createTaskWithIdDepartment(
     id_department: string,
     createDto: CreateTaskDto,

@@ -122,9 +122,18 @@ export class TaskService {
     }
   }
 
-  async paginationTask(id_user: string, pageDto: TaskPageDto) {
+  async paginationAdmin(id_user: string, pageDto: TaskPageDto) {
     try {
-      return await this.taskRepo.paginationTask(id_user, pageDto);
+      return await this.taskRepo.paginationAdmin(id_user, pageDto);
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  }
+
+  async pagination(pageDto: TaskPageDto) {
+    try {
+      return await this.taskRepo.pagination(pageDto);
     } catch (e) {
       console.log(e);
       throw e;

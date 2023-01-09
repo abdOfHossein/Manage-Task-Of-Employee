@@ -7,7 +7,7 @@ export class RoleGDto {
   id_role: string;
 
   @ApiProperty()
-  role_type: RoleTypeEnum;
+  role_type: string;
 
   constructor(init?: Partial<RoleEnt>) {
     this.id_role = init.id;

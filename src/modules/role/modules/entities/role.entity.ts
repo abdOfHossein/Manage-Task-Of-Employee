@@ -5,17 +5,16 @@ import {
   Entity,
   JoinTable,
   ManyToMany,
-  PrimaryGeneratedColumn,
+  PrimaryGeneratedColumn
 } from 'typeorm';
-import { RoleTypeEnum } from '../enum/role.enum';
 
 @Entity({ name: 'role' })
 export class RoleEnt extends BasicEnt {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({default: RoleTypeEnum.ADMIN ,type:"enum",enum:RoleTypeEnum} )
-  role_type: RoleTypeEnum;
+  @Column({nullable:true})
+  role_type: string;
 
   @ManyToMany(() => UserEnt, (users) => users.role)
   @JoinTable()

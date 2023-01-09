@@ -7,14 +7,14 @@ import {
   Put,
   Query,
   Req,
-  UseGuards
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiOperation,
   ApiQuery,
   ApiResponse,
-  ApiTags
+  ApiTags,
 } from '@nestjs/swagger';
 import { PageDto } from 'src/common/dtos/page.dto';
 import { CreateRelTaskDto } from 'src/modules/rel-task/modules/dtos/create.rel-task.dto';
@@ -138,14 +138,21 @@ export class TaskController {
   }
 
   @ApiOperation({ summary: 'pagination of task' })
-  @Post('page')
-  paginationRole(
+  @Post('page/admin')
+  paginationAdmin(
     @Body() pageDto: TaskPageDto,
     @Query('id_user') id_user: string,
   ): Promise<PageDto<TaskEnt>> {
-    return this.task.paginationTask(id_user, pageDto);
+    return this.task.paginationAdmin(id_user, pageDto);
   }
 
+  @ApiOperation({ summary: 'pagination of task' })
+  @Post('page')
+  pagination(
+    @Body() pageDto: TaskPageDto,
+  ): Promise<PageDto<TaskEnt>> {
+    return this.task.pagination(pageDto);
+  }
   @ApiOperation({ summary: 'create task based on id_department' })
   @Post('/id_department')
   createDepartmentRl(
@@ -245,7 +252,11 @@ export class TaskController {
     @Body() updateCheckStatusTaskDto: UpdateCheckStatusTaskDto,
     @GetUser() user: UserResponseJWTDto,
   ) {
-    return this.task.changeStatusToCheck(id_task,user.uid, updateCheckStatusTaskDto);
+    return this.task.changeStatusToCheck(
+      id_task,
+      user.uid,
+      updateCheckStatusTaskDto,
+    );
   }
   @ApiOperation({
     summary: 'create task based on id_User & id_req',
@@ -271,7 +282,7 @@ export class TaskController {
     @GetUser() user: UserResponseJWTDto,
     @Body() pageDto: TaskPageDto,
   ): Promise<PageDto<TaskEnt>> {
-    return this.task.paginationTaskWithCheckStatus(user.uid,pageDto);
+    return this.task.paginationTaskWithCheckStatus(user.uid, pageDto);
   }
 
   @ApiOperation({ summary: 'delete task' })
