@@ -2,6 +2,7 @@ import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { InjectRepository } from '@nestjs/typeorm';
 import { RoleEnt } from 'src/modules/role/modules/entities/role.entity';
+import { RoleTypeEnum } from 'src/modules/role/modules/enum/role.enum';
 import { DataSource } from 'typeorm';
 import { UserEnt } from '../entities/user.entity';
 
@@ -31,10 +32,10 @@ export class RolesGuard implements CanActivate {
             id: key.id,
           },
         });
-        // if (role.role_type == RoleTypeEnum.ADMIN) {
-        //   user.role_default_status = false;
-        //   return true;
-        // }
+        if (role.role_type == RoleTypeEnum.ADMIN) {
+          user.role_default_status = false;
+          return true;
+        }
       }
       return;
     } catch (e) {

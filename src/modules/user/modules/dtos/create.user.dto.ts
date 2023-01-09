@@ -19,7 +19,7 @@ export class CreateUserDto {
 
   @IsNotEmpty()
   @ApiProperty({ default: true })
-  role_default_status: boolean;
+  role_default_status?: boolean;
 
   @ApiHideProperty()
   roleEnt: RoleEnt[];

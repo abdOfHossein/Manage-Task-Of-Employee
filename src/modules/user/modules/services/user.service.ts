@@ -55,6 +55,8 @@ export class UserService {
       } else {
         const roles: any = [];
         for (const id_role of createDto.id_role) {
+          console.log('id_role',id_role);
+          
           let role = await this.dataSource.manager.findOne(RoleEnt, {
             where: { id: id_role },
           });
