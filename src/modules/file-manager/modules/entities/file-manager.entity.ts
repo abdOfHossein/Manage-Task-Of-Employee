@@ -11,9 +11,6 @@ export class FileManagerEnt extends BasicEnt {
   title: string;
 
   @Column()
-  name: string;
-
-  @Column()
   destination_id: string;
 
   @Column()
