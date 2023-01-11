@@ -131,11 +131,24 @@ export class TaskController {
     return this.task.updateTask(id_task, updateTaskDto);
   }
 
-  @ApiOperation({ summary: 'find all task' })
-  @Get('all')
-  getAll(): Promise<TaskEnt[]> {
-    return this.task.getAll();
+
+  @UseGuards(JwtGuard)
+  @ApiBearerAuth('access-token')
+  @ApiOperation({ summary: 'find all task based on id_user in jwt' })
+  @Get('all/OfUser')
+  getAllOfUser(@GetUser() user: UserResponseJWTDto): Promise<TaskEnt[]> {
+    return this.task.getAllOfUser(user.uid);
   }
+
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtGuard)
+  @ApiBearerAuth('access-token')
+  @ApiOperation({ summary: 'find all task for admin' })
+  @Get('all')
+  getAllForAdmin(): Promise<TaskEnt[]> {
+    return this.task.getAllForAdmin();
+  }
+
 
   @ApiOperation({ summary: 'pagination of task' })
   @Post('page/admin')

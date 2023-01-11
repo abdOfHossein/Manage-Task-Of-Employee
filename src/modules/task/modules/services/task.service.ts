@@ -114,9 +114,17 @@ export class TaskService {
     }
   }
 
-  async getAll() {
+  async getAllOfUser(id_user:string) {
     try {
-      return await this.taskRepo.getAll();
+      return await this.taskRepo.getAllOfUser(id_user);
+    } catch (e) {
+      throw e;
+    }
+  }
+  
+  async getAllForAdmin() {
+    try {
+      return await this.taskRepo.getAllForAdmin();
     } catch (e) {
       throw e;
     }

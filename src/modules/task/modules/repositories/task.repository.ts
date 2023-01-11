@@ -337,16 +337,48 @@ export class TaskRepo {
     return await this.dataSource.manager.save(entity);
   }
 
-  async getAll(): Promise<TaskEnt[]> {
-    // return await this.dataSource.manager.find(TaskEnt, {relations: ['user']});
+  async getAllForAdmin(): Promise<TaskEnt[]> {
     return await this.dataSource.manager
       .createQueryBuilder(TaskEnt, 'task')
       .innerJoinAndSelect('task.user', 'user')
+      .innerJoinAndSelect('user.department', 'department')
+      .innerJoinAndSelect('department.department_rls', 'department_rls')
+      .innerJoinAndSelect('department_rls.req', 'req')
+      .innerJoinAndSelect('req.project', 'project')
+      .getMany();
+  }
+
+  async getAllOfUser(id_user: string): Promise<TaskEnt[] | any> {
+    const result: any = await this.dataSource.manager
+      .createQueryBuilder(TaskEnt, 'task')
+      .innerJoinAndSelect('task.user', 'user')
+      .where('user.id = :id_user', { id_user })
       .innerJoinAndSelect('task.department_rl', 'department_rl')
       .innerJoinAndSelect('department_rl.req', 'req')
       .innerJoinAndSelect('req.project', 'project')
-      .select(['task', 'user', 'department_rl.id', 'req.id', 'project'])
+      .select([
+        'task',
+        'department_rl.id',
+        'req.id',
+        'req.name',
+        'project.project_name',
+      ])
       .getMany();
+    let do_date, duration;
+    for (let i = 0; i < result.length; i++) {
+      if (result[i].do_date && result[i].duration) {
+        do_date = result[i].do_date;
+        console.log('do_date', do_date);
+        duration = result[i].duration;
+        console.log('duration', duration);
+
+        result[i].delivery_date = new Date(
+          do_date.setDate(do_date.getDate() + duration),
+        );
+      }
+    }
+
+    return result;
   }
 
   async paginationAdmin(
@@ -414,9 +446,7 @@ export class TaskRepo {
     return new PageDto(result[0], pageMetaDto);
   }
 
-  async pagination(
-    pageDto: TaskPageDto,
-  ): Promise<PageDto<TaskEnt>> {
+  async pagination(pageDto: TaskPageDto): Promise<PageDto<TaskEnt>> {
     const queryBuilder = this.dataSource.manager
       .createQueryBuilder(TaskEnt, 'task')
       .select([
