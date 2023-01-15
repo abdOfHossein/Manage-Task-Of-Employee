@@ -55,8 +55,8 @@ export class UserService {
       } else {
         const roles: any = [];
         for (const id_role of createDto.id_role) {
-          console.log('id_role',id_role);
-          
+          console.log('id_role', id_role);
+
           let role = await this.dataSource.manager.findOne(RoleEnt, {
             where: { id: id_role },
           });
@@ -73,6 +73,11 @@ export class UserService {
       ) {
         throw new BadRequestException({ message: 'you have a duplicate key' });
       }
+      if (
+        e.message.indexOf(' invalid input syntax for type uuid') == 0
+      ) {
+        throw new BadRequestException({ message: 'please enter uuid for ID field' });
+      }
       throw e;
     }
   }
@@ -88,9 +93,8 @@ export class UserService {
       });
       console.log('user.role==>', user);
 
-      const rolesEnt: any = await this.dataSource
-        .manager
-        .createQueryBuilder(RoleEnt,'role')
+      const rolesEnt: any = await this.dataSource.manager
+        .createQueryBuilder(RoleEnt, 'role')
         .leftJoinAndSelect('role.users', 'users')
         .where('users.id = :id_user', { id_user: user.id })
         .getMany();
@@ -109,9 +113,9 @@ export class UserService {
         });
       }
 
-      const currentRole = await this.dataSource
-        .manager
-        .findOne(RoleEnt,{ where: { id: id_role } });
+      const currentRole = await this.dataSource.manager.findOne(RoleEnt, {
+        where: { id: id_role },
+      });
 
       if (!user || user.status == UserStatus.BLOCK) {
         throw new BadRequestException('User does not exist');
@@ -129,13 +133,18 @@ export class UserService {
 
   async _createJwt(loginUserDto: LoginUserDto) {
     try {
-      const user = await this.dataSource.manager.findOne(UserEnt,{
+      const user = await this.dataSource.manager.findOne(UserEnt, {
         where: { username: loginUserDto.username },
       });
-
-      const rolesEnt: any = await this.dataSource
-        .manager
-        .createQueryBuilder(RoleEnt,'role')
+      if (
+        !user ||
+        !(await user.validatePassword(loginUserDto.password)) ||
+        user.status == UserStatus.BLOCK
+      ) {
+        throw new BadRequestException('User does not exist');
+      }
+      const rolesEnt: any = await this.dataSource.manager
+        .createQueryBuilder(RoleEnt, 'role')
         .leftJoinAndSelect('role.users', 'users')
         .where('users.id = :id_user', { id_user: user.id })
         .getMany();
@@ -144,13 +153,7 @@ export class UserService {
       for (const role of rolesEnt) {
         roles.push({ id: role.id, title: role.role_type });
       }
-      if (
-        !user ||
-        !(await user.validatePassword(loginUserDto.password)) ||
-        user.status == UserStatus.BLOCK
-      ) {
-        throw new BadRequestException('User does not exist');
-      }
+      
       console.log(roles);
 
       return await this.userRepo._createJwt(user.id, roles);
@@ -172,21 +175,22 @@ export class UserService {
     try {
       console.log(2222222222);
 
-      const file = await this.dataSource
-        .manager
-        .findOne(FileEnt,{ where: { unq_file: updateDt.unq_file } });
+      const file = await this.dataSource.manager.findOne(FileEnt, {
+        where: { unq_file: updateDt.unq_file },
+      });
       updateDt.file = file;
 
-      updateDt.departmentEnt = await this.dataSource
-        .manager
-        .findOne(DepartmentEnt,{ where: { id: updateDt.id_department } });
+      updateDt.departmentEnt = await this.dataSource.manager.findOne(
+        DepartmentEnt,
+        { where: { id: updateDt.id_department } },
+      );
       console.log(33333333);
 
       let roles = [];
       for (const id_role of updateDt.id_role) {
-        const role = await this.dataSource
-          .manager
-          .findOne(RoleEnt,{ where: { id: id_role } });
+        const role = await this.dataSource.manager.findOne(RoleEnt, {
+          where: { id: id_role },
+        });
         roles.push(role);
       }
       console.log(444444444);
@@ -243,13 +247,12 @@ export class UserService {
 
   async jwtAdmin(id_user: string) {
     try {
-      const user = await this.dataSource.manager.findOne(UserEnt,{
+      const user = await this.dataSource.manager.findOne(UserEnt, {
         where: { id: id_user },
       });
 
-      const rolesEnt: any = await this.dataSource
-        .manager
-        .createQueryBuilder(RoleEnt,'role')
+      const rolesEnt: any = await this.dataSource.manager
+        .createQueryBuilder(RoleEnt, 'role')
         .leftJoinAndSelect('role.users', 'users')
         .where('users.id = :id_user', { id_user: user.id })
         .getMany();

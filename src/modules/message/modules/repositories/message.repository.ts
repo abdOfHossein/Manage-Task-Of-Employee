@@ -10,6 +10,7 @@ import { RecieveTypeMessageEnum } from '../enum/recieve.type.message.enum';
 export class MessageRepo {
   constructor(
     @InjectRepository(MessageEnt)
+    @InjectRepository(MessageUserEnt)
     private dataSource: DataSource,
   ) {}
 
@@ -202,15 +203,24 @@ export class MessageRepo {
     messageEnt.recieve_type = createDto.recieve_type;
     messageEnt.publish_date = createDto.publish_date;
     messageEnt.message_type = createDto.message_type;
-    if (query) await query.manager.save(messageEnt);
-    await this.dataSource.manager.save(messageEnt);
+    let result: MessageEnt;
+    if (query) {
+      console.log('hereeeeeeeeeeeeeeeeeeeeeee');
 
+      result = await query.manager.save(messageEnt);
+    } else {
+      result = await this.dataSource.manager.save(messageEnt);
+    }
     if (createDto.recieve_type === RecieveTypeMessageEnum.USERS) {
       for (const id_user of createDto.to) {
         const message_user = new MessageUserEnt();
         message_user.user_id = id_user;
         message_user.message = messageEnt;
-        await this.dataSource.manager.save(message_user);
+        if (query) {
+          await query.manager.save(message_user);
+        } else {
+          await this.dataSource.manager.save(message_user);
+        }
       }
     } else if (createDto.recieve_type === RecieveTypeMessageEnum.DEPARTMENT) {
       for (const id_department of createDto.to) {
@@ -225,7 +235,11 @@ export class MessageRepo {
           const message_user = new MessageUserEnt();
           message_user.user_id = user.id;
           message_user.message = messageEnt;
-          await this.dataSource.manager.save(message_user);
+          if (query) {
+            await query.manager.save(message_user);
+          } else {
+            await this.dataSource.manager.save(message_user);
+          }
         }
       }
     } else {
@@ -234,11 +248,16 @@ export class MessageRepo {
         const message_user = new MessageUserEnt();
         message_user.user_id = user.id;
         message_user.message = messageEnt;
-        await this.dataSource.manager.save(message_user);
+        if (query) {
+          await query.manager.save(message_user);
+        } else {
+          await this.dataSource.manager.save(message_user);
+        }
       }
     }
-
-    return messageEnt;
+    await query.commitTransaction();
+    console.log('result', result);
+    return result;
   }
 
   // async createMessageByProject(
@@ -262,10 +281,13 @@ export class MessageRepo {
     const message = await this.dataSource.manager.find(MessageEnt, {});
     return message;
   }
-  
-  async delelteMessage(id_message:string) {
-    return await this.dataSource.manager.update(MessageEnt,{id:id_message},{delete_at:new Date(Date.now())})
-     
+
+  async delelteMessage(id_message: string) {
+    return await this.dataSource.manager.update(
+      MessageEnt,
+      { id: id_message },
+      { delete_at: new Date(Date.now()) },
+    );
   }
   // async updateMessage(
   //   entity: MessageEnt,

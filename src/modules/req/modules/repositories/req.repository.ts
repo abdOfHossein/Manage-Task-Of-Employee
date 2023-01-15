@@ -39,9 +39,12 @@ export class ReqRepo {
     reqEnt.name = createDto.name;
     reqEnt.description = createDto.description;
     reqEnt.project = createDto.projectEnt;
-
-    if (query) return await query.manager.save(reqEnt);
-    const result = await this.dataSource.manager.save(reqEnt);
+    let result: ReqEnt;
+    if (query) {
+      result = await query.manager.save(reqEnt);
+    } else {
+      result = await this.dataSource.manager.save(reqEnt);
+    }
 
     if (createDto.id_departments.length == 0) {
       let departments = await this.dataSource.manager.find(DepartmentEnt, {});
@@ -50,7 +53,11 @@ export class ReqRepo {
           department,
           req: result,
         });
-        await this.dataSource.manager.save(departmentRl);
+        if (query) {
+          await query.manager.save(departmentRl);
+        } else {
+          await this.dataSource.manager.save(departmentRl);
+        }
       }
     }
     for (const id_department of createDto.id_departments) {
@@ -65,11 +72,14 @@ export class ReqRepo {
         department,
         req: result,
       });
-      let x = await this.dataSource.manager.save(departmentRl);
-
-      console.log('x---------');
-      console.log(x);
+      if (query) {
+        await query.manager.save(departmentRl);
+      } else {
+        await this.dataSource.manager.save(departmentRl);
+      }
     }
+    await query.commitTransaction();
+
     return result;
   }
 
@@ -112,8 +122,9 @@ export class ReqRepo {
     updateDto: UpdateReqDto,
     query?: QueryRunner,
   ): Promise<ReqEnt> {
-    updateDto.projectEnt = await this.dataSource.manager
-    .findOne(ProjectEnt,{ where: { id: updateDto.project_id } });
+    updateDto.projectEnt = await this.dataSource.manager.findOne(ProjectEnt, {
+      where: { id: updateDto.project_id },
+    });
     entity.status = updateDto.status;
     entity.project = updateDto.projectEnt;
     entity.name = updateDto.name;

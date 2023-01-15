@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { DataSource, FindOneOptions, QueryRunner } from 'typeorm';
 import { CreateReqDto } from '../dtos/create.req.dto';
 import { DoneReqDto } from '../dtos/done.req.dto';
@@ -15,9 +15,15 @@ export class ReqService {
     const queryRunner = this.dataSource.createQueryRunner();
     try {
       await queryRunner.startTransaction();
+      await queryRunner.connect();
       return await this.reqRepo.createReq(createDt, queryRunner);
     } catch (e) {
       await queryRunner.rollbackTransaction();
+      if (e.message.indexOf('invalid input syntax for type uuid') == 0) {
+        throw new BadRequestException({
+          message: 'please enter uuid for ID field',
+        });
+      }
       throw e;
     } finally {
       await queryRunner.release();

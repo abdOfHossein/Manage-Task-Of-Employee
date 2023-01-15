@@ -32,9 +32,9 @@ export class UserController {
   PREFIX_TOKEN_AUTH = 'prefix_auth_token_';
   constructor(private user: UserService) {}
 
-  @UseGuards(RolesGuard)
-  @UseGuards(JwtGuard)
-  @ApiBearerAuth('access-token')
+  // @UseGuards(RolesGuard)
+  // @UseGuards(JwtGuard)
+  // @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'sign up user with department' })
   @Post('/register')
   register(

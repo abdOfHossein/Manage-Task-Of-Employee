@@ -71,6 +71,7 @@ export class TaskService {
     const queryRunner = this.dataSource.createQueryRunner();
     try {
       await queryRunner.startTransaction();
+      await queryRunner.connect();
       return await this.taskRepo.createTask(createDt, queryRunner);
     } catch (e) {
       await queryRunner.rollbackTransaction();
@@ -84,6 +85,7 @@ export class TaskService {
     const queryRunner = this.dataSource.createQueryRunner();
     try {
       await queryRunner.startTransaction();
+      await queryRunner.connect();
       return await this.taskRepo.createTaskByProject(createDt, queryRunner);
     } catch (e) {
       await queryRunner.rollbackTransaction();
@@ -200,6 +202,7 @@ export class TaskService {
     const queryRunner = this.dataSource.createQueryRunner();
     try {
       await queryRunner.startTransaction();
+      await queryRunner.connect();
       if (createDto.type !== TypeTaskEnum.FORWARD) {
         throw new BadRequestException({ message: 'type must be FORWARD' });
       }

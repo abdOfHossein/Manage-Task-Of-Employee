@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { DataSource, FindOneOptions, QueryRunner } from 'typeorm';
 import { CreateDepartmentDto } from '../dtos/create.department.dto';
 import { UpdateDepartmentDto } from '../dtos/update.department.dto';
@@ -17,9 +17,15 @@ export class DepartmentService {
     const queryRunner = this.dataSource.createQueryRunner();
     try {
       await queryRunner.startTransaction();
+      await queryRunner.connect();
       return await this.departmentRepo.createDepartment(createDt, queryRunner);
     } catch (e) {
       console.log(e);
+      if (
+        e.message.indexOf('duplicate key value violates unique constraint') > -1
+      ) {
+        throw new BadRequestException({ message: 'you enter duplicate value' });
+      }
       await queryRunner.rollbackTransaction();
       throw e;
     } finally {

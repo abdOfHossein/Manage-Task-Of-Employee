@@ -233,14 +233,16 @@ export class TaskRepo {
       .createQueryBuilder(TaskEnt, 'task')
       .innerJoinAndSelect('task.department_rl', 'department_rl')
       .innerJoinAndSelect('department_rl.req', 'req')
-      .where('department_rl.id = :id_department', {
-        id_department: createDto.id_department_rl,
+      .where('department_rl.id = :id_department_rl', {
+        id_department_rl: createDto.id_department_rl,
       })
       .getOne();
 
-    if (queryBuilder.department_rl.req.status !== StatusReqEnum.OPEN) {
-      queryBuilder.department_rl.req.status = StatusReqEnum.OPEN;
-      await this.dataSource.manager.save(queryBuilder.department_rl.req);
+    if (queryBuilder) {
+      if (queryBuilder.department_rl.req.status !== StatusReqEnum.OPEN) {
+        queryBuilder.department_rl.req.status = StatusReqEnum.OPEN;
+        await this.dataSource.manager.save(queryBuilder.department_rl.req);
+      }
     }
 
     const department_rl = await this.dataSource.manager.findOne(
@@ -261,10 +263,15 @@ export class TaskRepo {
     taskEnt.status = createDto.status;
     taskEnt.type = createDto.type;
     taskEnt.department_rl = department_rl;
-
     taskEnt.user = user;
-    if (query) return await query.manager.save(taskEnt);
-    return await this.dataSource.manager.save(taskEnt);
+    let result: TaskEnt;
+    if (query) {
+      result = await query.manager.save(taskEnt);
+    } else {
+      result = await this.dataSource.manager.save(taskEnt);
+    }
+    await query.commitTransaction();
+    return result;
   }
 
   async createTaskByProject(
@@ -306,8 +313,14 @@ export class TaskRepo {
     taskEnt.duration = createDto.duration;
     taskEnt.status = createDto.status;
     taskEnt.type = createDto.type;
-    if (query) return await query.manager.save(taskEnt);
-    return await this.dataSource.manager.save(taskEnt);
+    let result: TaskEnt;
+    if (query) {
+      let result = await query.manager.save(taskEnt);
+    } else {
+      let result = await this.dataSource.manager.save(taskEnt);
+    }
+    await query.commitTransaction();
+    return result;
   }
 
   async findOneTask(
@@ -634,15 +647,24 @@ export class TaskRepo {
     refTask.duration = createDto.duration;
     refTask.status = createDto.status;
     refTask.type = createDto.type;
-    if (query) await query.manager.save(refTask);
-    await this.dataSource.manager.save(refTask);
+    if (query) {
+      await query.manager.save(refTask);
+    } else {
+      await this.dataSource.manager.save(refTask);
+    }
 
     const taskRlEnt = new RelTaskEnt();
     taskRlEnt.src = srcTask;
     taskRlEnt.ref = refTask;
     taskRlEnt.comment = createDto.comment;
-    if (query) return await query.manager.save(taskRlEnt);
-    return await this.dataSource.manager.save(taskRlEnt);
+    let result: RelTaskEnt;
+    if (query) {
+      let result = await query.manager.save(taskRlEnt);
+    } else {
+      let result = await this.dataSource.manager.save(taskRlEnt);
+    }
+    await query.commitTransaction();
+    return result;
   }
 
   async dailyTask(): Promise<TaskEnt[]> {

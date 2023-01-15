@@ -18,6 +18,7 @@ export class MessageService {
     const queryRunner = this.dataSource.createQueryRunner();
     try {
       await queryRunner.startTransaction();
+      await queryRunner.connect();
       return await this.messageRepo.createMessage(createDt, queryRunner);
     } catch (e) {
       await queryRunner.rollbackTransaction();
