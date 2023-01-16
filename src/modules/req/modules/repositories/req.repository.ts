@@ -122,15 +122,60 @@ export class ReqRepo {
     updateDto: UpdateReqDto,
     query?: QueryRunner,
   ): Promise<ReqEnt> {
-    updateDto.projectEnt = await this.dataSource.manager.findOne(ProjectEnt, {
-      where: { id: updateDto.project_id },
-    });
     entity.status = updateDto.status;
-    entity.project = updateDto.projectEnt;
     entity.name = updateDto.name;
     entity.description = updateDto.description;
-    if (query) return await query.manager.save(entity);
-    return await this.dataSource.manager.save(entity);
+    let result: ReqEnt;
+    if (query) {
+      result = await query.manager.save(entity);
+    } else {
+      result = await this.dataSource.manager.save(entity);
+    }
+
+    const notDeleted = [];
+    const req = await this.dataSource.manager
+      .createQueryBuilder(ReqEnt, 'req')
+      .where('req.id = :req_id', { req_id: entity.id })
+      .leftJoinAndSelect('req.department_rls', 'department_rls')
+      .leftJoinAndSelect('department_rls.department', 'department')
+      .select(['req.id', 'department_rls', 'department_rls.id', 'department'])
+      .getMany();
+    console.log('req', req);
+    for (const department_rl of req[0].department_rls) {
+      if (!updateDto.id_department.includes(department_rl.department.id)) {
+        const departmentRlEnt = await this.dataSource.manager
+          .createQueryBuilder(DepartmentRlEnt, 'department_rl')
+          .where('department_rl.id = :id_department_rl', {
+            id_department_rl: department_rl.id,
+          })
+          .leftJoinAndSelect('department_rl.tasks', 'tasks')
+          .getMany();
+        console.log('departmentRlEnt', departmentRlEnt);
+        if (departmentRlEnt[0].tasks) {
+          notDeleted.push(departmentRlEnt);
+        } else {
+          const deleteDepartmentEl=await this.dataSource.manager.findOne(DepartmentRlEnt,{where:{id:department_rl.id}})
+          deleteDepartmentEl.delete_at=new Date()
+        }
+      }
+    }
+
+    for (const id_department of updateDto.id_department) {
+      const department: any = await this.dataSource.manager.findOne(
+        DepartmentEnt,
+        {
+          where: { id: id_department },
+        },
+      );
+
+      if (!req[0].department_rls.includes(department)) {
+        const departmentRl = new DepartmentRlEnt();
+        departmentRl.req = result;
+        departmentRl.department = department;
+      }
+    }
+    result['failed'] = notDeleted;
+    return result;
   }
 
   async paginationReq(pageDto: ReqPageDto): Promise<PageDto<ReqEnt>> {

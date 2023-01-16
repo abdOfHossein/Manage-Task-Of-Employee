@@ -16,6 +16,9 @@ export class RoleEnt extends BasicEnt {
   @Column({nullable:true})
   role_type: string;
 
+  @Column({ nullable: false, default: true })
+  role_default_status: boolean;
+
   @ManyToMany(() => UserEnt, (users) => users.role)
   @JoinTable()
   users: UserEnt[];

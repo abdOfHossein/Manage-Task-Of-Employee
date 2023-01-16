@@ -30,9 +30,7 @@ export class ReqController {
 
   @ApiOperation({ summary: 'create req' })
   @Post()
-  createReq(
-    @Body() createReqDto: CreateReqDto,
-  ): Promise<ReqEnt> {
+  createReq(@Body() createReqDto: CreateReqDto): Promise<ReqEnt> {
     return this.req.createReq(createReqDto);
   }
 
@@ -63,7 +61,7 @@ export class ReqController {
     @Query('project_id') project_id: string,
     @Body() updateReqDto: UpdateReqDto,
   ): Promise<ReqEnt> {
-
+    console.log('id_req', id_req);
     updateReqDto.project_id = project_id;
     return this.req.updateReq(id_req, updateReqDto);
   }

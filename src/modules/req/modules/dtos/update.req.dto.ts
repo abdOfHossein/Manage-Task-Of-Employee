@@ -10,6 +10,9 @@ export class UpdateReqDto {
   name: string;
 
   @ApiProperty()
+  id_department: string[];
+
+  @ApiProperty()
   description: string;
   
   @ApiHideProperty()

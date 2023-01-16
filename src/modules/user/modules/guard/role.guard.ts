@@ -33,7 +33,6 @@ export class RolesGuard implements CanActivate {
           },
         });
         if (role.role_type == RoleTypeEnum.ADMIN) {
-          user.role_default_status = false;
           return true;
         }
       }

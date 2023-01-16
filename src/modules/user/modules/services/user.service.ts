@@ -40,31 +40,14 @@ export class UserService {
         DepartmentEnt,
         { where: { id: createDto.id_department } },
       );
-      if (!createDto.id_role) {
-        if (createDto.role_default_status === true) {
-          const role = await this.dataSource.manager.findOne(RoleEnt, {
-            where: { role_type: RoleTypeEnum.USER },
-          });
-          createDto.roleEnt = [role];
-        } else {
-          const role = await this.dataSource.manager.findOne(RoleEnt, {
-            where: { role_type: RoleTypeEnum.ADMIN },
-          });
-          createDto.roleEnt = [role];
-        }
-      } else {
-        const roles: any = [];
-        for (const id_role of createDto.id_role) {
-          console.log('id_role', id_role);
-
-          let role = await this.dataSource.manager.findOne(RoleEnt, {
-            where: { id: id_role },
-          });
-          roles.push(role);
-        }
-        createDto.roleEnt = roles;
+      const roles: any = [];
+      for (const id_role of createDto.id_role) {
+        let role = await this.dataSource.manager.findOne(RoleEnt, {
+          where: { id: id_role },
+        });
+        roles.push(role);
       }
-
+      createDto.roleEnt = roles;
       return await this.userRepo.createUser(createDto, query);
     } catch (e) {
       console.log(e);
@@ -73,10 +56,10 @@ export class UserService {
       ) {
         throw new BadRequestException({ message: 'you have a duplicate key' });
       }
-      if (
-        e.message.indexOf(' invalid input syntax for type uuid') == 0
-      ) {
-        throw new BadRequestException({ message: 'please enter uuid for ID field' });
+      if (e.message.indexOf(' invalid input syntax for type uuid') == 0) {
+        throw new BadRequestException({
+          message: 'please enter uuid for ID field',
+        });
       }
       throw e;
     }
@@ -153,7 +136,7 @@ export class UserService {
       for (const role of rolesEnt) {
         roles.push({ id: role.id, title: role.role_type });
       }
-      
+
       console.log(roles);
 
       return await this.userRepo._createJwt(user.id, roles);

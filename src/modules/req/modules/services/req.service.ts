@@ -60,9 +60,16 @@ export class ReqService {
       throw e;
     }
   }
-  async updateReq(Req_Id: string, updateDt: UpdateReqDto, query?: QueryRunner) {
+  async updateReq(id_req: string, updateDt: UpdateReqDto, query?: QueryRunner) {
     try {
-      const reqEnt = <ReqEnt>await this.findOneReq(Req_Id);
+      const reqEnt = await this.dataSource.manager.findOne(ReqEnt, {
+        where: { id: id_req },
+      });
+      if (!reqEnt) {
+        throw new BadRequestException({
+          message: 'Req with this Id does not exist',
+        });
+      }
       return await this.reqRepo.updateReq(reqEnt, updateDt, query);
     } catch (e) {
       throw e;

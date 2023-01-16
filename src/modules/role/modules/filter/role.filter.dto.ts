@@ -3,7 +3,7 @@ import { Allow } from 'class-validator';
 import { RoleTypeEnum } from '../enum/role.enum';
 
 export class RoleFilterDto {
-  @ApiProperty({ default: RoleTypeEnum.USER })
+  @ApiProperty()
   @Allow()
-    role_type: RoleTypeEnum;
+  role_type: string;
 }

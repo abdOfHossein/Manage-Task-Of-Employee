@@ -88,7 +88,7 @@ export class RoleRepo {
     configRoleDto: ConfigRoleDto,
     query?: QueryRunner,
   ): Promise<UserEnt> {
-    let roles:any = [];
+    let roles: any = [];
     for (const roel_id of configRoleDto.id_roles) {
       const role = await this.dataSource.manager.findOne(RoleEnt, {
         where: { id: roel_id },
@@ -100,21 +100,96 @@ export class RoleRepo {
       .createQueryBuilder(UserEnt, 'user')
       .leftJoinAndSelect('user.role', 'role')
       .where('users.id = :id_user', { id_user })
-      .getOne()
-      user.role=roles
+      .getOne();
+    user.role = roles;
     if (query) return await query.manager.save(user);
     return await this.dataSource.manager.save(user);
   }
 
-  
-  async deleteRole(
-    id_role: string,
-    query?: QueryRunner,
-  ): Promise<RoleEnt> {
+  async deleteRole(id_role: string, query?: QueryRunner): Promise<RoleEnt> {
     const roleEnt = await this.dataSource.manager.findOne(RoleEnt, {
       where: { id: id_role },
     });
     roleEnt.delete_at = new Date();
     return await this.dataSource.manager.save(roleEnt);
+  }
+
+  async paginationRoleUser(
+    id_user: string,
+    pageDto: RolePageDto,
+  ): Promise<PageDto<RoleEnt>> {
+    const queryBuilder = this.dataSource.manager
+      .createQueryBuilder(RoleEnt, 'role')
+      .leftJoinAndSelect('role.users', 'users')
+      .where('users.id = :id_user', { id_user })
+      .select(['role.id', 'role.role_type']);
+    if (pageDto.base) {
+      const row = pageDto.base.row;
+      const skip = PublicFunc.skipRow(pageDto.base.page, pageDto.base.row);
+      queryBuilder.skip(skip).take(row);
+    }
+    if (pageDto.filter) {
+      if (pageDto.filter.role_type) {
+        queryBuilder.andWhere('role.role_type LIKE :role_type', {
+          role_type: `%${pageDto.filter.role_type}%`,
+        });
+      }
+    }
+    if (pageDto.field) {
+      const mapper = RoleMapperPagination[pageDto.field];
+      if (!mapper)
+        throw new Error(
+          `${JSON.stringify({
+            section: 'public',
+            value: 'Column Not Exist',
+          })}`,
+        );
+      queryBuilder.addOrderBy(
+        `${RoleMapperPagination[pageDto.field]}`,
+        pageDto.base.order,
+      );
+    }
+    const result = await queryBuilder.getManyAndCount();
+    const pageMetaDto = new PageMetaDto({
+      baseOptionsDto: pageDto.base,
+      itemCount: result[1],
+    });
+    return new PageDto(result[0], pageMetaDto);
+  }
+
+  async deleteSpecificRole(
+    id_user: string,
+    id_role: string,
+    query?: QueryRunner,
+  ): Promise<RoleEnt> {
+    const roleEnt = await this.dataSource.manager
+      .createQueryBuilder(RoleEnt, 'role')
+      .leftJoinAndSelect('role.users', 'users')
+      .where('role.id = :id_role AND users.id = :id_user', { id_user, id_role })
+      .select(['role'])
+      .getOne();
+    roleEnt.delete_at = new Date();
+    if (query) return query.manager.save(roleEnt);
+    return await this.dataSource.manager.save(roleEnt);
+  }
+
+  async addRole(
+    id_user: string,
+    id_role: string,
+    query?: QueryRunner,
+  ): Promise<UserEnt> {
+    const role = await this.dataSource.manager.findOne(RoleEnt, {
+      where: { id: id_role },
+    });
+
+    const user = await this.dataSource.manager.findOne(UserEnt, {
+      where: { id: id_user },
+      relations: { role: true },
+    });
+
+    user.role.push(role);
+
+    if (query) return query.manager.save(user);
+    return await this.dataSource.manager.save(user);
   }
 }

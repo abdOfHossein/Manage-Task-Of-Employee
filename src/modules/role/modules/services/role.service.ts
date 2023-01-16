@@ -34,7 +34,6 @@ export class RoleService {
   }
 
   async findAllRole() {
-    
     try {
       return await this.roleRepo.findAllRole();
     } catch (e) {
@@ -42,16 +41,52 @@ export class RoleService {
     }
   }
 
-  async configRole(id_user:string,configRoleDto: ConfigRoleDto, query?: QueryRunner) {
+  async configRole(
+    id_user: string,
+    configRoleDto: ConfigRoleDto,
+    query?: QueryRunner,
+  ) {
     try {
-      return await this.roleRepo.configRole(id_user,configRoleDto,query);
+      return await this.roleRepo.configRole(id_user, configRoleDto, query);
     } catch (e) {
       throw e;
     }
   }
-  async deleteRole(id_role:string, query?: QueryRunner) {
+  async deleteRole(id_role: string, query?: QueryRunner) {
     try {
-      return await this.roleRepo.deleteRole(id_role,query);
+      return await this.roleRepo.deleteRole(id_role, query);
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  async paginationRoleUser(id_user: string, rolePageDto: RolePageDto) {
+    try {
+      return await this.roleRepo.paginationRoleUser(id_user, rolePageDto);
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  async deleteSpecificRole(
+    id_user: string,
+    id_role: string,
+    query?: QueryRunner,
+  ) {
+    try {
+      return await this.roleRepo.deleteSpecificRole(id_user, id_role);
+    } catch (e) {
+      throw e;
+    }
+  }
+  
+  async addRole(
+    id_user: string,
+    id_role: string,
+    query?: QueryRunner,
+  ) {
+    try {
+      return await this.roleRepo.addRole(id_user, id_role);
     } catch (e) {
       throw e;
     }
