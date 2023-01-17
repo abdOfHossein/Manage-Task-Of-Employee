@@ -6,6 +6,7 @@ import { SwaggerService } from 'src/config/swagger/service/swagger.service';
 import { HandlerModule } from 'src/utility/handler/handler.module';
 import { TranslateModule } from 'src/utility/translate/translate.module';
 import { DataSource } from 'typeorm';
+import { CrudCoreModule } from '../crud/crud_core/crud-core.module';
 import { DepartmentRlCoreModule } from '../department-rl/department-rl-core/department-rl-core.module';
 import { DepartmentCoreModule } from '../department/department-core/department-core.module';
 import { EventCoreModule } from '../event/event-core/event-core.module';
@@ -50,6 +51,7 @@ import { AppService } from './app.service';
         return dataSource;
       },
     }),
+    CrudCoreModule,
     HandlerModule,
     TranslateModule,
     FileManagerCoreModule,

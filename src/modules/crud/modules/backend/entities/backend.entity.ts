@@ -1,5 +1,6 @@
 import { BasicEnt } from 'src/common/entities/basic.entity';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { RoleRlBackendEnt } from '../../role-backend-rl/entities/role-rl-backend.entity';
 
 @Entity({ name: 'backend' })
 export class BackendEnt extends BasicEnt {
@@ -20,4 +21,7 @@ export class BackendEnt extends BasicEnt {
 
   @Column({ nullable: true })
   body: string;
+
+  @OneToMany(() => RoleRlBackendEnt, (role_user) => role_user.role)
+  role_backend: RoleRlBackendEnt[]
 }

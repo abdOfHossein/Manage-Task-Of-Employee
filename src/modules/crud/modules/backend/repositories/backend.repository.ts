@@ -1,3 +1,4 @@
+import { InjectRepository } from "@nestjs/typeorm";
 import { PageDto } from "src/common/dtos/page.dto";
 import { PageMetaDto } from "src/common/dtos/page.meta.dto";
 import { PublicFunc } from "src/common/function/public.func";
@@ -8,7 +9,9 @@ import { BackendEnt } from "../entities/backend.entity";
 import { BackendMapperPagination } from "../mapper/backend.mapper.pagination";
 import { BackendPageDto } from "../pagination/backend.page.dto";
 export class BackendRepo {
-    constructor(private dataSource: DataSource){}
+    constructor(
+      @InjectRepository(BackendEnt)
+      private dataSource: DataSource){}
 
     async _findOneEntity(searchDto: string, options?: FindOneOptions<any>): Promise<BackendEnt> {
       return await this.dataSource.manager.findOne(BackendEnt, { where : {id : searchDto },relations: ['role_backend'] })

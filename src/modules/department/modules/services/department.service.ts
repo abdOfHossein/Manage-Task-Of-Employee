@@ -38,6 +38,8 @@ export class DepartmentService {
       return await this.departmentRepo.getAllDepartment();
     } catch (e) {
       console.log(e);
+      const result = await HandlerError.errorHandler(e)
+      await this.handlerService.handlerException400("FA", result)
     }
   }
 
@@ -45,12 +47,21 @@ export class DepartmentService {
     try {
       return await this.departmentRepo.findOneDepartment(searchDto, options);
     } catch (e) {
-      throw e;
+      console.log(e);
+      const result = await HandlerError.errorHandler(e)
+      await this.handlerService.handlerException400("FA", result)
     }
   }
 
   async getDepartmentUsers(id_department: string) {
+    try {
     return await this.departmentRepo.getDepartmentUsers(id_department);
+      
+    } catch (e) {
+      console.log(e);
+      const result = await HandlerError.errorHandler(e)
+      await this.handlerService.handlerException400("FA", result)
+    }
   }
 
   async updateDepartment(

@@ -1,5 +1,6 @@
 import { BasicEnt } from 'src/common/entities/basic.entity';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { MenuEnt } from '../../menu/entities/menu.entity';
 import { TypePlatformEnum } from '../enum/type.platform.enum';
 
 @Entity({name: 'frontend' })
@@ -25,4 +26,8 @@ export class FrontendEnt extends BasicEnt {
 
   @Column('text', { nullable: false })
   route: string;
+
+  
+  @OneToMany(() => MenuEnt, (menu) => menu.frontend)
+  menu: MenuEnt[];
 }
