@@ -27,7 +27,6 @@ export class FrontendEnt extends BasicEnt {
   @Column('text', { nullable: false })
   route: string;
 
-  
   @OneToMany(() => MenuEnt, (menu) => menu.frontend)
   menu: MenuEnt[];
 }

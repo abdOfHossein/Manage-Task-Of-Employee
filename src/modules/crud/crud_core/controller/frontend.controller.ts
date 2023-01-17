@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Put, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post, Put, Query } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiHeader,
@@ -48,5 +48,11 @@ export class FrontendController {
     @Body() updateFrontendDto: UpdateFrontendDto,
   ) {
     return this.frontendService._update(id_frontend, updateFrontendDto);
+  }
+
+  @ApiOperation({ summary: 'delete frontend' })
+  @Delete()
+  delete(@Query('id_frontend') id_frontend: string) {
+    return this.frontendService._delete(id_frontend);
   }
 }

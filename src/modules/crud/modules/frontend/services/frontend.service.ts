@@ -66,4 +66,5 @@ export class FrontendService {
   _resultDeleteDto(ent: FrontendEnt) {
     return new SuccessDto(true);
   }
+
 }
