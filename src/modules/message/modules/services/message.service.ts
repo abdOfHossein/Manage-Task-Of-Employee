@@ -1,4 +1,6 @@
 import { Injectable } from '@nestjs/common';
+import { HandlerError } from 'src/common/class/handler.error';
+import { HandlerService } from 'src/utility/handler/handler.service';
 import { DataSource, QueryRunner } from 'typeorm';
 import { CreateMessageDto } from '../dtos/create.message.dto';
 import { MessageRepo } from '../repositories/message.repository';
@@ -8,6 +10,7 @@ export class MessageService {
   constructor(
     private messageRepo: MessageRepo,
     private dataSource: DataSource,
+    private handlerService: HandlerService,
   ) {}
   //     return await this.MessageRepo.getReportMessage(id_user, reportPage, query);
   //   } catch (e) {
@@ -22,7 +25,9 @@ export class MessageService {
       return await this.messageRepo.createMessage(createDt, queryRunner);
     } catch (e) {
       await queryRunner.rollbackTransaction();
-      throw e;
+      console.log(e);
+      const result = await HandlerError.errorHandler(e);
+      await this.handlerService.handlerException400('FA', result);
     } finally {
       await queryRunner.release();
     }
@@ -32,7 +37,9 @@ export class MessageService {
     try {
       return await this.messageRepo.delelteMessage(id_message);
     } catch (e) {
-      throw e;
+      console.log(e);
+      const result = await HandlerError.errorHandler(e);
+      await this.handlerService.handlerException400('FA', result);
     }
   }
 
@@ -40,7 +47,9 @@ export class MessageService {
     try {
       return await this.messageRepo.getUsers();
     } catch (e) {
-      throw e;
+      console.log(e);
+      const result = await HandlerError.errorHandler(e);
+      await this.handlerService.handlerException400('FA', result);
     }
   }
   // async createMessageByProject(createDt: CreateMessageDto, query?: QueryRunner) {

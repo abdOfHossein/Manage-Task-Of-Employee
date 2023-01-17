@@ -1,0 +1,3 @@
+export enum FileManagerEnum {
+  FILEMANAGER_NOT_EXISTS = 'FILEMANAGER_NOT_EXISTS',
+}

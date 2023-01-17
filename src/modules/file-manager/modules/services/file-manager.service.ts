@@ -1,4 +1,6 @@
 import { Injectable } from '@nestjs/common';
+import { HandlerError } from 'src/common/class/handler.error';
+import { HandlerService } from 'src/utility/handler/handler.service';
 import { DataSource, FindOneOptions, QueryRunner } from 'typeorm';
 import { CreateFileManagerDto } from '../dtos/create.file-manager.dto';
 import { FindFileManagerDto } from '../dtos/find.file-manager.dto';
@@ -10,6 +12,7 @@ export class FileManagerService {
   constructor(
     private fileManagerRepo: FileManagerRepo,
     private dataSource: DataSource,
+    private handlerService: HandlerService,
   ) {}
 
   async createFileManager(createDt: CreateFileManagerDto, query?: QueryRunner) {
@@ -17,7 +20,8 @@ export class FileManagerService {
       return await this.fileManagerRepo.createFileManager(createDt, query);
     } catch (e) {
       console.log(e);
-      throw e;
+      const result = await HandlerError.errorHandler(e);
+      await this.handlerService.handlerException400('FA', result);
     }
   }
 
@@ -31,7 +35,9 @@ export class FileManagerService {
         options,
       );
     } catch (e) {
-      throw e;
+      console.log(e);
+      const result = await HandlerError.errorHandler(e);
+      await this.handlerService.handlerException400('FA', result);
     }
   }
 
@@ -39,14 +45,18 @@ export class FileManagerService {
     try {
       return await this.fileManagerRepo.deleteFileManager(id_fileManager);
     } catch (e) {
-      throw e;
+      console.log(e);
+      const result = await HandlerError.errorHandler(e);
+      await this.handlerService.handlerException400('FA', result);
     }
   }
   async paginationFileManager(pageDto: FileManagerPageDto) {
     try {
       return await this.fileManagerRepo.paginationFileManager(pageDto);
     } catch (e) {
-      throw e;
+      console.log(e);
+      const result = await HandlerError.errorHandler(e);
+      await this.handlerService.handlerException400('FA', result);
     }
   }
 }

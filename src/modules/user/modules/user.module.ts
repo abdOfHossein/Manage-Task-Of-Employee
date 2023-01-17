@@ -7,6 +7,8 @@ import { FileEnt } from 'src/modules/file/modules/entities/file.entity';
 import { HashModule } from 'src/modules/hash/hash.module';
 import { RedisModule } from 'src/modules/redis/redis.module';
 import { RoleEnt } from 'src/modules/role/modules/entities/role.entity';
+import { HandlerService } from 'src/utility/handler/handler.service';
+import { TranslateService } from 'src/utility/translate/translate.service';
 import { JwtGuard } from './auth/guards/jwt.guard';
 import { JwtStrategy } from './auth/strategy/jwt.strategy';
 import { UserEnt } from './entities/user.entity';
@@ -24,7 +26,15 @@ import { UserService } from './services/User.service';
       signOptions: { expiresIn: '6000s' },
     }),
   ],
-  providers: [UserService, UserRepo, JwtStrategy, JwtGuard, RolesGuard],
+  providers: [
+    UserService,
+    UserRepo,
+    JwtStrategy,
+    JwtGuard,
+    RolesGuard,
+    HandlerService,
+    TranslateService,
+  ],
   exports: [UserService],
 })
 export class UserModule {}

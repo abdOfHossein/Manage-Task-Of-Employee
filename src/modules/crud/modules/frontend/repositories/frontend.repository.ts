@@ -106,4 +106,10 @@ export class FrontendRepo {
       where: { route },
     });
   }
+
+  async getAll() {
+    return await this.dataSource.manager.find(FrontendEnt, {
+      where: {},
+    });
+  }
 }

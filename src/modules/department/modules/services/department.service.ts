@@ -79,7 +79,9 @@ export class DepartmentService {
         query,
       );
     } catch (e) {
-      throw e;
+      console.log(e);
+      const result = await HandlerError.errorHandler(e)
+      await this.handlerService.handlerException400("FA", result)
     }
   }
 
@@ -87,7 +89,9 @@ export class DepartmentService {
     try {
       return await this.departmentRepo.paginationDepartment(pageDto);
     } catch (e) {
-      throw e;
+      console.log(e);
+      const result = await HandlerError.errorHandler(e)
+      await this.handlerService.handlerException400("FA", result)
     }
   }
 
@@ -95,7 +99,9 @@ export class DepartmentService {
     try {
       return await this.departmentRepo.allReqOfDepartment(id_user);
     } catch (e) {
-      throw e;
+      console.log(e);
+      const result = await HandlerError.errorHandler(e)
+      await this.handlerService.handlerException400("FA", result)
     }
   }
 
@@ -103,7 +109,9 @@ export class DepartmentService {
     try {
       return await this.departmentRepo.allTaskOfDepartment(id_user);
     } catch (e) {
-      throw e;
+      console.log(e);
+      const result = await HandlerError.errorHandler(e)
+      await this.handlerService.handlerException400("FA", result)
     }
   }
 
@@ -111,7 +119,9 @@ export class DepartmentService {
     try {
       return await this.departmentRepo.allUsersOfDepartment(id_user);
     } catch (e) {
-      throw e;
+      console.log(e);
+      const result = await HandlerError.errorHandler(e)
+      await this.handlerService.handlerException400("FA", result)
     }
   }
 
@@ -119,7 +129,9 @@ export class DepartmentService {
     try {
       return await this.departmentRepo.allTaskOfUser(id_header, id_user);
     } catch (e) {
-      throw e;
+      console.log(e);
+      const result = await HandlerError.errorHandler(e)
+      await this.handlerService.handlerException400("FA", result)
     }
   }
 
@@ -127,7 +139,9 @@ export class DepartmentService {
     try {
       return await this.departmentRepo.allReqWithoutTaskOfDepartment(id_user);
     } catch (e) {
-      throw e;
+      console.log(e);
+      const result = await HandlerError.errorHandler(e)
+      await this.handlerService.handlerException400("FA", result)
     }
   }
 
@@ -135,7 +149,9 @@ export class DepartmentService {
     try {
       return await this.departmentRepo.allDepartmentOfUser(id_user);
     } catch (e) {
-      throw e;
+      console.log(e);
+      const result = await HandlerError.errorHandler(e)
+      await this.handlerService.handlerException400("FA", result)
     }
   }
 
@@ -143,7 +159,9 @@ export class DepartmentService {
     try {
       return await this.departmentRepo.deleteDepartmen(id_department);
     } catch (e) {
-      throw e;
+      console.log(e);
+      const result = await HandlerError.errorHandler(e)
+      await this.handlerService.handlerException400("FA", result)
     }
   }
 }

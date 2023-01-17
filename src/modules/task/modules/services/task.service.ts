@@ -1,5 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
+import { HandlerError } from 'src/common/class/handler.error';
 import { CreateRelTaskDto } from 'src/modules/rel-task/modules/dtos/create.rel-task.dto';
+import { HandlerService } from 'src/utility/handler/handler.service';
 import { DataSource, FindOneOptions, QueryRunner } from 'typeorm';
 import { DepartmentRlService } from '../../../department-rl/modules/services/department-rl.service';
 import { ProjectService } from '../../../project/modules/services/project.service';
@@ -25,6 +27,7 @@ export class TaskService {
     private reqService: ReqService,
     private departmentRlService: DepartmentRlService,
     private dataSource: DataSource,
+    private handlerService: HandlerService,
   ) {}
 
   async taskTypePagination(
@@ -35,7 +38,9 @@ export class TaskService {
     try {
       return await this.taskRepo.taskTypePagination(id_user, reportPage, query);
     } catch (e) {
-      throw e;
+      console.log(e);
+      const result = await HandlerError.errorHandler(e);
+      await this.handlerService.handlerException400('FA', result);
     }
   }
 
@@ -63,7 +68,9 @@ export class TaskService {
     try {
       return await this.taskRepo.getReportTask(id_user, reportPage, query);
     } catch (e) {
-      throw e;
+      console.log(e);
+      const result = await HandlerError.errorHandler(e);
+      await this.handlerService.handlerException400('FA', result);
     }
   }
 
@@ -75,7 +82,9 @@ export class TaskService {
       return await this.taskRepo.createTask(createDt, queryRunner);
     } catch (e) {
       await queryRunner.rollbackTransaction();
-      throw e;
+      console.log(e);
+      const result = await HandlerError.errorHandler(e);
+      await this.handlerService.handlerException400('FA', result);
     } finally {
       await queryRunner.release();
     }
@@ -89,7 +98,9 @@ export class TaskService {
       return await this.taskRepo.createTaskByProject(createDt, queryRunner);
     } catch (e) {
       await queryRunner.rollbackTransaction();
-      throw e;
+      console.log(e);
+      const result = await HandlerError.errorHandler(e);
+      await this.handlerService.handlerException400('FA', result);
     } finally {
       await queryRunner.release();
     }
@@ -99,7 +110,9 @@ export class TaskService {
     try {
       return await this.taskRepo.findOneTask(searchDto, options);
     } catch (e) {
-      throw e;
+      console.log(e);
+      const result = await HandlerError.errorHandler(e);
+      await this.handlerService.handlerException400('FA', result);
     }
   }
 
@@ -112,23 +125,29 @@ export class TaskService {
       const taskEnt = <TaskEnt>await this.findOneTask(Task_Id);
       return await this.taskRepo.updateTask(taskEnt, updateDt, query);
     } catch (e) {
-      throw e;
+      console.log(e);
+      const result = await HandlerError.errorHandler(e);
+      await this.handlerService.handlerException400('FA', result);
     }
   }
 
-  async getAllOfUser(id_user:string) {
+  async getAllOfUser(id_user: string) {
     try {
       return await this.taskRepo.getAllOfUser(id_user);
     } catch (e) {
-      throw e;
+      console.log(e);
+      const result = await HandlerError.errorHandler(e);
+      await this.handlerService.handlerException400('FA', result);
     }
   }
-  
+
   async getAllForAdmin() {
     try {
       return await this.taskRepo.getAllForAdmin();
     } catch (e) {
-      throw e;
+      console.log(e);
+      const result = await HandlerError.errorHandler(e);
+      await this.handlerService.handlerException400('FA', result);
     }
   }
 
@@ -137,7 +156,8 @@ export class TaskService {
       return await this.taskRepo.paginationAdmin(id_user, pageDto);
     } catch (e) {
       console.log(e);
-      throw e;
+      const result = await HandlerError.errorHandler(e);
+      await this.handlerService.handlerException400('FA', result);
     }
   }
 
@@ -146,7 +166,8 @@ export class TaskService {
       return await this.taskRepo.pagination(pageDto);
     } catch (e) {
       console.log(e);
-      throw e;
+      const result = await HandlerError.errorHandler(e);
+      await this.handlerService.handlerException400('FA', result);
     }
   }
 
@@ -163,15 +184,18 @@ export class TaskService {
       );
     } catch (e) {
       console.log(e);
-      throw e;
+      const result = await HandlerError.errorHandler(e);
+      await this.handlerService.handlerException400('FA', result);
     }
   }
 
   async dailyTask(): Promise<TaskEnt[]> {
     try {
       return await this.taskRepo.dailyTask();
-    } catch (error) {
-      console.log(error);
+    } catch (e) {
+      console.log(e);
+      const result = await HandlerError.errorHandler(e);
+      await this.handlerService.handlerException400('FA', result);
     }
   }
 
@@ -190,7 +214,8 @@ export class TaskService {
       );
     } catch (e) {
       console.log(e);
-      throw e;
+      const result = await HandlerError.errorHandler(e);
+      await this.handlerService.handlerException400('FA', result);
     }
   }
 
@@ -213,7 +238,9 @@ export class TaskService {
       );
     } catch (e) {
       await queryRunner.rollbackTransaction();
-      throw e;
+      console.log(e);
+      const result = await HandlerError.errorHandler(e);
+      await this.handlerService.handlerException400('FA', result);
     } finally {
       await queryRunner.release();
     }
@@ -234,7 +261,8 @@ export class TaskService {
       );
     } catch (e) {
       console.log(e);
-      throw e;
+      const result = await HandlerError.errorHandler(e);
+      await this.handlerService.handlerException400('FA', result);
     }
   }
 
@@ -243,7 +271,8 @@ export class TaskService {
       return await this.taskRepo.findAllPendingTask();
     } catch (e) {
       console.log(e);
-      throw e;
+      const result = await HandlerError.errorHandler(e);
+      await this.handlerService.handlerException400('FA', result);
     }
   }
 
@@ -255,7 +284,9 @@ export class TaskService {
     try {
       return await this.taskRepo.updateStatusTask(id_task, status, query);
     } catch (e) {
-      throw e;
+      console.log(e);
+      const result = await HandlerError.errorHandler(e);
+      await this.handlerService.handlerException400('FA', result);
     }
   }
 
@@ -272,7 +303,8 @@ export class TaskService {
       );
     } catch (e) {
       console.log(e);
-      throw e;
+      const result = await HandlerError.errorHandler(e);
+      await this.handlerService.handlerException400('FA', result);
     }
   }
 
@@ -284,7 +316,9 @@ export class TaskService {
     try {
       return await this.taskRepo.changeStatusToPending(id_user, id_task, query);
     } catch (e) {
-      throw e;
+      console.log(e);
+      const result = await HandlerError.errorHandler(e);
+      await this.handlerService.handlerException400('FA', result);
     }
   }
   async changeStatusToSuccess(
@@ -295,7 +329,9 @@ export class TaskService {
     try {
       return await this.taskRepo.changeStatusToSuccess(id_user, id_task, query);
     } catch (e) {
-      throw e;
+      console.log(e);
+      const result = await HandlerError.errorHandler(e);
+      await this.handlerService.handlerException400('FA', result);
     }
   }
 
@@ -303,7 +339,9 @@ export class TaskService {
     try {
       return await this.taskRepo.allExpirationTask(pageDto, query);
     } catch (e) {
-      throw e;
+      console.log(e);
+      const result = await HandlerError.errorHandler(e);
+      await this.handlerService.handlerException400('FA', result);
     }
   }
 
@@ -315,7 +353,9 @@ export class TaskService {
     try {
       return await this.taskRepo.oneExpirationTask(id_user, pageDto, query);
     } catch (e) {
-      throw e;
+      console.log(e);
+      const result = await HandlerError.errorHandler(e);
+      await this.handlerService.handlerException400('FA', result);
     }
   }
 
@@ -334,7 +374,8 @@ export class TaskService {
       );
     } catch (e) {
       console.log(e);
-      throw e;
+      const result = await HandlerError.errorHandler(e);
+      await this.handlerService.handlerException400('FA', result);
     }
   }
 
@@ -354,7 +395,9 @@ export class TaskService {
         query,
       );
     } catch (e) {
-      throw e;
+      console.log(e);
+      const result = await HandlerError.errorHandler(e);
+      await this.handlerService.handlerException400('FA', result);
     }
   }
 
@@ -371,7 +414,8 @@ export class TaskService {
       );
     } catch (e) {
       console.log(e);
-      throw e;
+      const result = await HandlerError.errorHandler(e);
+      await this.handlerService.handlerException400('FA', result);
     }
   }
 
@@ -379,7 +423,9 @@ export class TaskService {
     try {
       return await this.taskRepo.deleteTask(id_task);
     } catch (e) {
-      throw e;
+      console.log(e);
+      const result = await HandlerError.errorHandler(e);
+      await this.handlerService.handlerException400('FA', result);
     }
   }
 }

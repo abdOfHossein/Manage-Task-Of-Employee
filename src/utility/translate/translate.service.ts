@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import errors from 'src/common/translate/errors/crud.errors';
+import errors from 'src/common/translate/errors';
 import { Translate } from 'src/common/translate/translate.class';
 import { MapperLanguageEnum } from '../../common/enums/mapper.language.enum';
 import { I18nService } from 'nestjs-i18n';

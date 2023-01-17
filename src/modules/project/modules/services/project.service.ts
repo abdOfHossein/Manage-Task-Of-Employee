@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { HandlerError } from 'src/common/class/handler.error';
 import { FileEnt } from 'src/modules/file/modules/entities/file.entity';
+import { HandlerService } from 'src/utility/handler/handler.service';
 import { DataSource, FindOneOptions, QueryRunner } from 'typeorm';
 import { CreateProjectDto } from '../dtos/create.project.dto';
 import { UpdateProjectDto } from '../dtos/update.project.dto';
@@ -14,6 +16,7 @@ export class ProjectService {
     @InjectRepository(FileEnt)
     private dataSource: DataSource,
     private projectRepo: ProjectRepo,
+    private handlerService: HandlerService,
 
   ) {}
 
@@ -21,7 +24,9 @@ export class ProjectService {
     try {
       return await this.projectRepo.createProject(createDt, query);
     } catch (e) {
-      throw e;
+      console.log(e);
+      const result = await HandlerError.errorHandler(e)
+      await this.handlerService.handlerException400("FA", result)
     }
   }
 

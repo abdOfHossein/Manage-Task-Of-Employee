@@ -1,0 +1,3 @@
+export enum TaskBlockOperationEnum {
+  TASK_BLOCK_OPERATION_NOT_EXISTS = 'TASK_BLOCK_OPERATION_NOT_EXISTS',
+}

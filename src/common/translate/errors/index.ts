@@ -1,8 +1,8 @@
-import CrudErrors from "./crud.errors"
+import crudError from "./crud.error"  
 import menuErrors from "./menu.errors"
 
 
 export default {
-  crud: CrudErrors,
+  crud: crudError,
   menu: menuErrors,
 }

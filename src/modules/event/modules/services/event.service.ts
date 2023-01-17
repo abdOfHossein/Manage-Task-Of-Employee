@@ -1,4 +1,6 @@
 import { Injectable } from '@nestjs/common';
+import { HandlerError } from 'src/common/class/handler.error';
+import { HandlerService } from 'src/utility/handler/handler.service';
 import { FindOneOptions, QueryRunner } from 'typeorm';
 import { CreateEventDto } from '../dtos/create.event.dto';
 import { UpdateEventDto } from '../dtos/update.event.dto';
@@ -7,12 +9,14 @@ import { EventRepo } from '../repositories/Event.repository';
 
 @Injectable()
 export class EventService {
-  constructor(private eventRepo: EventRepo) {}
+  constructor(private eventRepo: EventRepo,private handlerService:HandlerService) {}
   async createEvent(createDt: CreateEventDto, query?: QueryRunner) {
     try {
       return await this.eventRepo.createEvent(createDt, query);
     } catch (e) {
-      throw e;
+      console.log(e);
+      const result = await HandlerError.errorHandler(e)
+      await this.handlerService.handlerException400("FA", result)
     }
   }
 
@@ -20,7 +24,9 @@ export class EventService {
     try {
       return await this.eventRepo.findOneEvent(searchDto, options);
     } catch (e) {
-      throw e;
+      console.log(e);
+      const result = await HandlerError.errorHandler(e)
+      await this.handlerService.handlerException400("FA", result)
     }
   }
 
@@ -33,7 +39,9 @@ export class EventService {
       const eventEnt = <EventEnt>await this.findOneEvent(Event_Id);
       return await this.eventRepo.updateEvent(eventEnt, updateDt, query);
     } catch (e) {
-      throw e;
+      console.log(e);
+      const result = await HandlerError.errorHandler(e)
+      await this.handlerService.handlerException400("FA", result)
     }
   }
 
@@ -41,7 +49,9 @@ export class EventService {
     try {
       return await this.eventRepo.paginationEvent();
     } catch (e) {
-      throw e;
+      console.log(e);
+      const result = await HandlerError.errorHandler(e)
+      await this.handlerService.handlerException400("FA", result)
     }
   }
 }

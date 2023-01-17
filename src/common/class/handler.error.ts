@@ -4,6 +4,9 @@ import { PublicEnum } from '../translate/enums/public.enum';
 import { CrudEnum } from '../translate/enums/crud.enum';
 
 export class HandlerError {
+  handlerException400(arg0: string, result: any) {
+    throw new Error('Method not implemented.');
+  }
   constructor() {}
   private static handlerQueryFailedError(err: QueryFailedError) {
     if (err.driverError) {

@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
+import { HandlerError } from 'src/common/class/handler.error';
 import { TaskEnt } from 'src/modules/task/modules/entities/task.entity';
+import { HandlerService } from 'src/utility/handler/handler.service';
 import { DataSource, FindOneOptions, QueryRunner } from 'typeorm';
 import { CreateTaskBlockOperationDto } from '../dtos/create.task-block-operation.dto';
 import { UpdateTaskBlockOperationDto } from '../dtos/update.task-block-operation.dto';
@@ -12,6 +14,7 @@ export class TaskBlockOperationService {
   constructor(
     private taskBlockOperationRepo: TaskBlockOperationRepo,
     private dataSource: DataSource,
+    private handlerService: HandlerService,
   ) {}
 
   async createTaskBlockOperation(
@@ -19,13 +22,14 @@ export class TaskBlockOperationService {
     query?: QueryRunner,
   ) {
     try {
-
       return await this.taskBlockOperationRepo.createTaskBlockOperation(
         createDt,
         query,
       );
     } catch (e) {
-      throw e;
+      console.log(e);
+      const result = await HandlerError.errorHandler(e);
+      await this.handlerService.handlerException400('FA', result);
     }
   }
 
@@ -36,7 +40,9 @@ export class TaskBlockOperationService {
         options,
       );
     } catch (e) {
-      throw e;
+      console.log(e);
+      const result = await HandlerError.errorHandler(e);
+      await this.handlerService.handlerException400('FA', result);
     }
   }
 
@@ -46,7 +52,6 @@ export class TaskBlockOperationService {
     query?: QueryRunner,
   ) {
     try {
-
       const uerEnt = <TaskBlockOperationEnt>(
         await this.findOneTaskBlockOperation(TaskBlockOperation_Id)
       );
@@ -56,7 +61,9 @@ export class TaskBlockOperationService {
         query,
       );
     } catch (e) {
-      throw e;
+      console.log(e);
+      const result = await HandlerError.errorHandler(e);
+      await this.handlerService.handlerException400('FA', result);
     }
   }
 
@@ -66,8 +73,9 @@ export class TaskBlockOperationService {
         pageDto,
       );
     } catch (e) {
-      console.log('pagination TaskBlockOperation err in service', e);
-      throw e;
+      console.log(e);
+      const result = await HandlerError.errorHandler(e);
+      await this.handlerService.handlerException400('FA', result);
     }
   }
 }

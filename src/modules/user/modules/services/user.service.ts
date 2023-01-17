@@ -1,10 +1,11 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { HandlerError } from 'src/common/class/handler.error';
 import { DepartmentEnt } from 'src/modules/department/modules/entities/department.entity';
 import { FileEnt } from 'src/modules/file/modules/entities/file.entity';
 import { RoleEnt } from 'src/modules/role/modules/entities/role.entity';
-import { RoleTypeEnum } from 'src/modules/role/modules/enum/role.enum';
 import { TaskPageDto } from 'src/modules/task/modules/paginations/task.page.dto';
+import { HandlerService } from 'src/utility/handler/handler.service';
 import { DataSource, FindOneOptions, QueryRunner } from 'typeorm';
 import { UserResponseJWTDto } from '../../../../common/dtos/user.dto';
 import { ChangePasswordAdminDto } from '../dtos/change-password-admin.dto';
@@ -26,6 +27,7 @@ export class UserService {
     @InjectRepository(RoleEnt)
     @InjectRepository(DepartmentEnt)
     private dataSource: DataSource,
+    private handlerService: HandlerService,
   ) {}
 
   async createUser(createDto: CreateUserDto, query?: QueryRunner) {
@@ -51,22 +53,19 @@ export class UserService {
       return await this.userRepo.createUser(createDto, query);
     } catch (e) {
       console.log(e);
-      if (
-        e.message.indexOf('duplicate key value violates unique constraint') == 0
-      ) {
-        throw new BadRequestException({ message: 'you have a duplicate key' });
-      }
-      if (e.message.indexOf(' invalid input syntax for type uuid') == 0) {
-        throw new BadRequestException({
-          message: 'please enter uuid for ID field',
-        });
-      }
-      throw e;
+      const result = await HandlerError.errorHandler(e);
+      await this.handlerService.handlerException400('FA', result);
     }
   }
 
   async getAllUser() {
-    return await this.userRepo.getAllUser();
+    try {
+      return await this.userRepo.getAllUser();
+    } catch (e) {
+      console.log(e);
+      const result = await HandlerError.errorHandler(e);
+      await this.handlerService.handlerException400('FA', result);
+    }
   }
 
   async createJwtSetRole(id_user: string, id_role: string) {
@@ -110,7 +109,8 @@ export class UserService {
       );
     } catch (e) {
       console.log(e);
-      throw e;
+      const result = await HandlerError.errorHandler(e);
+      await this.handlerService.handlerException400('FA', result);
     }
   }
 
@@ -142,7 +142,8 @@ export class UserService {
       return await this.userRepo._createJwt(user.id, roles);
     } catch (e) {
       console.log(e);
-      throw e;
+      const result = await HandlerError.errorHandler(e);
+      await this.handlerService.handlerException400('FA', result);
     }
   }
 
@@ -183,12 +184,19 @@ export class UserService {
       return await this.userRepo.updateUser(uerEnt, updateDt, query);
     } catch (e) {
       console.log(e);
-      throw e;
+      const result = await HandlerError.errorHandler(e);
+      await this.handlerService.handlerException400('FA', result);
     }
   }
 
   async paginationUser(pageDto: UserPageDto) {
-    return await this.userRepo.paginationUser(pageDto);
+    try {
+      return await this.userRepo.paginationUser(pageDto);
+    } catch (e) {
+      console.log(e);
+      const result = await HandlerError.errorHandler(e);
+      await this.handlerService.handlerException400('FA', result);
+    }
   }
 
   async blockUser(id_user: string): Promise<UserEnt> {
@@ -196,6 +204,8 @@ export class UserService {
       return await this.userRepo.blockUser(id_user);
     } catch (e) {
       console.log(e);
+      const result = await HandlerError.errorHandler(e);
+      await this.handlerService.handlerException400('FA', result);
     }
   }
 
@@ -215,17 +225,31 @@ export class UserService {
         id_user,
         changePasswordUserDto,
       );
-    } catch (error) {
-      console.log(error);
+    } catch (e) {
+      console.log(e);
+      const result = await HandlerError.errorHandler(e);
+      await this.handlerService.handlerException400('FA', result);
     }
   }
 
   async paginationTask(id_user: string, pageDto: TaskPageDto) {
-    return await this.userRepo.paginationTask(id_user, pageDto);
+    try {
+      return await this.userRepo.paginationTask(id_user, pageDto);
+    } catch (e) {
+      console.log(e);
+      const result = await HandlerError.errorHandler(e);
+      await this.handlerService.handlerException400('FA', result);
+    }
   }
 
   async paginationTaskWithJwt(id_user: string, pageDto: TaskPageDto) {
-    return await this.userRepo.paginationTaskWithJwt(id_user, pageDto);
+    try {
+      return await this.userRepo.paginationTaskWithJwt(id_user, pageDto);
+    } catch (e) {
+      console.log(e);
+      const result = await HandlerError.errorHandler(e);
+      await this.handlerService.handlerException400('FA', result);
+    }
   }
 
   async jwtAdmin(id_user: string) {
@@ -250,7 +274,8 @@ export class UserService {
       return await this.userRepo._createJwt(user.id, roles);
     } catch (e) {
       console.log(e);
-      throw e;
+      const result = await HandlerError.errorHandler(e);
+      await this.handlerService.handlerException400('FA', result);
     }
   }
 
@@ -259,26 +284,48 @@ export class UserService {
       return await this.userRepo.getUser(id_user);
     } catch (e) {
       console.log(e);
-      throw e;
+      const result = await HandlerError.errorHandler(e);
+      await this.handlerService.handlerException400('FA', result);
     }
   }
 
   async getDepartmentUsers(id_department: string) {
-    return await this.userRepo.getDepartmentUsers(id_department);
+    try {
+      return await this.userRepo.getDepartmentUsers(id_department);
+    } catch (e) {
+      console.log(e);
+      const result = await HandlerError.errorHandler(e);
+      await this.handlerService.handlerException400('FA', result);
+    }
   }
+
   async paginationDoneTaskRecentDay(id_user: string, pageDto: TaskPageDto) {
-    return await this.userRepo.paginationDoneTaskRecentDay(id_user, pageDto);
+    try {
+      return await this.userRepo.paginationDoneTaskRecentDay(id_user, pageDto);
+    } catch (e) {
+      console.log(e);
+      const result = await HandlerError.errorHandler(e);
+      await this.handlerService.handlerException400('FA', result);
+    }
   }
 
   async listOfTaskRecentDay(id_user: string) {
-    return await this.userRepo.listOfTaskRecentDay(id_user);
+    try {
+      return await this.userRepo.listOfTaskRecentDay(id_user);
+    } catch (e) {
+      console.log(e);
+      const result = await HandlerError.errorHandler(e);
+      await this.handlerService.handlerException400('FA', result);
+    }
   }
 
   async deleteUser(id_user: string) {
     try {
       return await this.userRepo.deleteUser(id_user);
     } catch (e) {
-      throw e;
+      console.log(e);
+      const result = await HandlerError.errorHandler(e);
+      await this.handlerService.handlerException400('FA', result);
     }
   }
 }

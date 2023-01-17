@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import * as mv from 'mv';
 import { join } from 'path';
+import { HandlerError } from 'src/common/class/handler.error';
 import { TypeResultFunctionEnum } from 'src/common/enums/type.result.function.enum';
 import { CreateFileDto } from '../dtos/create.file.dto';
 import { FindFileDto } from '../dtos/find.file.dto';
@@ -12,7 +13,10 @@ import { FileGResult } from '../response/file.g.result';
 
 @Injectable()
 export class FileService {
-  constructor(private fileRepo: FileRepo) {}
+  constructor(
+    private fileRepo: FileRepo,
+    private handlerService: HandlerError,
+  ) {}
 
   async getOneFilePublic(
     id_file: string,
@@ -34,7 +38,8 @@ export class FileService {
       return new FileGResult(fileEntity);
     } catch (e) {
       console.log(e);
-      throw e;
+      const result = await HandlerError.errorHandler(e);
+      await this.handlerService.handlerException400('FA', result);
     }
   }
 

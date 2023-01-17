@@ -1,4 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
+import { HandlerError } from 'src/common/class/handler.error';
+import { HandlerService } from 'src/utility/handler/handler.service';
 import { DataSource, FindOneOptions, QueryRunner } from 'typeorm';
 import { CreateReqDto } from '../dtos/create.req.dto';
 import { DoneReqDto } from '../dtos/done.req.dto';
@@ -9,7 +11,11 @@ import { ReqRepo } from '../repositories/req.repository';
 
 @Injectable()
 export class ReqService {
-  constructor(private reqRepo: ReqRepo, private dataSource: DataSource) {}
+  constructor(
+    private reqRepo: ReqRepo,
+    private dataSource: DataSource,
+    private handlerService: HandlerService,
+  ) {}
 
   async createReq(createDt: CreateReqDto, query?: QueryRunner) {
     const queryRunner = this.dataSource.createQueryRunner();
@@ -19,12 +25,9 @@ export class ReqService {
       return await this.reqRepo.createReq(createDt, queryRunner);
     } catch (e) {
       await queryRunner.rollbackTransaction();
-      if (e.message.indexOf('invalid input syntax for type uuid') == 0) {
-        throw new BadRequestException({
-          message: 'please enter uuid for ID field',
-        });
-      }
-      throw e;
+      console.log(e);
+      const result = await HandlerError.errorHandler(e);
+      await this.handlerService.handlerException400('FA', result);
     } finally {
       await queryRunner.release();
     }

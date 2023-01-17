@@ -67,4 +67,14 @@ export class FrontendService {
     return new SuccessDto(true);
   }
 
+
+  async getAll() {
+    try {
+    return await this.frontendRepo.getAll();
+      
+    } catch (e) {
+      
+    }
+  }
+  
 }
