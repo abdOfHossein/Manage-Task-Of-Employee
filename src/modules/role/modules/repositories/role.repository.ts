@@ -162,13 +162,27 @@ export class RoleRepo {
     id_role: string,
     query?: QueryRunner,
   ): Promise<RoleEnt> {
-    const roleEnt = await this.dataSource.manager
-      .createQueryBuilder(RoleEnt, 'role')
-      .leftJoinAndSelect('role.users', 'users')
-      .where('role.id = :id_role AND users.id = :id_user', { id_user, id_role })
-      .select(['role'])
-      .getOne();
-    roleEnt.delete_at = new Date();
+    const roleEnt: any = await this.dataSource.manager.findOne(RoleEnt, {
+      where: { id: id_role },
+    });
+
+    const user = await this.dataSource.manager.findOne(UserEnt, {
+      where: { id: id_user },
+      relations: { role: true },
+    });
+
+    console.log(user);
+    for (let i = 0; i < user.role.length; i++) {
+      console.log(roleEnt.id);
+      console.log(user.role[i].id);
+
+      if (user.role[i].id === roleEnt.id) {
+        console.log('hereeeeeeeeeeeeeeeee');
+
+        user.role[i] = null;
+        await this.dataSource.manager.save(user);
+      }
+    }
     if (query) return query.manager.save(roleEnt);
     return await this.dataSource.manager.save(roleEnt);
   }

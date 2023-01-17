@@ -1,4 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
+import { HandlerError } from 'src/common/class/handler.error';
+import { HandlerService } from 'src/utility/handler/handler.service';
 import { DataSource, FindOneOptions, QueryRunner } from 'typeorm';
 import { CreateDepartmentDto } from '../dtos/create.department.dto';
 import { UpdateDepartmentDto } from '../dtos/update.department.dto';
@@ -11,6 +13,7 @@ export class DepartmentService {
   constructor(
     private departmentRepo: DepartmentRepo,
     private dataSource: DataSource,
+    private handlerService: HandlerService,
   ) {}
 
   async createDepartment(createDt: CreateDepartmentDto, query?: QueryRunner) {
@@ -21,11 +24,8 @@ export class DepartmentService {
       return await this.departmentRepo.createDepartment(createDt, queryRunner);
     } catch (e) {
       console.log(e);
-      if (
-        e.message.indexOf('duplicate key value violates unique constraint') > -1
-      ) {
-        throw new BadRequestException({ message: 'you enter duplicate value' });
-      }
+      const result = await HandlerError.errorHandler(e)
+      await this.handlerService.handlerException400("FA", result)
       await queryRunner.rollbackTransaction();
       throw e;
     } finally {

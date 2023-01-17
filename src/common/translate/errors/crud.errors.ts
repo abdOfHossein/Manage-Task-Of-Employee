@@ -1,8 +1,8 @@
 import { CrudEnum } from '../enums/crud.enum';
 
 export default {
-  section: 'account',
+  section: 'crud',
   values: {
-    ACCOUNT_NOT_EXISTS: { key: 100000, value: CrudEnum.CRUD_NOT_EXISTS },
+    CRUD_NOT_EXISTS: { key: 100000, value: CrudEnum.CRUD_NOT_EXISTS },
   },
 };

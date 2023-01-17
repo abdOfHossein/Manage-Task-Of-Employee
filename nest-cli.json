@@ -1,5 +1,36 @@
 {
   "$schema": "https://json.schemastore.org/nest-cli",
   "collection": "@nestjs/schematics",
-  "sourceRoot": "src"
+  "sourceRoot": "src" ,
+  "compilerOptions": {
+    "plugins": [  {
+      "name": "@nestjs/swagger",
+      "options": {
+        "classValidatorShim": false,
+        "introspectComments": true
+      }
+    }],   
+    "options": {
+      "classValidatorShim": false,      
+      "dtoFileNameSuffix": [
+        ".entity.ts",
+        ".dto.ts",
+        ".model.ts",
+        ".class.ts",
+        ".interface.ts" ,
+        ".interceptor.ts",
+        ".crud.ts" ,
+        ".result.ts" ,
+        ".enum.ts"
+      ],
+      "controllerFileNameSuffix": [
+        ".controller.ts"
+      ]
+    },     
+    "assets": [
+      "utility/email/templates/**/*" ,
+      "crypto/**/*" , 
+      "utility/translate/tools/i18n/**/*"] ,
+    "watchAssets": true
+  }
 }
