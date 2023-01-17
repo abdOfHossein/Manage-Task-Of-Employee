@@ -47,13 +47,13 @@ export class RoleRlBackendController {
   }
 
   @ApiOperation({ summary: 'Getone role_backend' })
-  @Get(':id_role_backend')
+  @Get()
   getOne(@Query('id_role_backend') id_role_backend: string) {
     return this.roleRlBackendService._getOne(id_role_backend);
   }
 
   @ApiOperation({ summary: 'update role_backend' })
-  @Put(':id_role_backend')
+  @Put()
   update(
     @Query('id_role_backend') id_role_backend: string,
     @Body() updateRoleRlBackendDto: UpdateRoleRlBackendDto,
@@ -65,7 +65,7 @@ export class RoleRlBackendController {
   }
 
   @ApiOperation({ summary: 'delete role_backend' })
-  @Delete(':id_role_backend')
+  @Delete()
   delete(@Query('id_role_backend') id_role_backend: string) {
     return this.roleRlBackendService._delete(
       id_role_backend,

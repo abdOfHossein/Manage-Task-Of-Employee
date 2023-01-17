@@ -50,13 +50,13 @@ export class MenuController {
   }
 
   @ApiOperation({ summary: 'Getone menu' })
-  @Get(':id_menu')
+  @Get()
   getOne(@Query('id_menu') id_menu: string) {
     return this.menuService._getOne(id_menu);
   }
 
   @ApiOperation({ summary: 'Update menu' })
-  @Put(':id_menu')
+  @Put()
   update(
     @Query('id_menu') id_menu: string,
     @Body() updateMenuDto: UpdateMenuDto,
@@ -65,7 +65,7 @@ export class MenuController {
   }
 
   @ApiOperation({ summary: 'Delete menu' })
-  @Delete(':id_menu')
+  @Delete()
   delete(@Query('id_menu') id_menu: string) {
     return this.menuService._delete(id_menu);
   }
