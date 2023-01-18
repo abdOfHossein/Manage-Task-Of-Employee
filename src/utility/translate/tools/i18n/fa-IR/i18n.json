@@ -1,32 +1,7 @@
 {
-  "file": {
-		"FILE_DOES_NOT_EXIST": "فایل مورد نظر وحود ندارد"
-	},
-  "profile": {
-    "PROFILE_DOES_NOT_EXIST": "پروفایل وجود ندارد",
-    "PROFILE_IS_NOT_COMPLETE_YET": "پروفایل کامل نشده است"
-  },
-  "inquery": {
-    "DATA_DOES_NOT_MATCH": "مشخصات وارد شده نادرست است"
-  },
-  "ipg": {
-    "IPG_NOT_EXISTS": "درگاه وجود ندارد",
-    "IPG_HAS_ERROR_GET_LINK": "درگاه با مشکل مواجه شده است",
-    "IPG_ORDER_NOT_EXISTS": "شماره فاکتور مورد نظر در سیتم وجود ندارد",
-    "WALLET_CURRENCY_OF_USER_NOT_MATCHED_IPG": "درگاه انتخابی با هیچ واحد ارزی تناسبی ندارد",
-    "IPG_ALREADY_EXISTS_IN_COUNTRY_CURRENCY": "درگاه مورد نظر به ارز کشور قبلا نسبت داده شده است" ,
-    "COUNTRY_CURRENCY_NOT_MATCHED_IPG" : "درگاه مورد نظر مربوط به ارزهای کشور مورد نمی باشد",
-    "MERCHANT_DOES_NOT_EXIST": "مرچنت وجود ندارد",
-    "MERCHANT_DEACTIVE": "مرچنت غیر فعال است",
-    "MERCHANT_INVALID": "مرچنت نامعتبر است ",
-    "ALREADY_CONFIRMED": "تراکنش از قبل تایید شده",
-    "AMOUNT_IS_INVALID": "میزان مبلغ نامعتبر است",
-    "CALLBACK_URL_IS_INVALID": "کالبک نامعتبر است"
-
-  },
   "menu": {
     "MENU_DOES_NOT_EXIST": "منو وجود ندارد",
-    "MENU_ALREADY_EXIST":  "منو از قبل تعریف شده است",
+    "MENU_ALREADY_EXIST": "منو از قبل تعریف شده است",
     "FRONT_DOES_NOT_EXIST": "ادرس فرانت تعریف نشده است",
     "FRONT_ALREADY_EXIST": "ادرس فرانت از قبل تعریف شده است"
   },
@@ -37,70 +12,79 @@
     "ACCESS_IS_DENIDE": "دسترسی به قسمت مورد نظر ندارید",
     "COLUMN_NOT_EXISTS": "ستون مورد نظر وجود ندارد",
     "DELETE_DENAY_RECORD_EXISTS_IN_RELATION": "داده مورد نظر در بانک اطلاعاتی دارای ارتباط می باشد",
-    "FIELD_DOES_NOT_EXIST": "ستون مورد نظر برای مرتب سازی وجود ندارد" ,
-    "MOBILE_AUTH_NOT_DECLARED": "شماره ای برای برداشت ارزی یا رمز ارز تعریف نشده است" ,
+    "FIELD_DOES_NOT_EXIST": "ستون مورد نظر برای مرتب سازی وجود ندارد",
+    "MOBILE_AUTH_NOT_DECLARED": "شماره ای برای برداشت ارزی یا رمز ارز تعریف نشده است",
     "PUBLIC_ERROR": "خطای عمومی رخ داده است",
     "PHONE_NUMBER_DOES_NOT_EXISTS": "شماره موبایل مورد نظر وجود ندارد",
-    "ACCESS_DENIED_FOR_MODIFYING_PHONE_NUMBER": "برای ایجاد تغییر بر روی تلفن همراه دسترسی ندارید"
+    "ACCESS_DENIED_FOR_MODIFYING_PHONE_NUMBER": "برای ایجاد تغییر بر روی تلفن همراه دسترسی ندارید",
+    "DUPLICATE_VALUE_IN_UNIQUE_COLUMN": "یک ورودی تکراری برای ستونی که یونیک هست وارد کرده اید"
   },
-  "country": {
-    "COUNTRY_NOT_EXISTS": "کشور مورد نظر وجود ندارد",
-    "COUNTRY_NAME_ALREADY_EXISTS": "نام کشور قبلا تعریف شده است",
-    "COUNTRY_ISO2_ALREADY_EXISTS": "کد 2 کشور قبلا تعریف شده است",
-    "COUNTRY_ISO3_ALREADY_EXISTS": "کد 3 کشور قبلا تعریف شده است",
-    "COUNTRY_USER_DOES_NOT_EXIST": "ارتباط کاربر با کشور وجود ندارد"
+  "crud_frontend": {
+    "CRUD_FRONTEND_NOT_EXISTS": "کراد فرانت اند وجود ندارد",
+    "CRUD_FRONTEND_ALREADY_EXISTS": "کراد فرانت اند از قبل تعریف شده است"
   },
-  "ip": {
-    "IP_ADDRESS_ERROR": "ادرس آی پی با الگوریتم مورد نظر تطبیق ندارد"
+  "crud_backend": {
+    "CRUD_BACKEND_NOT_EXISTS": "کراد بک اند وجود ندارد",
+    "ROUTE_ALREADY_EXISTS": "کراد بک اند از قبل تعریف شده است "
   },
-  "sms": {
-    "SMS_PROVIDER_CAN_NOT_RUN": "داده ارسالی سمت پروایدر سامانه پیامک اشتباه می باشد",
-    "SMS_PROVIDER_HAS_ERROR": "داده های ورودی با مشکل مواجه شده است",
-    "SMS_CODE_NOT_AVAILABLE": "کد ارسالی سامانه پیامک با خطا مواجه شده است"
+  "crud_menu": {
+    "CRUD_MENU_NOT_EXISTS": "کراد منو وجود ندارد",
+    "CRUD_MENU_ALREADY_EXISTS": "کراد منو از قبل تعریف شده است "
+  },
+  "department_rl": {
+    "DEPARTMENT_RL_NOT_EXISTS": "دپارتمان ریلیشن(دپارتمان آر ال) وجود ندارد",
+    "DEPARTMENT_RL_ALREADY_EXISTS": "دپارتمان ریلیشن(دپارتمان آر ال) از قبل تعریف شده است "
+  },
+  "department": {
+    "DEPARTMENT_NOT_EXISTS": "دپارتمان وجود ندارد",
+    "DEPARTMENT_ALREADY_EXISTS": "دپارتمان از قبل تعریف شده است "
+  },
+  "event": {
+    "EVENT_NOT_EXISTS": "ایونت وجود ندارد",
+    "EVENT_ALREADY_EXISTS": " ایونت از قبل تعریف شده است "
+  },
+  "file_manager": {
+    "FILEMANAGER_NOT_EXISTS": "فایل منجر وجود ندارد",
+    "FILEMANAGER_ALREADY_EXISTS": "فایل منجر از قبل تعریف شده است "
+  },
+  "file": {
+    "FILE_NOT_EXISTS": "فایل وجود ندارد",
+    "FILE_ALREADY_EXISTS": "فایل از قبل تعریف شده است "
+  },
+  "message_user": {
+    "MESSAGE_USER_NOT_EXISTS": "مسج یوزر وجود ندارد",
+    "MESSAGE_USER_ALREADY_EXISTS": "مسج یوزر از قبل تعریف شده است "
+  },
+  "message": {
+    "MESSAGE_NOT_EXISTS": "مسج وجود ندارد",
+    "MESSAGE_ALREADY_EXISTS": "مسج از قبل تعریف شده است "
+  },
+  "project": {
+    "PROJECT_NOT_EXISTS": "پروژه وجود ندارد",
+    "PROJECT_ALREADY_EXISTS": "پروژه از قبل تعریف شده است "
+  },
+  "rel_task": {
+    "REL_TASK_NOT_EXISTS": "ریلیشن تسک(رل تسک) وجود ندارد",
+    "REL_TASK_ALREADY_EXISTS": "ریلیشن تسک(رل تسک) از قبل تعریف شده است "
+  },
+  "req": {
+    "REQ_NOT_EXISTS": "ریکوئست وجود ندارد",
+    "REQ_ALREADY_EXISTS": "ریکوئست از قبل تعریف شده است "
   },
   "role": {
-    "ROLE_HAS_DEFAULT_ACTION": "نقش پیش فرض قبلا فعال شده است",
-    "ROLE_NOT_EXISTS": "نقش مورد نظر وجود ندارد"
+    "ROLE_NOT_EXISTS": "رول وجود ندارد",
+    "ROLE_NOT_ALREADY_EXISTS": "رول از قبل تعریف شده است "
   },
-  "phone": {
-    "PHONE_NUMBER_DENY_COUNTRY": "شماره موبایل مربوط به این کشور نمی باشد",
-    "PHONE_NUMBER_IS_NOT_EXISTS": "شماره موبایل وجود ندارد",
-    "PHONE_NUMBER_ALREADY_EXISTS": "شماره موبایل قبلا تعریف شده است",
-    "PHONE_IS_NOT_COMPLETE_YET": "مرجله احراز هویت موبایل  انجام نشده است"
-  },  
-  "photo": {
-    "PHOTO_DOES_NOT_EXIST": "عکس از قبل موجود است",
-    "PHOTO_ALREADY_EXIST": "عکسی وجود ندارد"
+  "task_block_operation": {
+    "TASK_BLOCK_OPERATION_NOT_EXISTS": "تسک_بلاک_آپریشین وجود ندارد",
+    "TASK_BLOCK_OPERATION_ALREADY_EXISTS": "تسک_بلاک_آپریشین از قبل تعریف شده است "
   },
-  "chain": {
-    "CHAIN_NOT_EXISTS": "بلاک چین مورد نظر وجود ندارد",
-    "ARCH_NOT_EXISTS": "معماری مورد نظر تعریف نشده است",
-    "CRYPTO_NOT_EXISTS": "رمز ارز مورد ظر وجود ندارد",
-    "EXCHANGE_NOT_EXISTS": "تبادل مورد نظر وجود ندارد",
-    "TRANSACTION_FAILED": "تراکنش مورد نظر با خطا مواجه شده است",
-    "BALANCE_IS_NOT_SUFFICIENT": "تراکنش مورد نظر موجودی قابل توجه ندارد",
-    "SMART_CONTRACT_ALREADY_EXISTS": "قرارداد هوشمند مورد نظر قبلا تعریف شده است",
-    "EXCHANGE_ALREADY_EXISTS": "اکسچنج مورد نظر قبلا تعریف شده است",
-    "VERSION_CRYPTO_ALREADY_EXISTS": "نسخه رمز ارز قبلا تعریف شده است",
-    "VERSION_CRYPTO_NOT_EXISTS": "نسخه رمز ارز وجود ندارد",
-    "SPEED_TRANSFER_NOT_EXISTS": "سرعت انتقال وجود ندارد",
-    "SYMBOL_CRYPTO_ALREADY_EXIST": "نماد کریپتو از قبل وجود دارد" ,
-    "SMART_CONTRACT_WITH_SPEED_ALREADY_EXISTS" : "سرعت انتقال با این قرارداد هوشمند قبلا تعریف شده است",
-    "WITHDRAW_REQUEST_IS_CLOSE" : "درخواست برداشت رمز ارز بسته شده است",
-    "WITHDRAW_REQUEST_DOES_NOT_EXIST": "درخواست برداشت رمز ارز وجود ندارد",
-    "TOLERANCE_OVER_LIMIT": "میزان تلورانس بیش از حد مجاز"
+  "task": {
+    "TASK_NOT_EXISTS": "تسک وجود ندارد",
+    "TASK_ALREADY_EXISTS": "تسک از قبل تعریف شده است "
   },
-  "currency": {
-    "CURRENCY_NOT_EXISTS": "ارز فیات مورد نظر وجود ندارد",
-    "CURRENCY_NAME_ALREADY_EXISTS": "نام ارز فیات مورد نظر تکراری می باشد",
-    "CURRENCY_CODE_ALREADY_EXISTS": "کد راز فیات مورد نظر تکراری می باشد",
-    "BANK_NOT_EXISTS": "بانک مورد نظر وجود ندارد",
-    "BANK_ALREADY_EXISTS": "بانک مورد نظر قبلا تعریف شده است",
-    "BANK_ALREADY_EXISTS_IN_CURRENCY": "بانک مورد نظر در قسمت ارز های فیات تکراری می باشد" ,
-    "INSUFFICENT_LOW_AMOUNT" : "عدم موجودی کیف پول"
-  },
-  "level": {
-    "LEVEL_NOT_EXISTS": "سطح کاربری مورد نظر وجود ندارد",
-    "LEVEL_HAS_DEFAULT": "سطح کاربری مقدار پیش فرض دارد"
+  "user": {
+    "USER_NOT_EXISTS": "یوزر وجود ندارد",
+    "USER_ALREADY_EXISTS": "یوزر از قبل تعریف شده است "
   }
 }

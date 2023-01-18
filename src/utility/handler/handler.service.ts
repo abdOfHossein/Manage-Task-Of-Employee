@@ -32,12 +32,13 @@ export class HandlerService {
   }
   async handlerException400(lang :string , exception : Record<string, any>) {
     if (exception.key) {
-
-      throw new BadRequestException( exception)
+      console.log('hereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee');
+      
+      throw new BadRequestException(exception)
     } else {
       const errResult = await this.translateService.translateError(exception.section , exception.value , lang)
+      console.log('errResult',errResult);
       throw new BadRequestException(errResult)
-
     }
   }
 

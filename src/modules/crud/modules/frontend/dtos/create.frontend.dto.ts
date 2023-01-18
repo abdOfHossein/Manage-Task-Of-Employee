@@ -1,21 +1,25 @@
-import { ApiProperty } from "@nestjs/swagger"
-import { IsNotEmpty } from "class-validator"
-import { TypePlatformEnum } from "../enum/type.platform.enum"
+import { ApiProperty } from '@nestjs/swagger';
+import { IsNotEmpty } from 'class-validator';
+import { TypePlatformEnum } from '../enum/type.platform.enum';
 
 export class CreateFrontendDto {
-    @ApiProperty()
-    @IsNotEmpty()
-    slug_name?: string
+  @ApiProperty()
+  @IsNotEmpty()
+  slug_name: string;
 
-    @ApiProperty()
-    description?: string
+  @IsNotEmpty()
+  @ApiProperty()
+  description: string;
 
-    @ApiProperty()
-    host?: string
+  @IsNotEmpty()
+  @ApiProperty()
+  host: string;
 
-    @ApiProperty()
-    route: string
+  @IsNotEmpty()
+  @ApiProperty()
+  route: string;
 
-    @ApiProperty()
-    type_platform: TypePlatformEnum
+  @IsNotEmpty()
+  @ApiProperty({ default: TypePlatformEnum.WEB })
+  type_platform: TypePlatformEnum;
 }

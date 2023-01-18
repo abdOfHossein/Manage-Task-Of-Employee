@@ -1,11 +1,14 @@
-import { DepartmentRlEnum } from '../enums/department-rl.enum';
-
+import { FileEnum } from '../enums/file.enum';
 export default {
-  section: 'department-rl',
+  section: 'file',
   values: {
-    DEPARTMENT_RL_NOT_EXISTS: {
+    FILE_NOT_EXISTS: {
       key: 100000,
-      value: DepartmentRlEnum.DEPARTMENT_RL_NOT_EXISTS,
+      value: FileEnum.FILE_NOT_EXISTS,
+    },
+    FILE_ALREADY_EXISTS: {
+      key: 100001,
+      value: FileEnum.FILE_ALREADY_EXISTS,
     },
   },
 };

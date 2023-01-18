@@ -8,7 +8,7 @@ export class FrontendEnt extends BasicEnt {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column('varchar', { nullable: true })
+  @Column('varchar', { nullable: false })
   slug_name: string;
 
   @Column({
@@ -18,10 +18,10 @@ export class FrontendEnt extends BasicEnt {
   })
   type_platform: TypePlatformEnum;
 
-  @Column('text', { nullable: true })
+  @Column('text', { nullable: false })
   description: string;
 
-  @Column('text', { nullable: true })
+  @Column('text', { nullable: false })
   host: string;
 
   @Column('text', { nullable: false })

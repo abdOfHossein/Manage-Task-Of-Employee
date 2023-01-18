@@ -7,5 +7,9 @@ export default {
       key: 100000,
       value: DepartmentRlEnum.DEPARTMENT_RL_NOT_EXISTS,
     },
+    DEPARTMENT_RL_ALREADY_EXISTS: {
+      key: 100001,
+      value: DepartmentRlEnum.DEPARTMENT_RL_ALREADY_EXISTS,
+    },
   },
 };

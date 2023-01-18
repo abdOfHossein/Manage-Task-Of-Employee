@@ -1,31 +1,7 @@
 {
-  "file": {
-    "FILE_DOES_NOT_EXIST": "File does not exist"
-  },
-  "profile": {
-    "PROFILE_DOES_NOT_EXIST": "Profile Does Not Exist",
-    "PROFILE_IS_NOT_COMPLETE_YET": "Profile Is Not Complete Yet"
-  },
-  "inquery": {
-    "DATA_DOES_NOT_MATCH": "Data does not match"
-  },
-  "ipg": {
-    "IPG_NOT_EXISTS": "Ipg not exist",
-    "IPG_HAS_ERROR_GET_LINK": "IPG can not get link",
-    "IPG_ORDER_NOT_EXISTS": "Order Ipg Charge Not Exists",
-    "WALLET_CURRENCY_OF_USER_NOT_MATCHED_IPG": "Wallet currency user not matched with ipg",
-    "IPG_ALREADY_EXISTS_IN_COUNTRY_CURRENCY": "Ipg Already Exists In Currency Of Country",
-    "COUNTRY_CURRENCY_NOT_MATCHED_IPG": "Ipg Not Matched With Country Currency",
-    "MERCHANT_DOES_NOT_EXIST": "Merchant Does Not Exist",
-    "MERCHANT_DEACTIVE": "Merchant Deactive",
-    "MERCHANT_INVALID": "Merchant Invalid",
-    "ALREADY_CONFIRMED": "Already Confirmed",
-    "AMOUNT_IS_INVALID": "Amount Is Invalid",
-    "CALLBACK_URL_IS_INVALID": "Callback Url Is Invalid"
-  },
   "menu": {
     "MENU_DOES_NOT_EXIST": "Menu Does Not Exist",
-    "MENU_ALREADY_EXIST":  "Menu Already Exist",
+    "MENU_ALREADY_EXIST": "Menu Already Exist",
     "FRONT_DOES_NOT_EXIST": "Front Does Not Exist",
     "FRONT_ALREADY_EXIST": "Front Already Exist"
   },
@@ -36,70 +12,79 @@
     "ACCESS_IS_DENIDE": "Access Is Denide",
     "COLUMN_NOT_EXISTS": "Column  Not Exists",
     "DELETE_DENAY_RECORD_EXISTS_IN_RELATION": "This Record Already Relation In DataBase",
-    "FIELD_DOES_NOT_EXIST": "Field Does Not Exist" ,
-    "MOBILE_AUTH_NOT_DECLARED": "Mobile Authenticate Not Exists" ,
+    "FIELD_DOES_NOT_EXIST": "Field Does Not Exist",
+    "MOBILE_AUTH_NOT_DECLARED": "Mobile Authenticate Not Exists",
     "PUBLIC_ERROR": "Public Error",
     "PHONE_NUMBER_DOES_NOT_EXISTS": "Phone number does not exists",
-    "ACCESS_DENIED_FOR_MODIFYING_PHONE_NUMBER": "Access Denied For Modifying Phone Number"
+    "ACCESS_DENIED_FOR_MODIFYING_PHONE_NUMBER": "Access Denied For Modifying Phone Number",
+    "DUPLICATE_VALUE_IN_UNIQUE_COLUMN": "You Entered Duplicate Key For a Unique Column"
   },
-  "country": {
-    "COUNTRY_NOT_EXISTS": "Country not exists",
-    "COUNTRY_NAME_ALREADY_EXISTS": "Country name already exists",
-    "COUNTRY_ISO2_ALREADY_EXISTS": "Country iso2 already exists",
-    "COUNTRY_ISO3_ALREADY_EXISTS": "Country iso3 already exists",
-    "COUNTRY_USER_DOES_NOT_EXIST": "Country user does not exist"
+  "crud_frontend": {
+    "CRUD_FRONTEND_NOT_EXISTS": "Crud frontend does not exists",
+    "CRUD_FRONTEND_ALREADY_EXISTS": "Crud Frontend already exist"
   },
-  "ip": {
-    "IP_ADDRESS_ERROR": "Ip Template Address Error"
+  "crud_backend": {
+    "CRUD_BACKEND_NOT_EXISTS": "Crud backend does not exists",
+    "ROUTE_ALREADY_EXISTS": "Route Already Exist"
   },
-  "sms": {
-    "SMS_PROVIDER_CAN_NOT_RUN": "Sms Provider can not run",
-    "SMS_PROVIDER_HAS_ERROR": "Sms Provider Has Error",
-    "SMS_CODE_NOT_AVAILABLE": "Sms Code Not Available"
+  "crud_menu": {
+    "CRUD_MENU_NOT_EXISTS": "Crud menu does not exists",
+    "CRUD_MENU_ALREADY_EXISTS": "Crud Frontend already exist"
+  },
+  "department_rl": {
+    "DEPARTMENT_RL_NOT_EXISTS": "DepartmentRl does not exists",
+    "DEPARTMENT_RL_ALREADY_EXISTS": "DepartmentRl already exist"
+  },
+  "department": {
+    "DEPARTMENT_NOT_EXISTS": "Department does not exists",
+    "DEPARTMENT_ALREADY_EXISTS": "Department already exist"
+  },
+  "event": {
+    "EVENT_NOT_EXISTS": "Event does not exists",
+    "EVENT_ALREADY_EXISTS": "Event already exist"
+  },
+  "file_manager": {
+    "FILEMANAGER_NOT_EXISTS": "File_manager does not exists",
+    "FILEMANAGER_ALREADY_EXISTS": "File_manager already exist"
+  },
+  "file": {
+    "FILE_NOT_EXISTS": "File does not exists",
+    "FILE_ALREADY_EXISTS": "File already exist"
+  },
+  "message_user": {
+    "MESSAGE_USER_NOT_EXISTS": "Message_user does not exists",
+    "MESSAGE_USER_ALREADY_EXISTS": "Message_user already exist"
+  },
+  "message": {
+    "MESSAGE_NOT_EXISTS": "Message does not exists",
+    "MESSAGE_ALREADY_EXISTS": "Message already exist"
+  },
+  "project": {
+    "PROJECT_NOT_EXISTS": "Project does not exists",
+    "PROJECT_ALREADY_EXISTS": "Project already exist"
+  },
+  "rel_task": {
+    "REL_TASK_NOT_EXISTS": "Rel_task does not exists",
+    "REL_TASK_ALREADY_EXISTS": "Rel_task already exist"
+  },
+  "req": {
+    "REQ_NOT_EXISTS": "Req does not exists",
+    "REQ_ALREADY_EXISTS": "Req already exist"
   },
   "role": {
-    "ROLE_HAS_DEFAULT_ACTION": "Role Has Default Action",
-    "ROLE_NOT_EXISTS": "Role not Exists"
+    "ROLE_NOT_EXISTS": "Role does not exists",
+    "ROLE_NOT_ALREADY_EXISTS": "Role already exist"
   },
-  "phone": {
-    "PHONE_NUMBER_DENY_COUNTRY": "Phone number not in country",
-    "PHONE_NUMBER_IS_NOT_EXISTS": "Phone number not exists",
-    "PHONE_NUMBER_ALREADY_EXISTS": "Phone number already exists",
-    "PHONE_IS_NOT_COMPLETE_YET": "Phone KYC Is Not Complete Yet"
+  "task_block_operation": {
+    "TASK_BLOCK_OPERATION_NOT_EXISTS": "Task_block_operation does not exists",
+    "TASK_BLOCK_OPERATION_ALREADY_EXISTS": "Task_block_operation already exist"
   },
-  "photo": {
-    "PHOTO_DOES_NOT_EXIST": "Photo Already Exist",
-    "PHOTO_ALREADY_EXIST": "Photo Does Not Exist"
+  "task": {
+    "TASK_NOT_EXISTS": "TASK does not exists",
+    "TASK_ALREADY_EXISTS": "TASK already exist"
   },
-  "chain": {
-    "CHAIN_NOT_EXISTS": "Block Chain Not exists",
-    "ARCH_NOT_EXISTS": "Arch Not exists",
-    "CRYPTO_NOT_EXISTS": "Crypto not exists",
-    "EXCHANGE_NOT_EXISTS": "Exchange Not Exists",
-    "TRANSACTION_FAILED": "TRANSACTION Has Error",
-    "BALANCE_IS_NOT_SUFFICIENT": "Balance is not sufficient",
-    "SMART_CONTRACT_ALREADY_EXISTS": "Smart Contract Already Exists",
-    "EXCHANGE_ALREADY_EXISTS": "Exchange Already Exists",
-    "VERSION_CRYPTO_ALREADY_EXISTS": "Version Crypto Already Exists",
-    "VERSION_CRYPTO_NOT_EXISTS": "Version Crypto Not Exists",
-    "SPEED_TRANSFER_NOT_EXISTS": "Speed Not exists",
-    "SYMBOL_CRYPTO_ALREADY_EXIST": "SYMBOL_CRYPTO_ALREADY_EXIST" ,
-    "SMART_CONTRACT_WITH_SPEED_ALREADY_EXISTS" : "Smart Contract With Speed Transfer Already Exists",
-    "WITHDRAW_REQUEST_IS_CLOSE" : "Request Withdraw Is Closed",
-    "WITHDRAW_REQUEST_DOES_NOT_EXIST": "Request Withdraw Does Not Exist",
-    "TOLERANCE_OVER_LIMIT": "Tolerance Over Limit"
-  },
-  "currency": {
-    "CURRENCY_NOT_EXISTS": "Currency Not exists",
-    "CURRENCY_NAME_ALREADY_EXISTS": "Currency Name Already Exists",
-    "CURRENCY_CODE_ALREADY_EXISTS": "Currency Code Already Exists",
-    "BANK_NOT_EXISTS": "Bank Not Exists",
-    "BANK_ALREADY_EXISTS": "bank Already Exists",
-    "BANK_ALREADY_EXISTS_IN_CURRENCY": "Bank In Currency Already Exists",
-    "INSUFFICENT_LOW_AMOUNT": "Insufficent low amount wallet"
-  },
-  "level": {
-    "LEVEL_NOT_EXISTS": "Level not exists",
-    "LEVEL_HAS_DEFAULT": "Level has default"
+  "user": {
+    "USER_NOT_EXISTS": "User does not exists",
+    "USER_ALREADY_EXISTS": "User already exist"
   }
 }

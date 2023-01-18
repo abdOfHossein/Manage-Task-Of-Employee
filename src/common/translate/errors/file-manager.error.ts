@@ -6,5 +6,9 @@ export default {
       key: 100000,
       value: FileManagerEnum.FILEMANAGER_NOT_EXISTS,
     },
+    FILEMANAGER_ALREADY_EXISTS: {
+      key: 100001,
+      value: FileManagerEnum.FILEMANAGER_ALREADY_EXISTS,
+    },
   },
 };
