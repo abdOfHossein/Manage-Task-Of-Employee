@@ -6,6 +6,7 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -14,7 +15,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { PageDto } from 'src/common/dtos/page.dto';
-import { ParamResultEnum } from 'src/common/enums/param.result.enum';
+import { JwtGuard } from 'src/modules/user/modules/auth/guards/jwt.guard';
 import { CreateRoleRlBackendDto } from '../../modules/role-backend-rl/dtos/create-role-rl-backend.dto';
 import { UpdateRoleRlBackendDto } from '../../modules/role-backend-rl/dtos/update-role-rl-backend.dto';
 import { RoleRlBackendEnt } from '../../modules/role-backend-rl/entities/role-rl-backend.entity';
@@ -40,18 +41,24 @@ export class RoleRlBackendController {
   //   return this.roleRlBackendService.pagination(pageDto)
   // }
 
+  @UseGuards(JwtGuard)
+  @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'Create role_backend' })
   @Post()
   create(@Body() createRoleRlBackendDto: CreateRoleRlBackendDto) {
     return this.roleRlBackendService._create(createRoleRlBackendDto);
   }
 
+  @UseGuards(JwtGuard)
+  @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'Getone role_backend' })
   @Get()
   getOne(@Query('id_role_backend') id_role_backend: string) {
     return this.roleRlBackendService._getOne(id_role_backend);
   }
 
+  @UseGuards(JwtGuard)
+  @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'update role_backend' })
   @Put()
   update(
@@ -64,15 +71,16 @@ export class RoleRlBackendController {
     );
   }
 
+  @UseGuards(JwtGuard)
+  @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'delete role_backend' })
   @Delete()
   delete(@Query('id_role_backend') id_role_backend: string) {
-    return this.roleRlBackendService._delete(
-      id_role_backend,
-    );
+    return this.roleRlBackendService._delete(id_role_backend);
   }
 
-  //pagination
+  @UseGuards(JwtGuard)
+  @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'pagination for Arch' })
   @Post('page')
   getPaginationArch(

@@ -32,9 +32,9 @@ export class UserController {
   PREFIX_TOKEN_AUTH = 'prefix_auth_token_';
   constructor(private user: UserService) {}
 
-  // @UseGuards(RolesGuard)
-  // @UseGuards(JwtGuard)
-  // @ApiBearerAuth('access-token')
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtGuard)
+  @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'sign up user with department' })
   @Post('/register')
   register(
@@ -43,7 +43,7 @@ export class UserController {
   ): Promise<UserEnt> {
     console.log(id_department);
     console.log(createUserDto);
-    
+
     createUserDto.id_department = id_department;
     return this.user.createUser(createUserDto);
   }
@@ -61,7 +61,7 @@ export class UserController {
   async login(@Body() loginUserDto: LoginUserDto) {
     return await this.user._createJwt(loginUserDto);
   }
-  
+
   @ApiOperation({ summary: 'test Jwt' })
   @UseGuards(JwtGuard)
   @ApiBearerAuth('access-token')
@@ -71,13 +71,17 @@ export class UserController {
   }
 
   @UseGuards(RolesGuard)
+  @UseGuards(JwtGuard)
+  @ApiBearerAuth('access-token')
   @Get('/block')
   @ApiOperation({ summary: 'block user access to app' })
   async blockUser(@Query('id_user') id_user: string) {
     return await this.user.blockUser(id_user);
   }
 
-  // @UseGuards(RolesGuard)
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtGuard)
+  @ApiBearerAuth('access-token')
   @Get('/all')
   @ApiOperation({ summary: 'get all Users just for you baby(hadi<3)' })
   async getAllUser() {
@@ -85,6 +89,8 @@ export class UserController {
   }
 
   @UseGuards(RolesGuard)
+  @UseGuards(JwtGuard)
+  @ApiBearerAuth('access-token')
   @Post('password')
   @ApiOperation({ summary: 'change user password' })
   async changePassword(
@@ -95,6 +101,8 @@ export class UserController {
   }
 
   @ApiOperation({ summary: 'update user' })
+  @UseGuards(JwtGuard)
+  @ApiBearerAuth('access-token')
   @Put()
   updateUser(
     @Query('id_user') id_user: string,
@@ -109,7 +117,6 @@ export class UserController {
     return this.user.updateUser(id_user, updateUserDto);
   }
 
-  // @UseGuards(RolesGuard)
   @UseGuards(JwtGuard)
   @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'pagination for user' })
@@ -119,7 +126,6 @@ export class UserController {
     return this.user.paginationUser(pageDto);
   }
 
-  // @UseGuards(RolesGuard)
   @UseGuards(JwtGuard)
   @ApiBearerAuth('access-token')
   @Post('admin/password')
@@ -136,7 +142,6 @@ export class UserController {
     return await this.user.changePasswordAdmin(user, changePasswordUserDto);
   }
 
-  // @UseGuards(RolesGuard)
   @UseGuards(JwtGuard)
   @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'pagination for task of user wiht recieve id_user' })
@@ -160,20 +165,25 @@ export class UserController {
   }
 
   @UseGuards(RolesGuard)
+  @UseGuards(JwtGuard)
+  @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'pagination for user' })
   @Get('/admin/jwt')
   jwtAdmin(@Query('id_user') id_user: string, @Req() req: any) {
     return this.user.jwtAdmin(id_user);
   }
 
-  @ApiBearerAuth('access-token')
   @UseGuards(JwtGuard)
+  @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'get user' })
   @Get('/getUser')
   getUser(@GetUser() id_user: UserResponseJWTDto) {
     return this.user.getUser(id_user.uid);
   }
 
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtGuard)
+  @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'get all users in department' })
   @Get('/users')
   async getDepartmentUsers(
@@ -183,6 +193,8 @@ export class UserController {
   }
 
   @UseGuards(RolesGuard)
+  @UseGuards(JwtGuard)
+  @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'pagination for tasks are done in previous day' })
   @Post('/page/previousDay')
   paginationDoneTaskRecentDay(
@@ -192,6 +204,7 @@ export class UserController {
     return this.user.paginationDoneTaskRecentDay(id_user.uid, pageDto);
   }
 
+
   @UseGuards(JwtGuard)
   @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'find All tasks in previous day' })
@@ -200,6 +213,9 @@ export class UserController {
     return this.user.listOfTaskRecentDay(id_user.uid);
   }
 
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtGuard)
+  @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'delete User' })
   @Delete()
   deleteUser(@Query('id_user') id_user: string): Promise<UserEnt> {

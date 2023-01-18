@@ -7,6 +7,7 @@ import { PageMetaDto } from 'src/common/dtos/page.meta.dto';
 import { PublicFunc } from 'src/common/function/public.func';
 import { HashService } from 'src/modules/hash/hash.service';
 import { RedisService } from 'src/modules/redis/redis.service';
+import { RoleEnt } from 'src/modules/role/modules/entities/role.entity';
 import { TaskMapperPagination } from 'src/modules/task/modules/mapper/task.mapper.pagination';
 import { TaskPageDto } from 'src/modules/task/modules/paginations/task.page.dto';
 import { DataSource, FindOneOptions, QueryRunner } from 'typeorm';
@@ -86,9 +87,18 @@ export class UserRepo {
       roles: roles,
       currentRole,
     };
-    const result = this.jwtService.sign(jwtPayloadInterface);
-    console.log(result);
-    
+    const menu = await this.dataSource.manager
+      .createQueryBuilder(RoleEnt, 'role')
+      .where('role.id = :id_role', { id_role: currentRole })
+      .leftJoinAndSelect('role.menu', 'menu')
+      .getMany();
+    console.log('menu', menu);
+
+    const tokenJwt = this.jwtService.sign(jwtPayloadInterface);
+    console.log('tokenJwt', tokenJwt);
+    let result :any= {};
+    result.tokenJwt = tokenJwt;
+    result.menu = menu;
     await this.redisService.setKey(
       `${this.PREFIX_TOKEN_AUTH}${jwtPayloadInterface.unq}`,
       JSON.stringify(dataRedis),
@@ -200,7 +210,7 @@ export class UserRepo {
   async changePasswordAdmin(
     id_user: UserResponseJWTDto,
     changePasswordUserDto: ChangePasswordAdminDto,
-    query?:QueryRunner
+    query?: QueryRunner,
   ): Promise<UserEnt> {
     const userEntity = await this.dataSource.manager.findOne(UserEnt, {
       where: { id: id_user.uid },
