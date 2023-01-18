@@ -362,6 +362,7 @@ export class UserRepo {
   async getUser(id_user: string, options?: FindOneOptions): Promise<UserEnt> {
     const result = await this.dataSource.manager
       .createQueryBuilder(UserEnt, 'user')
+      .leftJoinAndSelect('user.role', 'role')
       .where('user.id = :id', { id: id_user })
       .select([
         'user.id',
