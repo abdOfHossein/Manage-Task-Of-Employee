@@ -364,16 +364,6 @@ export class UserRepo {
       .createQueryBuilder(UserEnt, 'user')
       .leftJoinAndSelect('user.role', 'role')
       .where('user.id = :id', { id: id_user })
-      .select([
-        'user.id',
-        'user.first_name',
-        'user.last_name',
-        'user.username',
-        'user.email',
-        'user.phonenumber',
-        'user.status',
-        'user.role_default_status',
-      ])
       .getOne();
     console.log(result);
 
