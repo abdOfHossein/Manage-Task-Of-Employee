@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { PageDto } from 'src/common/dtos/page.dto';
 import { PageMetaDto } from 'src/common/dtos/page.meta.dto';
 import { PublicFunc } from 'src/common/function/public.func';
+import { ProjectEnum } from 'src/common/translate/enums/project.enum';
 import { DepartmentRlEnt } from 'src/modules/department-rl/modules/entities/department-rl.entity';
 import { DepartmentEnt } from 'src/modules/department/modules/entities/department.entity';
 import { ProjectEnt } from 'src/modules/project/modules/entities/project.entity';
@@ -34,6 +35,14 @@ export class ReqRepo {
     createDto.projectEnt = await this.dataSource.manager.findOne(ProjectEnt, {
       where: { id: createDto.project_id },
     });
+    if (!createDto.projectEnt) {
+      throw new Error(
+        `${JSON.stringify({
+          section: 'project',
+          value: ProjectEnum.PROJECT_NOT_EXISTS,
+        })}`,
+      );
+    }
     const reqEnt = new ReqEnt();
     reqEnt.status = createDto.status;
     reqEnt.name = createDto.name;
@@ -154,8 +163,11 @@ export class ReqRepo {
         if (departmentRlEnt[0].tasks) {
           notDeleted.push(departmentRlEnt);
         } else {
-          const deleteDepartmentEl=await this.dataSource.manager.findOne(DepartmentRlEnt,{where:{id:department_rl.id}})
-          deleteDepartmentEl.delete_at=new Date()
+          const deleteDepartmentEl = await this.dataSource.manager.findOne(
+            DepartmentRlEnt,
+            { where: { id: department_rl.id } },
+          );
+          deleteDepartmentEl.delete_at = new Date();
         }
       }
     }

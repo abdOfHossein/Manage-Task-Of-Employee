@@ -10,7 +10,7 @@ export class BackendEnt extends BasicEnt {
   @Column({ nullable: true })
   slug_name: string;
 
-  @Column({ nullable: true })
+  @Column({ unique:true,nullable: true })
   route: string;
 
   @Column({ nullable: true })

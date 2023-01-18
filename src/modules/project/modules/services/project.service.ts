@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { HandlerError } from 'src/common/class/handler.error';
+import { FileEnum } from 'src/common/translate/enums/file.enum';
 import { FileEnt } from 'src/modules/file/modules/entities/file.entity';
+import { TypeFileEnum } from 'src/modules/file/modules/enums/type.file.enum';
 import { HandlerService } from 'src/utility/handler/handler.service';
 import { DataSource, FindOneOptions, QueryRunner } from 'typeorm';
 import { CreateProjectDto } from '../dtos/create.project.dto';
@@ -17,16 +19,27 @@ export class ProjectService {
     private dataSource: DataSource,
     private projectRepo: ProjectRepo,
     private handlerService: HandlerService,
-
   ) {}
 
   async createProject(createDt: CreateProjectDto, query?: QueryRunner) {
     try {
+      const file = await this.dataSource.manager.findOne(FileEnt, {
+        where: { unq_file: createDt.unq_file, type_file: TypeFileEnum.PROJET },
+      });
+      if (!file) {
+        throw new Error(
+          `${JSON.stringify({
+            section: 'file',
+            value: FileEnum.FILE_NOT_EXISTS,
+          })}`,
+        );
+      }
+      createDt.file = file;
       return await this.projectRepo.createProject(createDt, query);
     } catch (e) {
       console.log(e);
-      const result = await HandlerError.errorHandler(e)
-      await this.handlerService.handlerException400("FA", result)
+      const result = await HandlerError.errorHandler(e);
+      await this.handlerService.handlerException400('FA', result);
     }
   }
 

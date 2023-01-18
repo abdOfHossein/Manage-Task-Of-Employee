@@ -33,18 +33,27 @@ export class HandlerError {
         return { section: 'public', value: PublicEnum.COLUMN_NOT_EXISTS };
       }
       if (err.driverError.code == '23505') {
+        console.log(err.driverError.detail);
+        console.log(err.driverError.table);
+
         if (
           err.driverError.detail.indexOf(
-            '("countryCurrencyRlId", "bankMasterId")',
-          ) != -1
-        )
+            'Key (route)=(string) already exists',
+          ) != -1 &&
+          err.driverError.table === 'backend'
+        ) {
+          console.log('hereeeeeeeeeeeeeeeeeeeee');
+
           return {
             section: 'crud_backend',
             value: CrudBackendEnum.ROUTE_ALREADY_EXISTS,
           };
+        }
         if (
-          err.driverError.detail.indexOf('("countryCurrencyRlId", "ipgId")') !=
-          -1
+          err.driverError.detail.indexOf(
+            'Key (route)=(string) already exists',
+          ) != -1 &&
+          err.driverError.table === 'frontend'
         )
           return {
             section: 'crud_frontend',

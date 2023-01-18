@@ -35,15 +35,6 @@ export class FrontendService {
   //create
   async _create(createDt: CreateFrontendDto, query?: QueryRunner) {
     try {
-      const exist = await this.frontendRepo.findByRoute(createDt.route);
-      if (exist) {
-        throw new Error(
-          `${JSON.stringify({
-            section: 'crud_frontend',
-            value: 'Route Already Exist',
-          })}`,
-        );
-      }
       return await this.frontendRepo._createEntity(createDt, query);
     } catch (e) {
       console.log(e);

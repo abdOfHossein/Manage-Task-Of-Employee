@@ -1,4 +1,12 @@
-import { Body, Controller, Delete, Get, Post, Put, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Post,
+  Put,
+  Query,
+} from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { PageDto } from 'src/common/dtos/page.dto';
 import { CreateProjectDto } from '../../modules/dtos/create.project.dto';
@@ -16,7 +24,9 @@ export class ProjectController {
   @Post()
   createProject(
     @Body() createProjectDto: CreateProjectDto,
+    @Query('unq_file') unq_file: string,
   ): Promise<ProjectEnt> {
+    createProjectDto.unq_file = unq_file;
     return this.project.createProject(createProjectDto);
   }
 
@@ -68,9 +78,7 @@ export class ProjectController {
 
   @ApiOperation({ summary: 'delete Project' })
   @Delete()
-  deleteProject(
-    @Query('id_project') id_project: string,
-  ): Promise<ProjectEnt> {
+  deleteProject(@Query('id_project') id_project: string): Promise<ProjectEnt> {
     return this.project.deleteProject(id_project);
   }
 }

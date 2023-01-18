@@ -16,7 +16,7 @@ export class MessageEnt extends BasicEnt {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column('text',{ array: true, nullable: true })
+  @Column('uuid',{ array: true, nullable: true })
   to: string[];
 
   @Column({ nullable: true })

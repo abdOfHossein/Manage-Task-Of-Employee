@@ -15,7 +15,7 @@ export class ProjectEnt extends BasicEnt {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, unique: true })
   project_name: string;
 
   @OneToMany(() => ReqEnt, (reqs) => reqs.project)

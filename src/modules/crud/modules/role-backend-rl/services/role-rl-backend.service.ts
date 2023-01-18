@@ -32,6 +32,7 @@ export class RoleRlBackendService {
   _resultGetOneDto(ent: RoleRlBackendEnt) {
     return new RoleRlBackendGDto(ent);
   }
+
    async _create(
     createDt: CreateRoleRlBackendDto,
     query?: QueryRunner,
@@ -42,9 +43,8 @@ export class RoleRlBackendService {
     );
     return await this.roleRlBackendRepo._createEntity(createDt, query);
   }
-  _resultCreateDto(ent: RoleRlBackendEnt) {
-    return new RoleRlBackendCUDto(ent);
-  }
+
+
    async _delete(searchDto: string, query?: QueryRunner) {
     const roleRlBackendEnt = await this._getOne(searchDto);
     return await this.roleRlBackendRepo._deleteEntity(roleRlBackendEnt, query);

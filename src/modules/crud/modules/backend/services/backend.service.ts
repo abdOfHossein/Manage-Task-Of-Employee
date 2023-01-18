@@ -27,15 +27,6 @@ export class BackendService {
 
   async _create(createDt: CreateBackendDto, query?: QueryRunner) {
     try {
-      const exist = await this.findOneByRoute(createDt.route);
-      if (exist) {
-        throw new Error(
-          `${JSON.stringify({
-            section: 'crud_backend',
-            value: 'ROUTE_ALREADY_EXISTS',
-          })}`,
-        );
-      }
       return await this.backendRepo._createEntity(createDt, query);
     } catch (e) {
       console.log(e);

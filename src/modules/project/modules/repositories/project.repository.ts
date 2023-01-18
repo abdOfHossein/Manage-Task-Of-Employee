@@ -32,6 +32,8 @@ export class ProjectRepo {
     await this.dataSource.manager.save(req);
     const projectEnt = new ProjectEnt();
     projectEnt.project_name = createDto.project_name;
+    projectEnt.reqs = [req];
+    projectEnt.file = createDto.file;
     if (query) return await query.manager.save(projectEnt);
     return await this.dataSource.manager.save(projectEnt);
   }

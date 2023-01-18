@@ -3,7 +3,7 @@ import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { MenuEnt } from '../../menu/entities/menu.entity';
 import { TypePlatformEnum } from '../enum/type.platform.enum';
 
-@Entity({name: 'frontend' })
+@Entity({ name: 'frontend' })
 export class FrontendEnt extends BasicEnt {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -24,7 +24,7 @@ export class FrontendEnt extends BasicEnt {
   @Column('text', { nullable: false })
   host: string;
 
-  @Column('text', { nullable: false })
+  @Column('text', { nullable: false, unique: true })
   route: string;
 
   @OneToMany(() => MenuEnt, (menu) => menu.frontend)

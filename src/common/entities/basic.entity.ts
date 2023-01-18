@@ -1,10 +1,6 @@
 import {
-  BaseEntity,
-  Column,
-  CreateDateColumn,
-  DeleteDateColumn,
-  Entity,
-  UpdateDateColumn,
+  BaseEntity, CreateDateColumn,
+  DeleteDateColumn, UpdateDateColumn
 } from 'typeorm';
 
 export class BasicEnt extends BaseEntity {
