@@ -1,4 +1,5 @@
 import { BasicEnt } from 'src/common/entities/basic.entity';
+import { SchemaEntityEnum } from 'src/common/enums/schema.entity.enum';
 import { DepartmentRlEnt } from 'src/modules/department-rl/modules/entities/department-rl.entity';
 import { ProjectEnt } from 'src/modules/project/modules/entities/project.entity';
 import {
@@ -10,7 +11,7 @@ import {
 } from 'typeorm';
 import { StatusReqEnum } from '../enums/req.enum';
 
-@Entity({ name: 'Req' })
+@Entity({ schema:SchemaEntityEnum.TASK,name: 'Req' })
 export class ReqEnt extends BasicEnt {
   @PrimaryGeneratedColumn('uuid')
   id: string;

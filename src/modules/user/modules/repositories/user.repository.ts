@@ -5,6 +5,7 @@ import { sha512 } from 'js-sha512';
 import { PageDto } from 'src/common/dtos/page.dto';
 import { PageMetaDto } from 'src/common/dtos/page.meta.dto';
 import { PublicFunc } from 'src/common/function/public.func';
+import { MenuEnt } from 'src/modules/crud/modules/menu/entities/menu.entity';
 import { HashService } from 'src/modules/hash/hash.service';
 import { RedisService } from 'src/modules/redis/redis.service';
 import { RoleEnt } from 'src/modules/role/modules/entities/role.entity';
@@ -87,24 +88,18 @@ export class UserRepo {
       roles: roles,
       currentRole,
     };
-    const roleEnt = await this.dataSource.manager
-      .createQueryBuilder(RoleEnt, 'role')
+    const menu = await this.dataSource.manager
+      .createQueryBuilder(MenuEnt, 'menu')
+      .leftJoin('menu.role', 'role')
       .where('role.id = :id_role', { id_role: currentRole })
-      .leftJoinAndSelect('role.menu', 'menu')
       .leftJoinAndSelect('menu.frontend', 'frontend')
       .getMany();
-    console.log('roleEnt', roleEnt);
+    console.log('menu', menu);
 
     const tokenJwt = this.jwtService.sign(jwtPayloadInterface);
     console.log('tokenJwt', tokenJwt);
     let result: any = {};
-    result.tokenJwt = tokenJwt;
-    result.roleEnt = roleEnt[0].menu;
-    if (!roleEnt[0].menu == null) {
-      result.frontend = roleEnt[0].menu.frontend;
-    } else {
-      result.frontend = null;
-    }
+    result.menu = menu;
     await this.redisService.setKey(
       `${this.PREFIX_TOKEN_AUTH}${jwtPayloadInterface.unq}`,
       JSON.stringify(dataRedis),

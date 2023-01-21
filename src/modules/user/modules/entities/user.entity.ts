@@ -1,6 +1,8 @@
+import { sha512 } from 'js-sha512';
 import { BasicEnt } from 'src/common/entities/basic.entity';
 import { DepartmentEnt } from 'src/modules/department/modules/entities/department.entity';
 import { FileEnt } from 'src/modules/file/modules/entities/file.entity';
+import { MessageEnt } from 'src/modules/message/modules/entities/message.entity';
 import { RoleEnt } from 'src/modules/role/modules/entities/role.entity';
 import {
   BeforeInsert,
@@ -9,12 +11,10 @@ import {
   ManyToMany,
   ManyToOne,
   OneToMany,
-  PrimaryGeneratedColumn,
+  PrimaryGeneratedColumn
 } from 'typeorm';
-import { TaskEnt } from "../../../task/modules/entities/task.entity";
-import { UserStatus } from "../enum/user.status";
-import { sha512 } from "js-sha512";
-import { MessageEnt } from 'src/modules/message/modules/entities/message.entity';
+import { TaskEnt } from '../../../task/modules/entities/task.entity';
+import { UserStatus } from '../enum/user.status';
 
 @Entity({ name: 'user' })
 export class UserEnt extends BasicEnt {
@@ -39,7 +39,7 @@ export class UserEnt extends BasicEnt {
   @Column({ nullable: false, unique: true })
   phonenumber: string;
 
-  @Column({ type: 'enum', enum: UserStatus, default: UserStatus.ACTIVE})
+  @Column({ type: 'enum', enum: UserStatus, default: UserStatus.ACTIVE })
   status: UserStatus;
 
   @ManyToOne(() => DepartmentEnt, (department) => department.users)
@@ -47,16 +47,16 @@ export class UserEnt extends BasicEnt {
 
   @ManyToMany(() => RoleEnt, (role) => role.users)
   role: RoleEnt[];
-  
+
   @OneToMany(() => FileEnt, (files) => files.user)
   files: FileEnt[];
 
   @OneToMany(() => TaskEnt, (task) => task.user)
   task: TaskEnt[];
-  
+
   @OneToMany(() => MessageEnt, (messages) => messages.user)
   messages: MessageEnt[];
-  
+
   @BeforeInsert()
   async hashPassword() {
     if (this.password) {

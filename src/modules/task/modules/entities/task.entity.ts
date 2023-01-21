@@ -1,4 +1,5 @@
 import { BasicEnt } from 'src/common/entities/basic.entity';
+import { SchemaEntityEnum } from 'src/common/enums/schema.entity.enum';
 import { DepartmentRlEnt } from 'src/modules/department-rl/modules/entities/department-rl.entity';
 import { RelTaskEnt } from 'src/modules/rel-task/modules/entities/rel-task.entity';
 import { TaskBlockOperationEnt } from 'src/modules/task-cblock-operation/modules/entities/task-block-operation.entity';
@@ -8,14 +9,14 @@ import {
   ManyToOne,
   OneToMany,
   OneToOne,
-  PrimaryGeneratedColumn,
+  PrimaryGeneratedColumn
 } from 'typeorm';
 import { UserEnt } from '../../../user/modules/entities/user.entity';
 import { CheckStatusTaskEnum } from '../enums/check-status.enum';
 import { StatusTaskEnum } from '../enums/status-task.enum';
 import { TypeTaskEnum } from '../enums/type-task.enum';
 
-@Entity({ name: 'task' })
+@Entity({ schema: SchemaEntityEnum.TASK, name: 'task' })
 export class TaskEnt extends BasicEnt {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -35,16 +36,16 @@ export class TaskEnt extends BasicEnt {
   @Column({ nullable: true })
   remain_date: Date;
 
-  @Column({ nullable: true,type:"enum",enum:TypeTaskEnum })
+  @Column({ nullable: true, type: 'enum', enum: TypeTaskEnum })
   type: TypeTaskEnum;
 
   @Column({ nullable: true })
   duration: number;
 
-  @Column({ nullable: true,type:"enum",enum:StatusTaskEnum })
+  @Column({ nullable: true, type: 'enum', enum: StatusTaskEnum })
   status: StatusTaskEnum;
 
-  @Column({ nullable: true ,type:"enum",enum:CheckStatusTaskEnum})
+  @Column({ nullable: true, type: 'enum', enum: CheckStatusTaskEnum })
   check_status: CheckStatusTaskEnum;
 
   @ManyToOne(() => DepartmentRlEnt, (department_rl) => department_rl.tasks)
