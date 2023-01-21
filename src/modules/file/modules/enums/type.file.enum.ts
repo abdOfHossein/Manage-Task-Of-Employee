@@ -1,4 +1,4 @@
 export enum TypeFileEnum {
   PROFILE = 'PROFILE',
-  PROJET = 'PROJET',
+  PROJCET = 'PROJCET',
 }
