@@ -34,7 +34,7 @@ export class FileController {
       properties: {
         type_file: {
           type: 'enum',
-          enum: [TypeFileEnum.PROFILE,TypeFileEnum.PROJET],
+          enum: [TypeFileEnum.PROFILE,TypeFileEnum.PROJCET],
         },
         file: {
           type: 'string',
