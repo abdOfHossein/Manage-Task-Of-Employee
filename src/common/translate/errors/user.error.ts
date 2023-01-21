@@ -10,5 +10,9 @@ export default {
       key: 100001,
       value: UserEnum.USER_ALREADY_EXISTS,
     },
+    USER_DOES_NOT_HAVE_THIS_ROLE: {
+      key: 100002,
+      value: UserEnum.USER_DOES_NOT_HAVE_THIS_ROLE,
+    },
   },
 };

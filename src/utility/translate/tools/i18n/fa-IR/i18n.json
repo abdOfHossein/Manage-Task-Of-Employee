@@ -86,6 +86,7 @@
   },
   "user": {
     "USER_NOT_EXISTS": "یوزر وجود ندارد",
-    "USER_ALREADY_EXISTS": "یوزر از قبل تعریف شده است "
+    "USER_ALREADY_EXISTS": "یوزر از قبل تعریف شده است ",
+    "USER_DOES_NOT_HAVE_THIS_ROLE":"این یوزر رول وارد شده را ندارد"
   }
 }

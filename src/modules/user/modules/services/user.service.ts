@@ -14,6 +14,7 @@ import { CreateUserDto } from '../dtos/create.user.dto';
 import { LoginUserDto } from '../dtos/login.user.dto';
 import { UpdateUserDto } from '../dtos/update.user.dto';
 import { UserEnt } from '../entities/user.entity';
+import { UserEnum } from '../../../../common/translate/enums/user.enum';
 import { UserStatus } from '../enum/user.status';
 import { UserPageDto } from '../paginations/user.page.dto';
 import { UserRepo } from '../repositories/user.repository';
@@ -90,9 +91,12 @@ export class UserService {
       console.log('id_roles', roles);
 
       if (id_roles.indexOf(id_role) == -1) {
-        throw new BadRequestException({
-          message: 'you don not have this role',
-        });
+        throw new Error(
+          `${JSON.stringify({
+            section: 'user',
+            value: UserEnum.USER_DOES_NOT_HAVE_THIS_ROLE,
+          })}`,
+        );
       }
 
       const currentRole = await this.dataSource.manager.findOne(RoleEnt, {

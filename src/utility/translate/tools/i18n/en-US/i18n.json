@@ -18,7 +18,7 @@
     "PHONE_NUMBER_DOES_NOT_EXISTS": "Phone number does not exists",
     "ACCESS_DENIED_FOR_MODIFYING_PHONE_NUMBER": "Access Denied For Modifying Phone Number",
     "DUPLICATE_VALUE_IN_UNIQUE_COLUMN": "You Entered Duplicate Key For a Unique Column",
-    "INVALID_INPUT_FOR_ENUM":"Invalide input for enum type"
+    "INVALID_INPUT_FOR_ENUM": "Invalide input for enum type"
   },
   "crud_frontend": {
     "CRUD_FRONTEND_NOT_EXISTS": "Crud frontend does not exists",
@@ -86,6 +86,7 @@
   },
   "user": {
     "USER_NOT_EXISTS": "User does not exists",
-    "USER_ALREADY_EXISTS": "User already exist"
+    "USER_ALREADY_EXISTS": "User already exist",
+    "USER_DOES_NOT_HAVE_THIS_ROLE": "This user does not have this Role!!!"
   }
 }

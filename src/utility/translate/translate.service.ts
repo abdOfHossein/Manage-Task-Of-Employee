@@ -8,9 +8,14 @@ import { MapperLanguageEnum } from '../../common/enums/mapper.language.enum';
 export class TranslateService {
   constructor(private readonly i18nService: I18nService) {}
   getErrors(section: string, value: string): Record<string, any> | boolean {
-    console.log('value', value);
     console.log('errors[section].values', errors[section].values);
-    console.log('errors[section].values[value]', errors[section].values[value]);
+    console.log(
+      'errors[section].values[value]',
+      errors[section].values['USER_DOES_NOT_HAVE_THIS_ROLE'],
+    );
+    console.log('value', value);
+    console.log(value == 'USER_DOES_NOT_HAVE_THIS_ROLE');
+
     console.log('errors[section]', errors[section]);
 
     if (errors[section] == undefined) return false;
