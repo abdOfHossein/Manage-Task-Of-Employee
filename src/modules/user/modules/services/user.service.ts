@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { HandlerError } from 'src/common/class/handler.error';
 import { DepartmentEnt } from 'src/modules/department/modules/entities/department.entity';
@@ -18,6 +22,7 @@ import { UserEnum } from '../../../../common/translate/enums/user.enum';
 import { UserStatus } from '../enum/user.status';
 import { UserPageDto } from '../paginations/user.page.dto';
 import { UserRepo } from '../repositories/user.repository';
+import { PublicEnum } from 'src/common/translate/enums/public.enum';
 
 @Injectable()
 export class UserService {
@@ -272,12 +277,19 @@ export class UserService {
       for (const role of rolesEnt) {
         roles.push({ id: role.id, title: role.role_type });
       }
-      if (!user || user.status == UserStatus.BLOCK) {
-        throw new BadRequestException('User does not exist');
-      }
+      // if (!user || user.status == UserStatus.BLOCK) {
+      //   throw new UnauthorizedException(
+      //     `${JSON.stringify({
+      //       section: 'public',
+      //       value: PublicEnum.ACCESS_IS_DENIDE,
+      //     })}`,
+      //   );
+      // }
       return await this.userRepo._createJwt(user.id, roles);
     } catch (e) {
       console.log(e);
+      console.log('in eeeeeeeeeeeee');
+
       const result = await HandlerError.errorHandler(e);
       await this.handlerService.handlerException400('FA', result);
     }

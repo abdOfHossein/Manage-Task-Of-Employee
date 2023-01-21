@@ -32,6 +32,7 @@ export class RolesGuard implements CanActivate {
             id: key.id,
           },
         });
+        console.log(role.role_type);
         if (role.role_type == RoleTypeEnum.ADMIN) {
           return true;
         }
