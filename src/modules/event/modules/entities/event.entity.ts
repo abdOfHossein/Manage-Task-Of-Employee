@@ -1,8 +1,9 @@
 import { BasicEnt } from 'src/common/entities/basic.entity';
+import { SchemaEntityEnum } from 'src/common/enums/schema.entity.enum';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { PriorityEventEnum } from '../enums/priority-event.enum';
 
-@Entity({ name: 'event' })
+@Entity({ schema: SchemaEntityEnum.PUBLIC, name: 'event' })
 export class EventEnt extends BasicEnt {
   @PrimaryGeneratedColumn('uuid')
   id: string;

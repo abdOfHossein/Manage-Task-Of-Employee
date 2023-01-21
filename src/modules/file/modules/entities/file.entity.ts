@@ -6,14 +6,15 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { BasicEnt } from 'src/common/entities/basic.entity'; 
-import { UserEnt } from 'src/modules/user/modules/entities/user.entity';  
+import { BasicEnt } from 'src/common/entities/basic.entity';
+import { UserEnt } from 'src/modules/user/modules/entities/user.entity';
 import { StatusFileEnum } from '../enums/status.file.enum';
 import { TypeFileEnum } from '../enums/type.file.enum';
 import { ProjectEnt } from 'src/modules/project/modules/entities/project.entity';
+import { SchemaEntityEnum } from 'src/common/enums/schema.entity.enum';
 var randomstring = require('randomstring');
 
-@Entity({ schema: 'public', name: 'file' })
+@Entity({ schema: SchemaEntityEnum.PUBLIC, name: 'file' })
 export class FileEnt extends BasicEnt {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -49,9 +50,9 @@ export class FileEnt extends BasicEnt {
   @ManyToOne(() => UserEnt, (user) => user.files)
   user: UserEnt;
 
-  @OneToOne(() =>ProjectEnt, (project) => project.file)
-  project:ProjectEnt
-  
+  @OneToOne(() => ProjectEnt, (project) => project.file)
+  project: ProjectEnt;
+
   @BeforeInsert()
   fillInsert() {
     this.unq_file =

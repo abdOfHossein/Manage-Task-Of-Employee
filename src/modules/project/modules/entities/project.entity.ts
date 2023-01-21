@@ -1,4 +1,5 @@
 import { BasicEnt } from 'src/common/entities/basic.entity';
+import { SchemaEntityEnum } from 'src/common/enums/schema.entity.enum';
 import { FileEnt } from 'src/modules/file/modules/entities/file.entity';
 import { ReqEnt } from 'src/modules/req/modules/entities/req.entity';
 import {
@@ -10,7 +11,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-@Entity({ name: 'Project' })
+@Entity({ schema: SchemaEntityEnum.TASK,name: 'Project' })
 export class ProjectEnt extends BasicEnt {
   @PrimaryGeneratedColumn('uuid')
   id: string;

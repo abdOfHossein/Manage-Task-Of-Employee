@@ -1,5 +1,6 @@
 import { sha512 } from 'js-sha512';
 import { BasicEnt } from 'src/common/entities/basic.entity';
+import { SchemaEntityEnum } from 'src/common/enums/schema.entity.enum';
 import { DepartmentEnt } from 'src/modules/department/modules/entities/department.entity';
 import { FileEnt } from 'src/modules/file/modules/entities/file.entity';
 import { MessageEnt } from 'src/modules/message/modules/entities/message.entity';
@@ -11,12 +12,12 @@ import {
   ManyToMany,
   ManyToOne,
   OneToMany,
-  PrimaryGeneratedColumn
+  PrimaryGeneratedColumn,
 } from 'typeorm';
 import { TaskEnt } from '../../../task/modules/entities/task.entity';
 import { UserStatus } from '../enum/user.status';
 
-@Entity({ name: 'user' })
+@Entity({ schema: SchemaEntityEnum.AUTH, name: 'user' })
 export class UserEnt extends BasicEnt {
   @PrimaryGeneratedColumn('uuid')
   id: string;

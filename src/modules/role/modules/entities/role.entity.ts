@@ -1,4 +1,5 @@
 import { BasicEnt } from 'src/common/entities/basic.entity';
+import { SchemaEntityEnum } from 'src/common/enums/schema.entity.enum';
 import { MenuEnt } from 'src/modules/crud/modules/menu/entities/menu.entity';
 import { RoleRlBackendEnt } from 'src/modules/crud/modules/role-backend-rl/entities/role-rl-backend.entity';
 import { UserEnt } from 'src/modules/user/modules/entities/user.entity';
@@ -12,7 +13,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-@Entity({ name: 'role' })
+@Entity({ schema: SchemaEntityEnum.AUTH,name: 'role' })
 export class RoleEnt extends BasicEnt {
   @PrimaryGeneratedColumn('uuid')
   id: string;

@@ -1,9 +1,10 @@
 import { BasicEnt } from 'src/common/entities/basic.entity';
+import { SchemaEntityEnum } from 'src/common/enums/schema.entity.enum';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { MenuEnt } from '../../menu/entities/menu.entity';
 import { TypePlatformEnum } from '../enum/type.platform.enum';
 
-@Entity({ name: 'frontend' })
+@Entity({ schema: SchemaEntityEnum.AUTH, name: 'frontend' })
 export class FrontendEnt extends BasicEnt {
   @PrimaryGeneratedColumn('uuid')
   id: string;

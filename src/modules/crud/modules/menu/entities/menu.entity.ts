@@ -1,5 +1,6 @@
 import { BasicEnt } from 'src/common/entities/basic.entity';
-import { RoleEnt } from 'src/modules/role/modules/entities/role.entity'; 
+import { SchemaEntityEnum } from 'src/common/enums/schema.entity.enum';
+import { RoleEnt } from 'src/modules/role/modules/entities/role.entity';
 import {
   Column,
   Entity,
@@ -7,11 +8,11 @@ import {
   PrimaryGeneratedColumn,
   Tree,
   TreeChildren,
-  TreeParent,
+  TreeParent
 } from 'typeorm';
 import { FrontendEnt } from '../../frontend/entities/frontend.entity';
 
-@Entity({ name: 'menu' })
+@Entity({ schema: SchemaEntityEnum.AUTH, name: 'menu' })
 @Tree('closure-table', {
   ancestorColumnName: (column) => 'ancestor_' + column.propertyName,
   descendantColumnName: (column) => 'descendant_' + column.propertyName,

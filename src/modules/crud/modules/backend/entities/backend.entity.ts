@@ -1,8 +1,9 @@
 import { BasicEnt } from 'src/common/entities/basic.entity';
+import { SchemaEntityEnum } from 'src/common/enums/schema.entity.enum';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { RoleRlBackendEnt } from '../../role-backend-rl/entities/role-rl-backend.entity';
 
-@Entity({ name: 'backend' })
+@Entity({ schema: SchemaEntityEnum.MENU, name: 'backend' })
 export class BackendEnt extends BasicEnt {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -10,7 +11,7 @@ export class BackendEnt extends BasicEnt {
   @Column({ nullable: true })
   slug_name: string;
 
-  @Column({ unique:true,nullable: true })
+  @Column({ unique: true, nullable: true })
   route: string;
 
   @Column({ nullable: true })
@@ -23,5 +24,5 @@ export class BackendEnt extends BasicEnt {
   body: string;
 
   @OneToMany(() => RoleRlBackendEnt, (role_user) => role_user.role)
-  role_backend: RoleRlBackendEnt[]
+  role_backend: RoleRlBackendEnt[];
 }

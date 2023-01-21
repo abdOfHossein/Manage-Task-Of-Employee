@@ -1,9 +1,10 @@
 import { BasicEnt } from 'src/common/entities/basic.entity';
+import { SchemaEntityEnum } from 'src/common/enums/schema.entity.enum';
 import { DepartmentRlEnt } from 'src/modules/department-rl/modules/entities/department-rl.entity';
 import { UserEnt } from 'src/modules/user/modules/entities/user.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity({ name: 'department' })
+@Entity({ schema:SchemaEntityEnum.TASK,name: 'department' })
 export class DepartmentEnt extends BasicEnt {
   @PrimaryGeneratedColumn('uuid')
   id: string;

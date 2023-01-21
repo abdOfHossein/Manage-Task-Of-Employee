@@ -1,8 +1,9 @@
 import { BasicEnt } from 'src/common/entities/basic.entity';
+import { SchemaEntityEnum } from 'src/common/enums/schema.entity.enum';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { RecieveTypeEnum } from '../enums/file-manager.enum';
 
-@Entity({ name: 'file_manager' })
+@Entity({ schema: SchemaEntityEnum.PUBLIC,name: 'file_manager' })
 export class FileManagerEnt extends BasicEnt {
   @PrimaryGeneratedColumn('uuid')
   id: string;

@@ -1,4 +1,5 @@
 import { BasicEnt } from 'src/common/entities/basic.entity';
+import { SchemaEntityEnum } from 'src/common/enums/schema.entity.enum';
 import { TaskEnt } from 'src/modules/task/modules/entities/task.entity';
 import {
   Column,
@@ -8,7 +9,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-@Entity({ name: 'rel_task' })
+@Entity({ schema: SchemaEntityEnum.TASK, name: 'rel_task' })
 export class RelTaskEnt extends BasicEnt {
   @PrimaryGeneratedColumn('uuid')
   id: string;
