@@ -7,7 +7,7 @@ export default {
       value: UserEnum.USER_NOT_EXISTS,
     },
     USER_ALREADY_EXISTS: {
-      key: 100000,
+      key: 100001,
       value: UserEnum.USER_ALREADY_EXISTS,
     },
   },

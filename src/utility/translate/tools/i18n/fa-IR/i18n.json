@@ -17,7 +17,8 @@
     "PUBLIC_ERROR": "خطای عمومی رخ داده است",
     "PHONE_NUMBER_DOES_NOT_EXISTS": "شماره موبایل مورد نظر وجود ندارد",
     "ACCESS_DENIED_FOR_MODIFYING_PHONE_NUMBER": "برای ایجاد تغییر بر روی تلفن همراه دسترسی ندارید",
-    "DUPLICATE_VALUE_IN_UNIQUE_COLUMN": "یک ورودی تکراری برای ستونی که یونیک هست وارد کرده اید"
+    "DUPLICATE_VALUE_IN_UNIQUE_COLUMN": "یک ورودی تکراری برای ستونی که یونیک هست وارد کرده اید",
+    "INVALID_INPUT_FOR_ENUM": "تایپ ورودی برای فیلد اینام نامعتبر است"
   },
   "crud_frontend": {
     "CRUD_FRONTEND_NOT_EXISTS": "کراد فرانت اند وجود ندارد",

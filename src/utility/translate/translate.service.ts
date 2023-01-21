@@ -8,10 +8,11 @@ import { MapperLanguageEnum } from '../../common/enums/mapper.language.enum';
 export class TranslateService {
   constructor(private readonly i18nService: I18nService) {}
   getErrors(section: string, value: string): Record<string, any> | boolean {
-    console.log('errors', errors);
+    console.log('value', value);
+    console.log('errors[section].values', errors[section].values);
+    console.log('errors[section].values[value]', errors[section].values[value]);
     console.log('errors[section]', errors[section]);
-    console.log('errors[section].values[value]', errors[section].values[value]);
-    console.log('errors[section].values[value]', errors[section].values[value]);
+
     if (errors[section] == undefined) return false;
     if (errors[section].values[value] == undefined) return false;
     return errors[section].values[value];
@@ -23,17 +24,15 @@ export class TranslateService {
     lang: string,
     args: any = null,
   ): Promise<Object> {
-    
     const errors = this.getErrors(section, property);
-    console.log('errors', errors);
+    console.log('errors ===>', errors);
     const translate = new Translate();
     console.log('translate', translate);
     translate.code = errors['value'];
     console.log('translate', translate);
-
     const i18n = `i18n.${section}.${errors['value']}`;
-    console.log('lang',lang);
-    console.log('MapperLanguageEnum[lang]',MapperLanguageEnum[lang]);
+    console.log('lang', lang);
+    console.log('MapperLanguageEnum[lang]', MapperLanguageEnum[lang]);
     translate.message = await this.i18nService.translate(i18n, {
       lang: MapperLanguageEnum[lang],
       args,

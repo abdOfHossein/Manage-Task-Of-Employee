@@ -37,8 +37,12 @@ export default {
       value: PublicEnum.UUID_NOT_MATCH,
     },
     DUPLICATE_VALUE_IN_UNIQUE_COLUMN: {
-      key: 100006,
+      key: 100007,
       value: PublicEnum.DUPLICATE_VALUE_IN_UNIQUE_COLUMN,
+    },
+    INVALID_INPUT_FOR_ENUM: {
+      key: 100008,
+      value: PublicEnum.INVALID_INPUT_FOR_ENUM,
     },
   },
 };

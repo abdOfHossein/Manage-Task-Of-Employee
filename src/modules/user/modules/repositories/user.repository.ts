@@ -87,18 +87,24 @@ export class UserRepo {
       roles: roles,
       currentRole,
     };
-    const menu = await this.dataSource.manager
+    const roleEnt = await this.dataSource.manager
       .createQueryBuilder(RoleEnt, 'role')
       .where('role.id = :id_role', { id_role: currentRole })
       .leftJoinAndSelect('role.menu', 'menu')
+      .leftJoinAndSelect('menu.frontend', 'frontend')
       .getMany();
-    console.log('menu', menu);
+    console.log('roleEnt', roleEnt);
 
     const tokenJwt = this.jwtService.sign(jwtPayloadInterface);
     console.log('tokenJwt', tokenJwt);
-    let result :any= {};
+    let result: any = {};
     result.tokenJwt = tokenJwt;
-    result.menu = menu;
+    result.roleEnt = roleEnt[0].menu;
+    if (!roleEnt[0].menu == null) {
+      result.frontend = roleEnt[0].menu.frontend;
+    } else {
+      result.frontend = null;
+    }
     await this.redisService.setKey(
       `${this.PREFIX_TOKEN_AUTH}${jwtPayloadInterface.unq}`,
       JSON.stringify(dataRedis),
