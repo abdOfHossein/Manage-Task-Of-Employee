@@ -240,6 +240,7 @@ export class UserRepo {
     const queryBuilder = this.dataSource.manager
       .createQueryBuilder(UserEnt, 'user')
       .leftJoinAndSelect('user.department', 'department')
+      .leftJoinAndSelect('user.role', 'role')
       .leftJoinAndSelect('department.department_rls', 'department_rls')
       .leftJoinAndSelect('department_rls.tasks', 'tasks');
     // .select([
