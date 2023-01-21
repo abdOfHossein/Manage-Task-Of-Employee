@@ -46,6 +46,7 @@ export class FileService {
   async uploadFilePublic(fileMulter: Express.Multer.File) {
     try {
       console.log('000000');
+      console.log(fileMulter);
 
       const createFileDto: CreateFileDto = {
         file: fileMulter.filename,

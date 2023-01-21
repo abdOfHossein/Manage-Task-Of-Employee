@@ -11,6 +11,7 @@ export class FileInterceptors implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const req = context.switchToHttp().getRequest();
     req.file['type_file'] = req.body.type_file;
+    console.log(req.body.type_file);
     return next.handle();
   }
 }

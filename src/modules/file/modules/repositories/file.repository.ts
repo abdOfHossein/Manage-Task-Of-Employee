@@ -19,6 +19,7 @@ export class FileRepo {
   ): Promise<FileEnt> {
     try {
       console.log(333333333333);
+      console.log(createDto);
 
       const fileEnt = new FileEnt();
       fileEnt.file = createDto.file;

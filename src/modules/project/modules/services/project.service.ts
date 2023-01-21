@@ -24,7 +24,7 @@ export class ProjectService {
   async createProject(createDt: CreateProjectDto, query?: QueryRunner) {
     try {
       const file = await this.dataSource.manager.findOne(FileEnt, {
-        where: { unq_file: createDt.unq_file, type_file: TypeFileEnum.PROJCET },
+        where: { unq_file: createDt.unq_file, type_file: TypeFileEnum.PROJECT },
       });
       if (!file) {
         throw new Error(
