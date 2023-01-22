@@ -134,7 +134,7 @@ export class ProjectRepo {
 
   async allProjectWithReq(): Promise<ProjectEnt[]> {
     const project = await this.dataSource.manager.query(
-      `select *, (select count(r) from public."Req" r where r."projectId"= p.id and r.status = 'DONE') as done, (select count(r) from public."Req" r where r."projectId"= p.id) as total from public."Project" p `,
+      `select *, (select count(r) from task."Req" r where r."projectId"= p.id and r.status = 'DONE') as done, (select count(r) from task."Req" r where r."projectId"= p.id) as total from task."Project" p `,
     )
     return project;
   }

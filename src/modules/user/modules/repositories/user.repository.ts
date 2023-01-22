@@ -100,6 +100,7 @@ export class UserRepo {
     console.log('tokenJwt', tokenJwt);
     let result: any = {};
     result.menu = menu;
+    result.tokenJwt = tokenJwt;
     await this.redisService.setKey(
       `${this.PREFIX_TOKEN_AUTH}${jwtPayloadInterface.unq}`,
       JSON.stringify(dataRedis),
@@ -381,16 +382,6 @@ export class UserRepo {
       .where('department.id = :id_department', {
         id_department,
       })
-      .select([
-        'user.id',
-        'user.first_name',
-        'user.last_name',
-        'user.username',
-        'user.email',
-        'user.phonenumber',
-        'user.status',
-        'user.role_default_status',
-      ])
       .getMany();
   }
 

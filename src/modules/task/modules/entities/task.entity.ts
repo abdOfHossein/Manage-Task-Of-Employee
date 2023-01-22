@@ -16,7 +16,7 @@ import { CheckStatusTaskEnum } from '../enums/check-status.enum';
 import { StatusTaskEnum } from '../enums/status-task.enum';
 import { TypeTaskEnum } from '../enums/type-task.enum';
 
-@Entity({ schema: SchemaEntityEnum.TASK, name: 'task' })
+@Entity({ name: 'task' })
 export class TaskEnt extends BasicEnt {
   @PrimaryGeneratedColumn('uuid')
   id: string;
