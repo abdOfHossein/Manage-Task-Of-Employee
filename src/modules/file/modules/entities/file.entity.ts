@@ -37,7 +37,7 @@ export class FileEnt extends BasicEnt {
   @Column({ nullable: true })
   original: string;
 
-  @Column({ type: 'enum', enum: TypeFileEnum })
+  @Column({ type: 'enum', enum: TypeFileEnum, nullable: true })
   type_file: TypeFileEnum;
 
   @Column({

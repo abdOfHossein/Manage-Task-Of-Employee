@@ -10,6 +10,6 @@ export const AppDataSource = new DataSource({
   password: process.env.DB_PASSWORD || 'HmpCo_2022_',
   entities: ['dist/**/*.entity.js', '**/*.entity.js'],
   migrations: ['dist/migrations/*.js'],
-  synchronize: false,
+  synchronize: true,
   logging: true,
 });

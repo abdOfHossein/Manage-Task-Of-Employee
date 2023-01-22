@@ -3,7 +3,7 @@ import { SchemaEntityEnum } from 'src/common/enums/schema.entity.enum';
 import { TaskEnt } from 'src/modules/task/modules/entities/task.entity';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity({ schema: SchemaEntityEnum.TASK, name: 'TaskBlockOperation' })
+@Entity({ name: 'TaskBlockOperation' })
 export class TaskBlockOperationEnt extends BasicEnt {
   @PrimaryGeneratedColumn('uuid')
   id: string;

@@ -124,4 +124,8 @@ export class MenuService {
       await this.handlerService.handlerException400('FA', result);
     }
   }
+
+  async getAllMenu() {
+    return await this.menuRepo.getAllMenu()
+  }
 }
