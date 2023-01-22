@@ -340,6 +340,7 @@ export class ReqRepo {
       where: { id: id_req },
     });
     req.delete_at = new Date();
+    req.name = 'deleted' + '_' + req.name;
     return await this.dataSource.manager.save(req);
   }
 }

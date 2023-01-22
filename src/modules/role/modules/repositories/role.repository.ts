@@ -111,6 +111,7 @@ export class RoleRepo {
       where: { id: id_role },
     });
     roleEnt.delete_at = new Date();
+    roleEnt.role_type = 'deleted' + '_' + roleEnt.role_type;
     return await this.dataSource.manager.save(roleEnt);
   }
 
@@ -171,14 +172,8 @@ export class RoleRepo {
       relations: { role: true },
     });
 
-    console.log(user);
     for (let i = 0; i < user.role.length; i++) {
-      console.log(roleEnt.id);
-      console.log(user.role[i].id);
-
       if (user.role[i].id === roleEnt.id) {
-        console.log('hereeeeeeeeeeeeeeeee');
-
         user.role[i] = null;
         await this.dataSource.manager.save(user);
       }

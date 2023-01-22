@@ -32,7 +32,7 @@ export class UserController {
   PREFIX_TOKEN_AUTH = 'prefix_auth_token_';
   constructor(private user: UserService) {}
 
-  // @UseGuards(RolesGuard)
+  @UseGuards(RolesGuard)
   @UseGuards(JwtGuard)
   @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'sign up user with department' })
@@ -41,9 +41,6 @@ export class UserController {
     @Query('id_department') id_department: string,
     @Body() createUserDto: CreateUserDto,
   ): Promise<UserEnt> {
-    console.log(id_department);
-    console.log(createUserDto);
-
     createUserDto.id_department = id_department;
     return this.user.createUser(createUserDto);
   }

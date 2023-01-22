@@ -13,5 +13,5 @@ export class BasicEnt extends BaseEntity {
   update_at: Date;
 
   @DeleteDateColumn({})
-  delete_at?: Date;
+  delete_at: Date;
 }

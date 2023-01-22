@@ -97,6 +97,7 @@ export class FrontendRepo {
     query?: QueryRunner,
   ): Promise<FrontendEnt> {
     entity.delete_at = new Date();
+    entity.slug_name = 'deleted' + '_' + entity.slug_name;
     if (query) return await query.manager.save(entity);
     return await this.dataSource.manager.save(entity);
   }

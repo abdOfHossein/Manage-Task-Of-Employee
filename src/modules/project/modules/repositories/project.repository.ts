@@ -150,6 +150,7 @@ export class ProjectRepo {
       where: { id: id_projectt },
     });
     project.delete_at = new Date();
+    project.project_name = 'deleted' + '_' + project.project_name;
     return await this.dataSource.manager.save(project);
   }
 }

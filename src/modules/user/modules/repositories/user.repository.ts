@@ -12,7 +12,6 @@ import { PublicFunc } from 'src/common/function/public.func';
 import { MenuEnt } from 'src/modules/crud/modules/menu/entities/menu.entity';
 import { HashService } from 'src/modules/hash/hash.service';
 import { RedisService } from 'src/modules/redis/redis.service';
-import { RoleEnt } from 'src/modules/role/modules/entities/role.entity';
 import { TaskMapperPagination } from 'src/modules/task/modules/mapper/task.mapper.pagination';
 import { TaskPageDto } from 'src/modules/task/modules/paginations/task.page.dto';
 import { DataSource, FindOneOptions, QueryRunner } from 'typeorm';
@@ -493,6 +492,9 @@ export class UserRepo {
       where: { id: id_user },
     });
     user.delete_at = new Date();
+    user.username = 'deleted' + '_' + user.username;
+    user.phonenumber = 'deleted' + '_' + user.phonenumber;
+    user.email = 'deleted' + '_' + user.email;
     return await this.dataSource.manager.save(user);
   }
   async getAllUser() {

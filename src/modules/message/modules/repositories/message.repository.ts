@@ -283,11 +283,12 @@ export class MessageRepo {
   }
 
   async delelteMessage(id_message: string) {
-    return await this.dataSource.manager.update(
-      MessageEnt,
-      { id: id_message },
-      { delete_at: new Date(Date.now()) },
-    );
+    const messageEnt = await this.dataSource.manager.findOne(MessageEnt, {
+      where: { id: id_message },
+    });
+    messageEnt.delete_at = new Date();
+    messageEnt.title = 'deleted' + '_' + messageEnt.title;
+    return await this.dataSource.manager.save(messageEnt);
   }
   // async updateMessage(
   //   entity: MessageEnt,

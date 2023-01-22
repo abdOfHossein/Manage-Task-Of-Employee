@@ -15,7 +15,9 @@ import { MenuPageDto } from '../pagination/menu.pagination';
 export class MenuRepo {
   constructor(
     @InjectRepository(MenuEnt)
-    private dataSource: DataSource,private handlerService: HandlerService) {}
+    private dataSource: DataSource,
+    private handlerService: HandlerService,
+  ) {}
 
   async _findOneEntity(
     searchDto: string,
@@ -54,8 +56,10 @@ export class MenuRepo {
     return await this.dataSource.manager.save(entity);
   }
   async _deleteEntity(entity: MenuEnt, query?: QueryRunner): Promise<MenuEnt> {
-    if (query) return await query.manager.remove(entity);
-    return await this.dataSource.manager.remove(entity);
+    entity.delete_at = new Date();
+    entity.slug_name = 'deleted' + '_' + entity.slug_name;
+    if (query) return await query.manager.save(entity);
+    return await this.dataSource.manager.save(entity);
   }
   async _paginationEntity(
     pageDto: MenuPageDto,

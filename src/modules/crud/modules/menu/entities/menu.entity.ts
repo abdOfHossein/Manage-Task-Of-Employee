@@ -12,7 +12,7 @@ import {
 } from 'typeorm';
 import { FrontendEnt } from '../../frontend/entities/frontend.entity';
 
-@Entity({ schema: SchemaEntityEnum.AUTH, name: 'menu' })
+@Entity({ schema: SchemaEntityEnum.MENU, name: 'menu' })
 @Tree('closure-table', {
   ancestorColumnName: (column) => 'ancestor_' + column.propertyName,
   descendantColumnName: (column) => 'descendant_' + column.propertyName,

@@ -52,14 +52,11 @@ export class FileManagerRepo {
   }
 
   async deleteFileManager(id_fileManager: string) {
-    console.log('id_fileManager', id_fileManager);
-
     const fileManager = await this.dataSource.manager.findOne(FileManagerEnt, {
       where: { id: id_fileManager },
     });
-
-    console.log('fileManager', fileManager);
     fileManager.delete_at = new Date();
+    fileManager.title = 'deleted' + '_' + fileManager.title;
     return await this.dataSource.manager.save(fileManager);
   }
 

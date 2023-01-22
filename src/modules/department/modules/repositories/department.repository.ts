@@ -278,6 +278,7 @@ export class DepartmentRepo {
       where: { id: id_department },
     });
     department.delete_at = new Date();
+    department.name_department = 'deleted' + '_' + department.name_department;
     return await this.dataSource.manager.save(department);
   }
 }

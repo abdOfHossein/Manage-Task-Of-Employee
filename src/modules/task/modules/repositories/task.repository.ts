@@ -2,7 +2,7 @@ import {
   BadGatewayException,
   BadRequestException,
   HttpException,
-  HttpStatus,
+  HttpStatus
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PageDto } from 'src/common/dtos/page.dto';
@@ -1151,6 +1151,7 @@ export class TaskRepo {
       where: { id: id_task },
     });
     task.delete_at = new Date();
+    task.title = 'deleted' + '_' + task.title;
     return await this.dataSource.manager.save(task);
   }
 }

@@ -14,11 +14,12 @@ export class MessageUserRepo {
   ) {}
 
   async deleteMessageUser(id_message_user: string, query?: QueryRunner) {
-    return await this.dataSource.manager.update(
-      MessageUserEnt,
-      { id: id_message_user },
-      { delete_at: new Date(Date.now()) },
-    );
+    const messageUserEnt = await this.dataSource.manager.findOne(MessageUserEnt, {
+      where: { id: id_message_user },
+    });
+    messageUserEnt.delete_at = new Date();
+    // messageUserEnt.title = 'deleted' + '_' + messageUserEnt.title;
+    return await this.dataSource.manager.save(messageUserEnt);
   }
 
   async paginationMessageUser(
