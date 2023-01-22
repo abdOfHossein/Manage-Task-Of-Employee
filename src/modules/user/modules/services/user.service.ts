@@ -295,9 +295,9 @@ export class UserService {
     }
   }
 
-  async getUser(id_user: UserResponseJWTDto) {
+  async getUser(user: UserResponseJWTDto) {
     try {
-      return await this.userRepo.getUser(id_user);
+      return await this.userRepo.getUser(user);
     } catch (e) {
       console.log(e);
       const result = await HandlerError.errorHandler(e);

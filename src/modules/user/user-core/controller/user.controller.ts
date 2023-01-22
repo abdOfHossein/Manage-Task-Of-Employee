@@ -63,8 +63,13 @@ export class UserController {
   @UseGuards(JwtGuard)
   @ApiBearerAuth('access-token')
   @Get('/protected')
-  protected(@GetUser() user: UserResponseJWTDto) {
-    return user;
+  protected(
+    @Req() req: any,
+    // @GetUser() user: UserResponseJWTDto
+  ) {
+    console.log(req.user);
+    
+    return req.user;
   }
 
   @UseGuards(RolesGuard)
@@ -174,8 +179,8 @@ export class UserController {
   @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'get user' })
   @Get('/getUser')
-  getUser(@GetUser() id_user: UserResponseJWTDto) {
-    return this.user.getUser(id_user);
+  getUser(@GetUser() user: UserResponseJWTDto) {
+    return this.user.getUser(user);
   }
 
   @UseGuards(RolesGuard)
@@ -200,7 +205,6 @@ export class UserController {
   ) {
     return this.user.paginationDoneTaskRecentDay(id_user.uid, pageDto);
   }
-
 
   @UseGuards(JwtGuard)
   @ApiBearerAuth('access-token')

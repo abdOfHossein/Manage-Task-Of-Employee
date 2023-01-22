@@ -39,7 +39,8 @@ export class UserRepo {
   ) {}
 
   async _createJwt(data: string, roles: any) {
-    console.log(1111111111111111111);
+    console.log(data);
+    console.log(roles);
 
     let jwtPayloadInterface: JwtPayloadInterface = {};
     const encryptTextInterface = await this.hashService.encrypt(data);
@@ -58,6 +59,8 @@ export class UserRepo {
       iv: encryptTextInterface.iv,
       roles: roles,
     };
+    console.log('jwtPayloadInterface', jwtPayloadInterface);
+
     console.log(3333333333333333);
 
     const result = this.jwtService.sign(jwtPayloadInterface);
@@ -92,15 +95,15 @@ export class UserRepo {
       currentRole,
     };
     const trees = await this.dataSource.manager
-    .getTreeRepository(MenuEnt)
-    .createQueryBuilder('menu')
-    .leftJoinAndSelect('menu.children', 'child')
-    .leftJoinAndSelect('child.frontend', 'child_front')
-    .leftJoinAndSelect('menu.frontend', 'frontend')
-    .leftJoinAndSelect('menu.role', 'role')
-    .where('role.id=:role_id', { role_id: currentRole })
-    .andWhere('menu.parent IS NULL')
-    .getMany();
+      .getTreeRepository(MenuEnt)
+      .createQueryBuilder('menu')
+      .leftJoinAndSelect('menu.children', 'child')
+      .leftJoinAndSelect('child.frontend', 'child_front')
+      .leftJoinAndSelect('menu.frontend', 'frontend')
+      .leftJoinAndSelect('menu.role', 'role')
+      .where('role.id=:role_id', { role_id: currentRole })
+      .andWhere('menu.parent IS NULL')
+      .getMany();
 
     const tokenJwt = this.jwtService.sign(jwtPayloadInterface);
     console.log('tokenJwt', tokenJwt);
@@ -368,35 +371,40 @@ export class UserRepo {
     return new PageDto(result[0], pageMetaDto);
   }
 
-  async getUser(id_user: UserResponseJWTDto, options?: FindOneOptions) {
-    console.log("--------------------------------id_user---------------------------------------");
-    console.log(id_user);
-    
+  async getUser(user: UserResponseJWTDto, options?: FindOneOptions) {
+    console.log(
+      '--------------------------------id_user---------------------------------------',
+    );
+    console.log('user.roles', user.roles);
+    console.log('user.roles', user);
+
     const trees = await this.dataSource.manager
-    .getTreeRepository(MenuEnt)
-    .createQueryBuilder('menu')
-    .leftJoinAndSelect('menu.children', 'child')
-    .leftJoinAndSelect('child.frontend', 'child_front')
-    .leftJoinAndSelect('menu.frontend', 'frontend')
-    .leftJoinAndSelect('menu.role', 'role')
-    .where('role.id=:role_id', { role_id: id_user.currenttRole })
-    .andWhere('menu.parent IS NULL')
-    .getMany();
-    const user = await this.dataSource.manager
+      .getTreeRepository(MenuEnt)
+      .createQueryBuilder('menu')
+      .leftJoinAndSelect('menu.children', 'child')
+      .leftJoinAndSelect('child.frontend', 'child_front')
+      .leftJoinAndSelect('menu.frontend', 'frontend')
+      .leftJoinAndSelect('menu.role', 'role')
+      .where('role.id=:role_id', { role_id: user.currenttRole })
+      .andWhere('menu.parent IS NULL')
+      .getMany();
+
+    const userEnt = await this.dataSource.manager
       .createQueryBuilder(UserEnt, 'user')
       .leftJoinAndSelect('user.role', 'role')
-      .where('user.id = :id', { id: id_user.uid })
+      .where('user.id = :id', { id: user.uid })
       .getOne();
 
-      console.log("*----------------**********************------------------------------------------");
-      console.log(trees);
- 
-      
-    user.menu = trees;
-    console.log(user.menu);
-    if (!user)
+    console.log(
+      '*----------------**********************------------------------------------------',
+    );
+    console.log(trees);
+
+    userEnt.menu = trees;
+    console.log(userEnt.menu);
+    if (!userEnt)
       throw new UnauthorizedException({ message: 'user does not exits' });
-    return user 
+    return user;
   }
 
   async getDepartmentUsers(id_department: string) {

@@ -65,8 +65,16 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
     console.log(user);
 
+    if (result.currentRole) {
+      return {
+        id_User: user.id,
+        roles: user.id,
+        currentRole: result.currentRole,
+      };
+    }
     return {
       id_User: user.id,
+      roles: user.id,
     };
   }
 }
