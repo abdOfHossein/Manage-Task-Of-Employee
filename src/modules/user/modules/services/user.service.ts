@@ -277,14 +277,14 @@ export class UserService {
       for (const role of rolesEnt) {
         roles.push({ id: role.id, title: role.role_type });
       }
-      // if (!user || user.status == UserStatus.BLOCK) {
-      //   throw new UnauthorizedException(
-      //     `${JSON.stringify({
-      //       section: 'public',
-      //       value: PublicEnum.ACCESS_IS_DENIDE,
-      //     })}`,
-      //   );
-      // }
+      if (!user || user.status == UserStatus.BLOCK) {
+        throw new BadRequestException(
+          `${JSON.stringify({
+            section: 'public',
+            value: PublicEnum.USER_NOT_EXISTS,
+          })}`,
+        );
+      }
       return await this.userRepo._createJwt(user.id, roles);
     } catch (e) {
       console.log(e);

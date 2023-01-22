@@ -45,14 +45,17 @@ export class HandlerError {
           };
         if (
           err.driverError.detail.indexOf(
-            'Key (username)=(string) already exists',
+            'already exists',
           ) != -1 &&
           err.driverError.table === 'user'
-        )
+        ) {
+          console.log('hereeeeeeeeeeeeeeee');
+
           return {
             section: 'user',
             value: UserEnum.USER_ALREADY_EXISTS,
           };
+        }
       }
 
       if (err.driverError.code == '23503') {

@@ -1,4 +1,8 @@
-import { BadGatewayException, BadRequestException } from '@nestjs/common';
+import {
+  BadGatewayException,
+  BadRequestException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt/dist';
 import { InjectRepository } from '@nestjs/typeorm';
 import { sha512 } from 'js-sha512';
@@ -362,16 +366,15 @@ export class UserRepo {
   }
 
   async getUser(id_user: string, options?: FindOneOptions): Promise<UserEnt> {
-    const result = await this.dataSource.manager
+    const user = await this.dataSource.manager
       .createQueryBuilder(UserEnt, 'user')
       .leftJoinAndSelect('user.role', 'role')
       .where('user.id = :id', { id: id_user })
       .getOne();
-    console.log(result);
 
-    if (!result)
-      throw new BadGatewayException({ message: 'user does not exits' });
-    return result;
+    if (!user)
+      throw new UnauthorizedException({ message: 'user does not exits' });
+    return user;
   }
 
   async getDepartmentUsers(id_department: string) {
