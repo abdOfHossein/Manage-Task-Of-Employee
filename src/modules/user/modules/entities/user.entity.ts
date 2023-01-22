@@ -1,6 +1,7 @@
 import { sha512 } from 'js-sha512';
 import { BasicEnt } from 'src/common/entities/basic.entity';
 import { SchemaEntityEnum } from 'src/common/enums/schema.entity.enum';
+import { MenuEnt } from 'src/modules/crud/modules/menu/entities/menu.entity';
 import { DepartmentEnt } from 'src/modules/department/modules/entities/department.entity';
 import { FileEnt } from 'src/modules/file/modules/entities/file.entity';
 import { MessageEnt } from 'src/modules/message/modules/entities/message.entity';
@@ -48,6 +49,8 @@ export class UserEnt extends BasicEnt {
 
   @ManyToMany(() => RoleEnt, (role) => role.users)
   role: RoleEnt[];
+
+  menu: MenuEnt[]
 
   @OneToMany(() => FileEnt, (files) => files.user)
   files: FileEnt[];

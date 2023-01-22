@@ -175,7 +175,7 @@ export class UserController {
   @ApiOperation({ summary: 'get user' })
   @Get('/getUser')
   getUser(@GetUser() id_user: UserResponseJWTDto) {
-    return this.user.getUser(id_user.uid);
+    return this.user.getUser(id_user);
   }
 
   @UseGuards(RolesGuard)

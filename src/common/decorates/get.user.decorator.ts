@@ -12,5 +12,9 @@ export const GetUser = createParamDecorator((data, request) : UserResponseJWTDto
     response.roles = req1.user.roles;
   }
 
+  if (req1.user.currentRole) {
+    response.currenttRole = req1.user.currentRole;
+  }
+
   return response
 });

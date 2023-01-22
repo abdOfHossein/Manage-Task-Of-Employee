@@ -14,7 +14,7 @@ import { HashService } from 'src/modules/hash/hash.service';
 import { RedisService } from 'src/modules/redis/redis.service';
 import { TaskMapperPagination } from 'src/modules/task/modules/mapper/task.mapper.pagination';
 import { TaskPageDto } from 'src/modules/task/modules/paginations/task.page.dto';
-import { DataSource, FindOneOptions, QueryRunner } from 'typeorm';
+import { DataSource, FindOneOptions, getManager, QueryRunner } from 'typeorm';
 import { UserResponseJWTDto } from '../../../../common/dtos/user.dto';
 import { JwtPayloadInterface } from '../auth/interface/jwt-payload.interface';
 import { ChangePasswordAdminDto } from '../dtos/change-password-admin.dto';
@@ -91,18 +91,21 @@ export class UserRepo {
       roles: roles,
       currentRole,
     };
-    const menu = await this.dataSource.manager
-      .createQueryBuilder(MenuEnt, 'menu')
-      .leftJoin('menu.role', 'role')
-      .where('role.id = :id_role', { id_role: currentRole })
-      .leftJoinAndSelect('menu.frontend', 'frontend')
-      .getMany();
-    console.log('menu', menu);
+    const trees = await this.dataSource.manager
+    .getTreeRepository(MenuEnt)
+    .createQueryBuilder('menu')
+    .leftJoinAndSelect('menu.children', 'child')
+    .leftJoinAndSelect('child.frontend', 'child_front')
+    .leftJoinAndSelect('menu.frontend', 'frontend')
+    .leftJoinAndSelect('menu.role', 'role')
+    .where('role.id=:role_id', { role_id: currentRole })
+    .andWhere('menu.parent IS NULL')
+    .getMany();
 
     const tokenJwt = this.jwtService.sign(jwtPayloadInterface);
     console.log('tokenJwt', tokenJwt);
     let result: any = {};
-    result.menu = menu;
+    result.menu = trees;
     result.tokenJwt = tokenJwt;
     await this.redisService.setKey(
       `${this.PREFIX_TOKEN_AUTH}${jwtPayloadInterface.unq}`,
@@ -365,16 +368,35 @@ export class UserRepo {
     return new PageDto(result[0], pageMetaDto);
   }
 
-  async getUser(id_user: string, options?: FindOneOptions): Promise<UserEnt> {
+  async getUser(id_user: UserResponseJWTDto, options?: FindOneOptions) {
+    console.log("--------------------------------id_user---------------------------------------");
+    console.log(id_user);
+    
+    const trees = await this.dataSource.manager
+    .getTreeRepository(MenuEnt)
+    .createQueryBuilder('menu')
+    .leftJoinAndSelect('menu.children', 'child')
+    .leftJoinAndSelect('child.frontend', 'child_front')
+    .leftJoinAndSelect('menu.frontend', 'frontend')
+    .leftJoinAndSelect('menu.role', 'role')
+    .where('role.id=:role_id', { role_id: id_user.currenttRole })
+    .andWhere('menu.parent IS NULL')
+    .getMany();
     const user = await this.dataSource.manager
       .createQueryBuilder(UserEnt, 'user')
       .leftJoinAndSelect('user.role', 'role')
-      .where('user.id = :id', { id: id_user })
+      .where('user.id = :id', { id: id_user.uid })
       .getOne();
 
+      console.log("*----------------**********************------------------------------------------");
+      console.log(trees);
+ 
+      
+    user.menu = trees;
+    console.log(user.menu);
     if (!user)
       throw new UnauthorizedException({ message: 'user does not exits' });
-    return user;
+    return user 
   }
 
   async getDepartmentUsers(id_department: string) {
