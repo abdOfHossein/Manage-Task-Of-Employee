@@ -1,4 +1,5 @@
 import { BadRequestException } from '@nestjs/common';
+import { UnauthorizedException } from '@nestjs/common/exceptions';
 import { QueryFailedError } from 'typeorm';
 import { CrudBackendEnum } from '../translate/enums/crud-backend.enum';
 import { CrudFrontendEnum } from '../translate/enums/crud-frontend.enum';
@@ -44,14 +45,17 @@ export class HandlerError {
           };
         if (
           err.driverError.detail.indexOf(
-            'Key (username)=(string) already exists',
+            'already exists',
           ) != -1 &&
           err.driverError.table === 'user'
-        )
+        ) {
+          console.log('hereeeeeeeeeeeeeeee');
+
           return {
             section: 'user',
             value: UserEnum.USER_ALREADY_EXISTS,
           };
+        }
       }
 
       if (err.driverError.code == '23503') {
@@ -82,6 +86,11 @@ export class HandlerError {
     return { section: 'public', value: PublicEnum.PUBLIC_ERROR };
   }
 
+  private static handlerUnAuthorizedException(err: UnauthorizedException) {
+    console.log('herereeeeeeeeeeeeeeeeeeeeeerrrrrrrrrrrrrr');
+
+    return { section: 'public', value: PublicEnum.ACCESS_IS_DENIDE };
+  }
   static async errorHandler(err: any) {
     if (err.constructor.name == 'QueryFailedError')
       return this.handlerQueryFailedError(err);
@@ -90,5 +99,8 @@ export class HandlerError {
       return this.handlerBadException(err);
     if (err.constructor.name == 'AxiosError')
       return this.axiosErrorException(err);
+    if (err.constructor.name == 'Unauthorized')
+      return this.handlerUnAuthorizedException(err);
+    return this.handlerBadException(err);
   }
 }
