@@ -15,7 +15,7 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
   const swaggerConfig = app.get<SwaggerService>(SwaggerService);
   swaggerConfig.init(app);
-  const port = process.env.APP_PORT || 5000;
+  const port = process.env.APP_PORT || 3804;
 
   await app.listen(port).then(async () => {
     nestLogger.log(`Running`, 'Swagger');

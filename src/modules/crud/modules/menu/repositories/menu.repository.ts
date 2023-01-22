@@ -166,4 +166,8 @@ export class MenuRepo {
     if (query) return await query.manager.remove(menuEnt);
     return await this.dataSource.manager.remove(menuEnt);
   }
+
+  async getAllMenu() {
+    return await this.dataSource.manager.find(MenuEnt);
+  }
 }

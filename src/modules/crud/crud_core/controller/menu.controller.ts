@@ -77,4 +77,12 @@ export class MenuController {
   getMenuTree(@GetUser() user: UserResponseJWTDto) {
     return this.menuService.getMenuTree(user.roles);
   }
+
+  // @UseGuards(JwtGuard)
+  @ApiOperation({ summary: 'List Of Menu`s' })
+  @ApiResponse({ status: 200, type: MenuGDto })
+  @Get('/list')
+  getAllMenu() {
+    return this.menuService.getAllMenu();
+  }
 }
