@@ -102,14 +102,20 @@ export class MenuRepo {
           id_role: pageDto.filter.id_role,
         });
       }
-      if (pageDto.filter.parent == null) {
+       
+      if (pageDto.filter.parent == null || pageDto.filter.parent.length==0) {
         queryBuilder.andWhere('(menu.parent IS NULL)');
       }
-      if (pageDto.filter.parent != null) {
+      if (pageDto.filter.parent != null && pageDto.filter.parent.length>0) {
         queryBuilder.andWhere('(menu.parent = :parent)', {
           parent: pageDto.filter.parent,
         });
       }
+
+      // queryBuilder.andWhere('(:parent=null or Length(:parent)=0  or (menu.parent = :parent)', {
+      //   parent: pageDto.filter!.parent!,
+      // });
+
     } else {
       queryBuilder.andWhere('menu.parent IS NULL');
     }
