@@ -62,8 +62,6 @@ export class MenuRepo {
     await this.dataSource.manager.softDelete(MenuEnt, entity[0].children);
     await this.dataSource.manager.softDelete(MenuEnt, entity);
     return entity;
-    // if (query) return await query.manager.save(entity);
-    // return await this.dataSource.manager.save(entity);
   }
   async _paginationEntity(
     pageDto: MenuPageDto,
