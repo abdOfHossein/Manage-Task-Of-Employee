@@ -380,15 +380,19 @@ export class UserRepo {
 
     const trees = await this.dataSource.manager
       .getTreeRepository(MenuEnt)
+      // .findTrees({relations: ['frontend']})
       .createQueryBuilder('menu')
       .leftJoinAndSelect('menu.children', 'child')
       .leftJoinAndSelect('child.frontend', 'child_front')
       .leftJoinAndSelect('menu.frontend', 'frontend')
       .leftJoinAndSelect('menu.role', 'role')
-      .where('role.id=:role_id', { role_id: user.currenttRole })
+      .where('role.id=:role_id', { role_id: '91715ac6-e61e-44ce-8122-0d49a03827b5' })
       .andWhere('menu.parent IS NULL')
       .getMany();
 
+      console.log("trees*----------------------------***********");
+      console.log(trees);
+      
     const userEnt = await this.dataSource.manager
       .createQueryBuilder(UserEnt, 'user')
       .leftJoinAndSelect('user.role', 'role')
@@ -404,7 +408,7 @@ export class UserRepo {
     console.log(userEnt.menu);
     if (!userEnt)
       throw new UnauthorizedException({ message: 'user does not exits' });
-    return user;
+    return userEnt;
   }
 
   async getDepartmentUsers(id_department: string) {
