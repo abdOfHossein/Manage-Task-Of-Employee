@@ -43,7 +43,11 @@ export class MenuService {
           })}`,
         );
       }
-      createDt.frontend = await this.frontendService._getOne(createDt.id_front);
+      if (createDt.frontend) {
+        createDt.frontend = await this.frontendService._getOne(
+          createDt.id_front,
+        );
+      }
       createDt.role = await this.roleService.findOneRole(createDt.id_role);
       if (createDt.id_parent)
         createDt.parent = await this._getOne(createDt.id_parent);
@@ -126,6 +130,6 @@ export class MenuService {
   }
 
   async getAllMenu() {
-    return await this.menuRepo.getAllMenu()
+    return await this.menuRepo.getAllMenu();
   }
 }
