@@ -23,7 +23,7 @@ export class CreateMenuDto {
   @IsNotEmpty()
   @ApiProperty()
   @Allow()
-  id_front: string;
+  id_front?: string;
 
   @IsNotEmpty()
   @ApiProperty()
