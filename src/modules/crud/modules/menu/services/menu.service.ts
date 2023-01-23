@@ -62,7 +62,13 @@ export class MenuService {
 
   async _delete(searchDto: string, query?: QueryRunner) {
     try {
-      const menuEnt = await this._getOne(searchDto);
+      const menuEnt:any = await this.dataSource.manager
+        .createQueryBuilder(MenuEnt, 'menu')
+        .leftJoinAndSelect('menu.children', 'children')
+        .where('menu.id = :menu_id', { menu_id: searchDto })
+        .getMany();
+        console.log(menuEnt);
+        
       return await this.menuRepo._deleteEntity(menuEnt, query);
     } catch (e) {
       console.log(e);

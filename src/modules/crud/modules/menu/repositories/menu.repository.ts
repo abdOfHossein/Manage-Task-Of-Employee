@@ -55,11 +55,15 @@ export class MenuRepo {
     if (query) return await query.manager.save(entity);
     return await this.dataSource.manager.save(entity);
   }
-  async _deleteEntity(entity: MenuEnt, query?: QueryRunner): Promise<MenuEnt> {
-    entity.delete_at = new Date();
-    entity.slug_name = 'deleted' + '_' + entity.slug_name;
-    if (query) return await query.manager.save(entity);
-    return await this.dataSource.manager.save(entity);
+  async _deleteEntity(
+    entity: MenuEnt,
+    query?: QueryRunner,
+  ): Promise<MenuEnt | any> {
+    await this.dataSource.manager.softDelete(MenuEnt, entity[0].children);
+    await this.dataSource.manager.softDelete(MenuEnt, entity);
+    return entity;
+    // if (query) return await query.manager.save(entity);
+    // return await this.dataSource.manager.save(entity);
   }
   async _paginationEntity(
     pageDto: MenuPageDto,
