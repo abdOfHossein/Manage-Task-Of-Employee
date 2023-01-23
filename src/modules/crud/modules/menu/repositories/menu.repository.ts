@@ -63,11 +63,13 @@ export class MenuRepo extends AbstractRepositoryClass<
     if (query) return await query.manager.save(entity);
     return await this.dataSource.manager.save(entity);
   }
-  async _deleteEntity(entity: MenuEnt, query?: QueryRunner): Promise<MenuEnt> {
-    entity.delete_at = new Date();
-    entity.slug_name = 'deleted' + '_' + entity.slug_name;
-    if (query) return await query.manager.save(entity);
-    return await this.dataSource.manager.save(entity);
+  async _deleteEntity(
+    entity: MenuEnt,
+    query?: QueryRunner,
+  ): Promise<MenuEnt | any> {
+    await this.dataSource.manager.softDelete(MenuEnt, entity[0].children);
+    await this.dataSource.manager.softDelete(MenuEnt, entity);
+    return entity;
   }
   async _paginationEntity(
     pageDto: MenuPageDto,
@@ -106,14 +108,20 @@ export class MenuRepo extends AbstractRepositoryClass<
           id_role: pageDto.filter.id_role,
         });
       }
-      if (pageDto.filter.parent == null) {
+       
+      if (pageDto.filter.parent == null || pageDto.filter.parent.length==0) {
         queryBuilder.andWhere('(menu.parent IS NULL)');
       }
-      if (pageDto.filter.parent != null) {
+      if (pageDto.filter.parent != null && pageDto.filter.parent.length>0) {
         queryBuilder.andWhere('(menu.parent = :parent)', {
           parent: pageDto.filter.parent,
         });
       }
+
+      // queryBuilder.andWhere('(:parent=null or Length(:parent)=0  or (menu.parent = :parent)', {
+      //   parent: pageDto.filter!.parent!,
+      // });
+
     } else {
       queryBuilder.andWhere('menu.parent IS NULL');
     }

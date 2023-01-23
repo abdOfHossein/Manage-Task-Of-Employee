@@ -64,7 +64,11 @@ export class MenuService extends AbstractServiceClass<
           })}`,
         );
       }
-      createDt.frontend = await this.frontendService._getOne(createDt.id_front);
+      if (createDt.frontend) {
+        createDt.frontend = await this.frontendService._getOne(
+          createDt.id_front,
+        );
+      }
       createDt.role = await this.roleService.findOneRole(createDt.id_role);
       if (createDt.id_parent)
         createDt.parent = await this._getOne(createDt.id_parent);
@@ -79,7 +83,13 @@ export class MenuService extends AbstractServiceClass<
 
   async _delete(searchDto: string, query?: QueryRunner) {
     try {
-      const menuEnt = await this._getOne(searchDto);
+      const menuEnt:any = await this.dataSource.manager
+        .createQueryBuilder(MenuEnt, 'menu')
+        .leftJoinAndSelect('menu.children', 'children')
+        .where('menu.id = :menu_id', { menu_id: searchDto })
+        .getMany();
+        console.log(menuEnt);
+        
       return await this.menuRepo._deleteEntity(menuEnt, query);
     } catch (e) {
       console.log(e);

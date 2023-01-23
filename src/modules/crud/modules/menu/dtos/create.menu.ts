@@ -20,10 +20,9 @@ export class CreateMenuDto {
   @Allow()
   id_parent?: string;
 
-  @IsNotEmpty()
   @ApiProperty()
   @Allow()
-  id_front: string;
+  id_front?: string;
 
   @IsNotEmpty()
   @ApiProperty()
