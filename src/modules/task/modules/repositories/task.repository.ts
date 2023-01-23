@@ -5,6 +5,7 @@ import {
   HttpStatus
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { AbstractRepositoryClass } from 'src/common/abstract/abstract.repository.class';
 import { PageDto } from 'src/common/dtos/page.dto';
 import { PageMetaDto } from 'src/common/dtos/page.meta.dto';
 import { PublicFunc } from 'src/common/function/public.func';
@@ -18,6 +19,7 @@ import { ReqEnt } from 'src/modules/req/modules/entities/req.entity';
 import { StatusReqEnum } from 'src/modules/req/modules/enums/req.enum';
 import { ReqService } from 'src/modules/req/modules/services/req.service';
 import { UserEnt } from 'src/modules/user/modules/entities/user.entity';
+import { HandlerService } from 'src/utility/handler/handler.service';
 import { DataSource, FindOneOptions, QueryRunner } from 'typeorm';
 import { CreateTaskDto } from '../dtos/create.task.dto';
 import { CreateTaskWithIdUserIdReqDto } from '../dtos/create.task.withIdUserIdReq.dto';
@@ -32,14 +34,48 @@ import { TaskPageDto } from '../paginations/task.page.dto';
 import { TaskTypeStatusPageDto } from '../paginations/task.status-type.page.dto';
 import { TaskTypePageDto } from '../paginations/task.type.page.dto';
 
-export class TaskRepo {
+export class TaskRepo extends AbstractRepositoryClass<
+  TaskEnt,
+  CreateTaskDto,
+  UpdateTaskDto,
+  TaskPageDto
+> {
   constructor(
+    @InjectRepository(TaskEnt)
+    dataSource: DataSource,
+    handlerService: HandlerService,
     private departmentRlService: DepartmentRlService,
     private projectService: ProjectService,
     private reqService: ReqService,
-    @InjectRepository(TaskEnt)
-    private dataSource: DataSource,
-  ) {}
+  ) {
+    super(dataSource, handlerService);
+  }
+  
+  _findOneEntity(
+    searchDto: string,
+    options?: FindOneOptions<any>,
+  ): Promise<TaskEnt> {
+    throw new Error('Method not implemented.');
+  }
+  _createEntity(
+    createDto: CreateTaskDto,
+    query?: QueryRunner,
+  ): Promise<TaskEnt> {
+    throw new Error('Method not implemented.');
+  }
+  _updateEntity(
+    entity: TaskEnt,
+    updateDto: UpdateTaskDto,
+    query?: QueryRunner,
+  ): Promise<TaskEnt> {
+    throw new Error('Method not implemented.');
+  }
+  _deleteEntity(entity: TaskEnt, query?: QueryRunner): Promise<TaskEnt> {
+    throw new Error('Method not implemented.');
+  }
+  _paginationEntity(pageDto: TaskPageDto): Promise<PageDto<TaskEnt>> {
+    throw new Error('Method not implemented.');
+  }
 
   // async checkExpirationTask(
   //   user_info: any,

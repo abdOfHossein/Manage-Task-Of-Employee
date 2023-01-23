@@ -1,18 +1,43 @@
 import { Injectable } from '@nestjs/common';
+import { AbstractServiceClass } from 'src/common/abstract/abstract.service.class';
 import { HandlerError } from 'src/common/class/handler.error';
 import { HandlerService } from 'src/utility/handler/handler.service';
-import { FindOneOptions, QueryRunner } from 'typeorm';
+import { DataSource, FindOneOptions, QueryRunner } from 'typeorm';
 import { CreateBackendDto } from '../dtos/create.backend.dto';
 import { UpdateBackendDto } from '../dtos/update.backend.dto';
+import { BackendEnt } from '../entities/backend.entity';
 import { BackendPageDto } from '../pagination/backend.page.dto';
 import { BackendRepo } from '../repositories/backend.repository';
 
 @Injectable()
-export class BackendService {
-  constructor(
+export class BackendService extends AbstractServiceClass<
+  BackendEnt,
+  CreateBackendDto,
+  UpdateBackendDto,
+  BackendPageDto
+> {
+
+  public constructor(
     private backendRepo: BackendRepo,
-    private handlerService: HandlerService,
-  ) {}
+    handlerService: HandlerService,
+    dataSource: DataSource,
+  ) {
+    super(dataSource, handlerService);
+    this.className = this.constructor.name;
+  }
+  _resultGetOneDto(ent: BackendEnt) {
+    throw new Error('Method not implemented.');
+  }
+  _resultCreateDto(ent: BackendEnt) {
+    throw new Error('Method not implemented.');
+  }
+  _resultDeleteDto(ent: BackendEnt) {
+    throw new Error('Method not implemented.');
+  }
+  _resultUpdateDto(ent: BackendEnt) {
+    throw new Error('Method not implemented.');
+  }
+
 
   async _getOne(searchDto: string, options?: FindOneOptions<any>) {
     try {

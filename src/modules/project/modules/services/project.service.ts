@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { AbstractServiceClass } from 'src/common/abstract/abstract.service.class';
 import { HandlerError } from 'src/common/class/handler.error';
 import { FileEnum } from 'src/common/translate/enums/file.enum';
 import { FileEnt } from 'src/modules/file/modules/entities/file.entity';
@@ -13,13 +14,49 @@ import { ProjectPageDto } from '../paginations/project.page.dto';
 import { ProjectRepo } from '../repositories/project.repository';
 
 @Injectable()
-export class ProjectService {
-  constructor(
+export class ProjectService extends AbstractServiceClass<
+  ProjectEnt,
+  CreateProjectDto,
+  UpdateProjectDto,
+  ProjectPageDto
+> {
+  public constructor(
     @InjectRepository(FileEnt)
-    private dataSource: DataSource,
+    dataSource: DataSource,
     private projectRepo: ProjectRepo,
-    private handlerService: HandlerService,
-  ) {}
+    handlerService: HandlerService,
+  ) {
+    super(dataSource, handlerService);
+    this.className = this.constructor.name;
+  }
+  protected _getOne(searchDto: string, options?: FindOneOptions<any>) {
+    throw new Error('Method not implemented.');
+  }
+  _resultGetOneDto(ent: ProjectEnt) {
+    throw new Error('Method not implemented.');
+  }
+  protected _create(createDt: CreateProjectDto, query?: QueryRunner) {
+    throw new Error('Method not implemented.');
+  }
+  _resultCreateDto(ent: ProjectEnt) {
+    throw new Error('Method not implemented.');
+  }
+  protected _delete(searchDto: string, query?: QueryRunner) {
+    throw new Error('Method not implemented.');
+  }
+  _resultDeleteDto(ent: ProjectEnt) {
+    throw new Error('Method not implemented.');
+  }
+  protected _update(role_Id: string, updateDt: UpdateProjectDto, query?: QueryRunner) {
+    throw new Error('Method not implemented.');
+  }
+  _resultUpdateDto(ent: ProjectEnt) {
+    throw new Error('Method not implemented.');
+  }
+  protected _pagination(pageDto: ProjectPageDto) {
+    throw new Error('Method not implemented.');
+  }
+
 
   async createProject(createDt: CreateProjectDto, query?: QueryRunner) {
     try {

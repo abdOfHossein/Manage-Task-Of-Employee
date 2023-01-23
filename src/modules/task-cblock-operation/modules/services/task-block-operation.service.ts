@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { AbstractServiceClass } from 'src/common/abstract/abstract.service.class';
 import { HandlerError } from 'src/common/class/handler.error';
 import { TaskEnt } from 'src/modules/task/modules/entities/task.entity';
 import { HandlerService } from 'src/utility/handler/handler.service';
@@ -10,12 +11,49 @@ import { TaskBlockOperationPageDto } from '../paginations/task-block-operation.p
 import { TaskBlockOperationRepo } from '../repositories/task-block-operation.repository';
 
 @Injectable()
-export class TaskBlockOperationService {
-  constructor(
+export class TaskBlockOperationService extends AbstractServiceClass<
+  TaskBlockOperationEnt,
+  CreateTaskBlockOperationDto,
+  UpdateTaskBlockOperationDto,
+  TaskBlockOperationPageDto
+> {
+  public constructor(
     private taskBlockOperationRepo: TaskBlockOperationRepo,
-    private dataSource: DataSource,
-    private handlerService: HandlerService,
-  ) {}
+    handlerService: HandlerService,
+    dataSource: DataSource,
+  ) {
+    super(dataSource, handlerService);
+    this.className = this.constructor.name;
+  }
+  
+  protected _getOne(searchDto: string, options?: FindOneOptions<any>) {
+    throw new Error('Method not implemented.');
+  }
+  _resultGetOneDto(ent: TaskBlockOperationEnt) {
+    throw new Error('Method not implemented.');
+  }
+  protected _create(createDt: CreateTaskBlockOperationDto, query?: QueryRunner) {
+    throw new Error('Method not implemented.');
+  }
+  _resultCreateDto(ent: TaskBlockOperationEnt) {
+    throw new Error('Method not implemented.');
+  }
+  protected _delete(searchDto: string, query?: QueryRunner) {
+    throw new Error('Method not implemented.');
+  }
+  _resultDeleteDto(ent: TaskBlockOperationEnt) {
+    throw new Error('Method not implemented.');
+  }
+  protected _update(role_Id: string, updateDt: UpdateTaskBlockOperationDto, query?: QueryRunner) {
+    throw new Error('Method not implemented.');
+  }
+  _resultUpdateDto(ent: TaskBlockOperationEnt) {
+    throw new Error('Method not implemented.');
+  }
+  protected _pagination(pageDto: TaskBlockOperationPageDto) {
+    throw new Error('Method not implemented.');
+  }
+
 
   async createTaskBlockOperation(
     createDt: CreateTaskBlockOperationDto,

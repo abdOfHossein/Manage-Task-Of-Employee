@@ -1,19 +1,62 @@
 import { Injectable } from '@nestjs/common';
+import { AbstractServiceClass } from 'src/common/abstract/abstract.service.class';
 import { HandlerError } from 'src/common/class/handler.error';
 import { HandlerService } from 'src/utility/handler/handler.service';
 import { DataSource, FindOneOptions, QueryRunner } from 'typeorm';
 import { ConfigRoleDto } from '../dtos/config.roele.dto';
 import { CreateRoleDto } from '../dtos/create.role.dto';
+import { UpdateRoleDto } from '../dtos/update.role.dto';
+import { RoleEnt } from '../entities/role.entity';
 import { RolePageDto } from '../paginations/role.page.dto';
 import { RoleRepo } from '../repositories/role.repository';
 
 @Injectable()
-export class RoleService {
-  constructor(
-    private dataSource: DataSource,
+export class RoleService extends AbstractServiceClass<
+  RoleEnt,
+  CreateRoleDto,
+  UpdateRoleDto,
+  RolePageDto
+> {
+  public constructor(
     private roleRepo: RoleRepo,
-    private handlerService: HandlerService,
-  ) {}
+    handlerService: HandlerService,
+    dataSource: DataSource,
+  ) {
+    super(dataSource, handlerService);
+    this.className = this.constructor.name;
+  }
+
+  protected _getOne(searchDto: string, options?: FindOneOptions<any>) {
+    throw new Error('Method not implemented.');
+  }
+  _resultGetOneDto(ent: RoleEnt) {
+    throw new Error('Method not implemented.');
+  }
+  protected _create(createDt: CreateRoleDto, query?: QueryRunner) {
+    throw new Error('Method not implemented.');
+  }
+  _resultCreateDto(ent: RoleEnt) {
+    throw new Error('Method not implemented.');
+  }
+  protected _delete(searchDto: string, query?: QueryRunner) {
+    throw new Error('Method not implemented.');
+  }
+  _resultDeleteDto(ent: RoleEnt) {
+    throw new Error('Method not implemented.');
+  }
+  protected _update(
+    role_Id: string,
+    updateDt: UpdateRoleDto,
+    query?: QueryRunner,
+  ) {
+    throw new Error('Method not implemented.');
+  }
+  _resultUpdateDto(ent: RoleEnt) {
+    throw new Error('Method not implemented.');
+  }
+  protected _pagination(pageDto: RolePageDto) {
+    throw new Error('Method not implemented.');
+  }
 
   async createRole(createDt: CreateRoleDto, query?: QueryRunner) {
     try {

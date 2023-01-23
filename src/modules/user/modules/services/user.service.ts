@@ -23,18 +23,59 @@ import { UserStatus } from '../enum/user.status';
 import { UserPageDto } from '../paginations/user.page.dto';
 import { UserRepo } from '../repositories/user.repository';
 import { PublicEnum } from 'src/common/translate/enums/public.enum';
+import { AbstractServiceClass } from 'src/common/abstract/abstract.service.class';
 
 @Injectable()
-export class UserService {
-  constructor(
+export class UserService extends AbstractServiceClass<
+  UserEnt,
+  CreateUserDto,
+  UpdateUserDto,
+  UserPageDto
+> {
+  public constructor(
     private userRepo: UserRepo,
     @InjectRepository(FileEnt)
     @InjectRepository(UserEnt)
     @InjectRepository(RoleEnt)
     @InjectRepository(DepartmentEnt)
-    private dataSource: DataSource,
-    private handlerService: HandlerService,
-  ) {}
+    handlerService: HandlerService,
+    dataSource: DataSource,
+  ) {
+    super(dataSource, handlerService);
+    this.className = this.constructor.name;
+  }
+
+  protected _getOne(searchDto: string, options?: FindOneOptions<any>) {
+    throw new Error('Method not implemented.');
+  }
+  _resultGetOneDto(ent: UserEnt) {
+    throw new Error('Method not implemented.');
+  }
+  protected _create(createDt: CreateUserDto, query?: QueryRunner) {
+    throw new Error('Method not implemented.');
+  }
+  _resultCreateDto(ent: UserEnt) {
+    throw new Error('Method not implemented.');
+  }
+  protected _delete(searchDto: string, query?: QueryRunner) {
+    throw new Error('Method not implemented.');
+  }
+  _resultDeleteDto(ent: UserEnt) {
+    throw new Error('Method not implemented.');
+  }
+  protected _update(
+    role_Id: string,
+    updateDt: UpdateUserDto,
+    query?: QueryRunner,
+  ) {
+    throw new Error('Method not implemented.');
+  }
+  _resultUpdateDto(ent: UserEnt) {
+    throw new Error('Method not implemented.');
+  }
+  protected _pagination(pageDto: UserPageDto) {
+    throw new Error('Method not implemented.');
+  }
 
   async createUser(createDto: CreateUserDto, query?: QueryRunner) {
     try {

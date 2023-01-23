@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { AbstractServiceClass } from 'src/common/abstract/abstract.service.class';
 import { HandlerError } from 'src/common/class/handler.error';
-import { TaskEnt } from 'src/modules/task/modules/entities/task.entity';
-import { StatusTaskEnum } from 'src/modules/task/modules/enums/status-task.enum';  
 import { HandlerService } from 'src/utility/handler/handler.service';
 import { DataSource, FindOneOptions, QueryRunner } from 'typeorm';
 import { CreateRelTaskDto } from '../dtos/create.rel-task.dto';
@@ -12,22 +11,61 @@ import { RelTaskPageDto } from '../paginations/rel-task.page.dto';
 import { RelTaskRepo } from '../repositories/rel-task.repository';
 
 @Injectable()
-export class RelTaskService {
-  constructor(
+export class RelTaskService extends AbstractServiceClass<
+  RelTaskEnt,
+  CreateRelTaskDto,
+  UpdateRelTaskDto,
+  RelTaskPageDto
+> {
+  public constructor(
     @InjectRepository(RelTaskEnt)
-    private dataSource: DataSource,
+    dataSource: DataSource,
+    handlerService: HandlerService,
     private relTaskRepo: RelTaskRepo,
-    private handlerService: HandlerService,
-  ) {}
+  ) {
+    super(dataSource, handlerService);
+    this.className = this.constructor.name;
+  }
+
+  protected _getOne(searchDto: string, options?: FindOneOptions<any>) {
+    throw new Error('Method not implemented.');
+  }
+  _resultGetOneDto(ent: RelTaskEnt) {
+    throw new Error('Method not implemented.');
+  }
+  protected _create(createDt: CreateRelTaskDto, query?: QueryRunner) {
+    throw new Error('Method not implemented.');
+  }
+  _resultCreateDto(ent: RelTaskEnt) {
+    throw new Error('Method not implemented.');
+  }
+  protected _delete(searchDto: string, query?: QueryRunner) {
+    throw new Error('Method not implemented.');
+  }
+  _resultDeleteDto(ent: RelTaskEnt) {
+    throw new Error('Method not implemented.');
+  }
+  protected _update(
+    role_Id: string,
+    updateDt: UpdateRelTaskDto,
+    query?: QueryRunner,
+  ) {
+    throw new Error('Method not implemented.');
+  }
+  _resultUpdateDto(ent: RelTaskEnt) {
+    throw new Error('Method not implemented.');
+  }
+  protected _pagination(pageDto: RelTaskPageDto) {
+    throw new Error('Method not implemented.');
+  }
 
   async createRelTask(createDt: CreateRelTaskDto, query?: QueryRunner) {
     try {
-
       return await this.relTaskRepo.createRelTask(createDt, query);
     } catch (e) {
       console.log(e);
-      const result = await HandlerError.errorHandler(e)
-      await this.handlerService.handlerException400("FA", result)
+      const result = await HandlerError.errorHandler(e);
+      await this.handlerService.handlerException400('FA', result);
     }
   }
 
@@ -36,8 +74,8 @@ export class RelTaskService {
       return await this.relTaskRepo.findOneRelTask(searchDto, options);
     } catch (e) {
       console.log(e);
-      const result = await HandlerError.errorHandler(e)
-      await this.handlerService.handlerException400("FA", result)
+      const result = await HandlerError.errorHandler(e);
+      await this.handlerService.handlerException400('FA', result);
     }
   }
 
@@ -47,13 +85,15 @@ export class RelTaskService {
     query?: QueryRunner,
   ) {
     try {
-      const relTaskEnt = await this.dataSource.manager.findOne(RelTaskEnt,{where:{id:RelTask_Id}})
-    
+      const relTaskEnt = await this.dataSource.manager.findOne(RelTaskEnt, {
+        where: { id: RelTask_Id },
+      });
+
       return await this.relTaskRepo.updateRelTask(relTaskEnt, updateDt, query);
     } catch (e) {
       console.log(e);
-      const result = await HandlerError.errorHandler(e)
-      await this.handlerService.handlerException400("FA", result)
+      const result = await HandlerError.errorHandler(e);
+      await this.handlerService.handlerException400('FA', result);
     }
   }
 
@@ -62,8 +102,8 @@ export class RelTaskService {
       return await this.relTaskRepo.paginationRelTask(pageDto);
     } catch (e) {
       console.log(e);
-      const result = await HandlerError.errorHandler(e)
-      await this.handlerService.handlerException400("FA", result)
+      const result = await HandlerError.errorHandler(e);
+      await this.handlerService.handlerException400('FA', result);
     }
   }
 }

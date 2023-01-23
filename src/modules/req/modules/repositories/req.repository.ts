@@ -1,5 +1,6 @@
 import { BadGatewayException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { AbstractRepositoryClass } from 'src/common/abstract/abstract.repository.class';
 import { PageDto } from 'src/common/dtos/page.dto';
 import { PageMetaDto } from 'src/common/dtos/page.meta.dto';
 import { PublicFunc } from 'src/common/function/public.func';
@@ -10,6 +11,7 @@ import { ProjectEnt } from 'src/modules/project/modules/entities/project.entity'
 import { ProjectMapperPagination } from 'src/modules/project/modules/mapper/project.mapper.pagination';
 import { StatusTaskEnum } from 'src/modules/task/modules/enums/status-task.enum';
 import { UserEnt } from 'src/modules/user/modules/entities/user.entity';
+import { HandlerService } from 'src/utility/handler/handler.service';
 import { DataSource, FindOneOptions, QueryRunner } from 'typeorm';
 import { CreateReqDto } from '../dtos/create.req.dto';
 import { DoneReqDto } from '../dtos/done.req.dto';
@@ -19,14 +21,45 @@ import { StatusReqEnum } from '../enums/req.enum';
 import { ReqMapperPagination } from '../mapper/req.mapper.pagination';
 import { ReqPageDto } from '../paginations/req.page.dto';
 
-export class ReqRepo {
+export class ReqRepo extends AbstractRepositoryClass<
+  ReqEnt,
+  CreateReqDto,
+  UpdateReqDto,
+  ReqPageDto
+> {
   constructor(
     @InjectRepository(ReqEnt)
     @InjectRepository(DepartmentRlEnt)
     @InjectRepository(ProjectEnt)
     @InjectRepository(DepartmentRlEnt)
-    private dataSource: DataSource,
-  ) {}
+    dataSource: DataSource,
+    handlerService: HandlerService,
+  ) {
+    super(dataSource, handlerService);
+  }
+
+  _findOneEntity(
+    searchDto: string,
+    options?: FindOneOptions<any>,
+  ): Promise<ReqEnt> {
+    throw new Error('Method not implemented.');
+  }
+  _createEntity(createDto: CreateReqDto, query?: QueryRunner): Promise<ReqEnt> {
+    throw new Error('Method not implemented.');
+  }
+  _updateEntity(
+    entity: ReqEnt,
+    updateDto: UpdateReqDto,
+    query?: QueryRunner,
+  ): Promise<ReqEnt> {
+    throw new Error('Method not implemented.');
+  }
+  _deleteEntity(entity: ReqEnt, query?: QueryRunner): Promise<ReqEnt> {
+    throw new Error('Method not implemented.');
+  }
+  _paginationEntity(pageDto: ReqPageDto): Promise<PageDto<ReqEnt>> {
+    throw new Error('Method not implemented.');
+  }
 
   async createReq(
     createDto: CreateReqDto,

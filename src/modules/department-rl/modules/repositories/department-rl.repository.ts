@@ -1,10 +1,12 @@
 import { BadGatewayException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { AbstractRepositoryClass } from 'src/common/abstract/abstract.repository.class';
 import { PageDto } from 'src/common/dtos/page.dto';
 import { PageMetaDto } from 'src/common/dtos/page.meta.dto';
 import { PublicFunc } from 'src/common/function/public.func';
 import { DepartmentEnt } from 'src/modules/department/modules/entities/department.entity';
 import { ReqEnt } from 'src/modules/req/modules/entities/req.entity';
+import { HandlerService } from 'src/utility/handler/handler.service';
 import { DataSource, FindOneOptions, QueryRunner } from 'typeorm';
 import { CreateDepartmentRlDto } from '../dtos/create.department-rl.dto';
 import { UpdateDepartmentRlDto } from '../dtos/update.department-rl.dto';
@@ -12,13 +14,53 @@ import { DepartmentRlEnt } from '../entities/department-rl.entity';
 import { DepartmentRlMapperPagination } from '../mapper/department-rl.mapper.pagination';
 import { DepartmentRlPageDto } from '../paginations/department-rl.page.dto';
 
-export class DepartmentRlRepo {
+export class DepartmentRlRepo extends AbstractRepositoryClass<
+  DepartmentRlEnt,
+  CreateDepartmentRlDto,
+  UpdateDepartmentRlDto,
+  DepartmentRlPageDto
+> {
+
   constructor(
     @InjectRepository(DepartmentRlEnt)
     @InjectRepository(ReqEnt)
     @InjectRepository(DepartmentEnt)
-    private dataSource: DataSource,
-  ) {}
+    dataSource: DataSource,
+    handlerService: HandlerService,
+  ) {
+    super(dataSource, handlerService);
+  }
+
+  _findOneEntity(
+    searchDto: string,
+    options?: FindOneOptions<any>,
+  ): Promise<DepartmentRlEnt> {
+    throw new Error('Method not implemented.');
+  }
+  _createEntity(
+    createDto: CreateDepartmentRlDto,
+    query?: QueryRunner,
+  ): Promise<DepartmentRlEnt> {
+    throw new Error('Method not implemented.');
+  }
+  _updateEntity(
+    entity: DepartmentRlEnt,
+    updateDto: UpdateDepartmentRlDto,
+    query?: QueryRunner,
+  ): Promise<DepartmentRlEnt> {
+    throw new Error('Method not implemented.');
+  }
+  _deleteEntity(
+    entity: DepartmentRlEnt,
+    query?: QueryRunner,
+  ): Promise<DepartmentRlEnt> {
+    throw new Error('Method not implemented.');
+  }
+  _paginationEntity(
+    pageDto: DepartmentRlPageDto,
+  ): Promise<PageDto<DepartmentRlEnt>> {
+    throw new Error('Method not implemented.');
+  }
 
   async createDepartmentRl(
     createDto: CreateDepartmentRlDto,

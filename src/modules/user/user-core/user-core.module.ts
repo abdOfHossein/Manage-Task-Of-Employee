@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { HashModule } from 'src/modules/hash/hash.module';
-import { RedisModule } from 'src/modules/redis/redis.module';
+import { HashModule } from 'src/utility/hash/hash.module';
+import { RedisModule } from 'src/utility/redis/redis.module';
 import { RoleEnt } from 'src/modules/role/modules/entities/role.entity';
 import { UserEnt } from '../modules/entities/user.entity';
 import { UserModule } from '../modules/user.module';

@@ -6,15 +6,17 @@ import {
 import { JwtService } from '@nestjs/jwt/dist';
 import { InjectRepository } from '@nestjs/typeorm';
 import { sha512 } from 'js-sha512';
+import { AbstractRepositoryClass } from 'src/common/abstract/abstract.repository.class';
 import { PageDto } from 'src/common/dtos/page.dto';
 import { PageMetaDto } from 'src/common/dtos/page.meta.dto';
 import { PublicFunc } from 'src/common/function/public.func';
 import { MenuEnt } from 'src/modules/crud/modules/menu/entities/menu.entity';
-import { HashService } from 'src/modules/hash/hash.service';
-import { RedisService } from 'src/modules/redis/redis.service';
 import { TaskMapperPagination } from 'src/modules/task/modules/mapper/task.mapper.pagination';
 import { TaskPageDto } from 'src/modules/task/modules/paginations/task.page.dto';
-import { DataSource, FindOneOptions, getManager, QueryRunner } from 'typeorm';
+import { HandlerService } from 'src/utility/handler/handler.service';
+import { HashService } from 'src/utility/hash/hash.service';
+import { RedisService } from 'src/utility/redis/redis.service';
+import { DataSource, FindOneOptions, QueryRunner } from 'typeorm';
 import { UserResponseJWTDto } from '../../../../common/dtos/user.dto';
 import { JwtPayloadInterface } from '../auth/interface/jwt-payload.interface';
 import { ChangePasswordAdminDto } from '../dtos/change-password-admin.dto';
@@ -28,15 +30,49 @@ import { UserMapperPagination } from '../mapper/user.mapper.pagination';
 import { UserPageDto } from '../paginations/user.page.dto';
 const randomstring = require('randomstring');
 
-export class UserRepo {
+export class UserRepo extends AbstractRepositoryClass<
+  UserEnt,
+  CreateUserDto,
+  UpdateUserDto,
+  UserPageDto
+> {
   PREFIX_TOKEN_AUTH = 'prefix_auth_token_';
   constructor(
     @InjectRepository(UserEnt)
-    private dataSource: DataSource,
-    private hashService: HashService,
+    dataSource: DataSource,
+    handlerService: HandlerService,
     private redisService: RedisService,
     private jwtService: JwtService,
-  ) {}
+    private hashService: HashService,
+  ) {
+    super(dataSource, handlerService);
+  }
+
+  _findOneEntity(
+    searchDto: string,
+    options?: FindOneOptions<any>,
+  ): Promise<UserEnt> {
+    throw new Error('Method not implemented.');
+  }
+  _createEntity(
+    createDto: CreateUserDto,
+    query?: QueryRunner,
+  ): Promise<UserEnt> {
+    throw new Error('Method not implemented.');
+  }
+  _updateEntity(
+    entity: UserEnt,
+    updateDto: UpdateUserDto,
+    query?: QueryRunner,
+  ): Promise<UserEnt> {
+    throw new Error('Method not implemented.');
+  }
+  _deleteEntity(entity: UserEnt, query?: QueryRunner): Promise<UserEnt> {
+    throw new Error('Method not implemented.');
+  }
+  _paginationEntity(pageDto: UserPageDto): Promise<PageDto<UserEnt>> {
+    throw new Error('Method not implemented.');
+  }
 
   async _createJwt(data: string, roles: any) {
     console.log(data);

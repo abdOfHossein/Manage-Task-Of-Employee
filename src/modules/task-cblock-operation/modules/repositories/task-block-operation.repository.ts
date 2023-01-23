@@ -1,9 +1,11 @@
 import { BadGatewayException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { AbstractRepositoryClass } from 'src/common/abstract/abstract.repository.class';
 import { PageDto } from 'src/common/dtos/page.dto';
 import { PageMetaDto } from 'src/common/dtos/page.meta.dto';
 import { PublicFunc } from 'src/common/function/public.func';
 import { TaskEnt } from 'src/modules/task/modules/entities/task.entity';
+import { HandlerService } from 'src/utility/handler/handler.service';
 import { DataSource, FindOneOptions, QueryRunner } from 'typeorm';
 import { CreateTaskBlockOperationDto } from '../dtos/create.task-block-operation.dto';
 import { UpdateTaskBlockOperationDto } from '../dtos/update.task-block-operation.dto';
@@ -11,12 +13,38 @@ import { TaskBlockOperationEnt } from '../entities/task-block-operation.entity';
 import { TaskBlockOperationMapperPagination } from '../mapper/task-block-operation.mapper.pagination';
 import { TaskBlockOperationPageDto } from '../paginations/task-block-operation.page.dto';
 
-export class TaskBlockOperationRepo {
+export class TaskBlockOperationRepo extends AbstractRepositoryClass<
+  TaskBlockOperationEnt,
+  CreateTaskBlockOperationDto,
+  UpdateTaskBlockOperationDto,
+  TaskBlockOperationPageDto
+> {
+  
   constructor(
     @InjectRepository(TaskBlockOperationEnt)
     @InjectRepository(TaskEnt)
-    private dataSource: DataSource,
-  ) {}
+    dataSource: DataSource,
+    handlerService: HandlerService,
+  ) {
+    super(dataSource, handlerService);
+  }
+
+  _findOneEntity(searchDto: string, options?: FindOneOptions<any>): Promise<TaskBlockOperationEnt> {
+    throw new Error('Method not implemented.');
+  }
+  _createEntity(createDto: CreateTaskBlockOperationDto, query?: QueryRunner): Promise<TaskBlockOperationEnt> {
+    throw new Error('Method not implemented.');
+  }
+  _updateEntity(entity: TaskBlockOperationEnt, updateDto: UpdateTaskBlockOperationDto, query?: QueryRunner): Promise<TaskBlockOperationEnt> {
+    throw new Error('Method not implemented.');
+  }
+  _deleteEntity(entity: TaskBlockOperationEnt, query?: QueryRunner): Promise<TaskBlockOperationEnt> {
+    throw new Error('Method not implemented.');
+  }
+  _paginationEntity(pageDto: TaskBlockOperationPageDto): Promise<PageDto<TaskBlockOperationEnt>> {
+    throw new Error('Method not implemented.');
+  }
+
 
   async createTaskBlockOperation(
     createDto: CreateTaskBlockOperationDto,
