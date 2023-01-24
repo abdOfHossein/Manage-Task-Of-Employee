@@ -1,22 +1,68 @@
 import { InjectRepository } from '@nestjs/typeorm';
+import { AbstractRepositoryClass } from 'src/common/abstract/abstract.repository.class';
 import { PageDto } from 'src/common/dtos/page.dto';
 import { PageMetaDto } from 'src/common/dtos/page.meta.dto';
 import { PublicFunc } from 'src/common/function/public.func';
-import { DataSource, QueryRunner } from 'typeorm';
+import { HandlerService } from 'src/utility/handler/handler.service';
+import { DataSource, FindOneOptions, QueryRunner } from 'typeorm';
+import { CreateMessageUserDto } from '../dtos/create.message-user.dto';
+import { UpdateMessageUserDto } from '../dtos/update.message-user.dto';
 import { MessageUserEnt } from '../entities/message-user.entity';
 import { MessageUserMapperPagination } from '../mapper/message-user.mapper.pagination';
 import { MessageUserPageDto } from '../paginations/message-user.page.dto';
 
-export class MessageUserRepo {
+export class MessageUserRepo extends AbstractRepositoryClass<
+  MessageUserEnt,
+  CreateMessageUserDto,
+  UpdateMessageUserDto,
+  MessageUserPageDto
+> {
   constructor(
     @InjectRepository(MessageUserEnt)
-    private dataSource: DataSource,
-  ) {}
+    dataSource: DataSource,
+    handlerService: HandlerService,
+  ) {
+    super(dataSource, handlerService);
+  }
+
+  _findOneEntity(
+    searchDto: string,
+    options?: FindOneOptions<any>,
+  ): Promise<MessageUserEnt> {
+    throw new Error('Method not implemented.');
+  }
+  _createEntity(
+    createDto: CreateMessageUserDto,
+    query?: QueryRunner,
+  ): Promise<MessageUserEnt> {
+    throw new Error('Method not implemented.');
+  }
+  _updateEntity(
+    entity: MessageUserEnt,
+    updateDto: UpdateMessageUserDto,
+    query?: QueryRunner,
+  ): Promise<MessageUserEnt> {
+    throw new Error('Method not implemented.');
+  }
+  _deleteEntity(
+    entity: MessageUserEnt,
+    query?: QueryRunner,
+  ): Promise<MessageUserEnt> {
+    throw new Error('Method not implemented.');
+  }
+  _paginationEntity(
+    pageDto: MessageUserPageDto,
+  ): Promise<PageDto<MessageUserEnt>> {
+    throw new Error('Method not implemented.');
+  }
 
   async deleteMessageUser(id_message_user: string, query?: QueryRunner) {
-    const messageUserEnt = await this.dataSource.manager.findOne(MessageUserEnt, {
-      where: { id: id_message_user },
-    });
+    const messageUserEnt = await this.dataSource.manager.findOne(
+      MessageUserEnt,
+      {
+        where: { id: id_message_user },
+      },
+    );
     messageUserEnt.delete_at = new Date();
     // messageUserEnt.title = 'deleted' + '_' + messageUserEnt.title;
     return await this.dataSource.manager.save(messageUserEnt);

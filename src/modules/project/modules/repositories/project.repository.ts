@@ -1,11 +1,13 @@
 import { BadGatewayException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { AbstractRepositoryClass } from 'src/common/abstract/abstract.repository.class';
 import { PageDto } from 'src/common/dtos/page.dto';
 import { PageMetaDto } from 'src/common/dtos/page.meta.dto';
 import { PublicFunc } from 'src/common/function/public.func';
 import { FileEnt } from 'src/modules/file/modules/entities/file.entity';
 import { ReqEnt } from 'src/modules/req/modules/entities/req.entity';
 import { StatusReqEnum } from 'src/modules/req/modules/enums/req.enum';
+import { HandlerService } from 'src/utility/handler/handler.service';
 import { DataSource, FindOneOptions, QueryRunner } from 'typeorm';
 import { CreateProjectDto } from '../dtos/create.project.dto';
 import { UpdateProjectDto } from '../dtos/update.project.dto';
@@ -13,13 +15,48 @@ import { ProjectEnt } from '../entities/project.entity';
 import { ProjectMapperPagination } from '../mapper/project.mapper.pagination';
 import { ProjectPageDto } from '../paginations/project.page.dto';
 
-export class ProjectRepo {
+export class ProjectRepo extends AbstractRepositoryClass<
+  ProjectEnt,
+  CreateProjectDto,
+  UpdateProjectDto,
+  ProjectPageDto
+> {
+  
   constructor(
     @InjectRepository(ProjectEnt)
     @InjectRepository(ReqEnt)
     @InjectRepository(FileEnt)
-    private dataSource: DataSource,
-  ) {}
+    dataSource: DataSource,
+    handlerService: HandlerService,
+  ) {
+    super(dataSource, handlerService);
+  }
+
+  _findOneEntity(
+    searchDto: string,
+    options?: FindOneOptions<any>,
+  ): Promise<ProjectEnt> {
+    throw new Error('Method not implemented.');
+  }
+  _createEntity(
+    createDto: CreateProjectDto,
+    query?: QueryRunner,
+  ): Promise<ProjectEnt> {
+    throw new Error('Method not implemented.');
+  }
+  _updateEntity(
+    entity: ProjectEnt,
+    updateDto: UpdateProjectDto,
+    query?: QueryRunner,
+  ): Promise<ProjectEnt> {
+    throw new Error('Method not implemented.');
+  }
+  _deleteEntity(entity: ProjectEnt, query?: QueryRunner): Promise<ProjectEnt> {
+    throw new Error('Method not implemented.');
+  }
+  _paginationEntity(pageDto: ProjectPageDto): Promise<PageDto<ProjectEnt>> {
+    throw new Error('Method not implemented.');
+  }
 
   async createProject(
     createDto: CreateProjectDto,
@@ -135,7 +172,7 @@ export class ProjectRepo {
   async allProjectWithReq(): Promise<ProjectEnt[]> {
     const project = await this.dataSource.manager.query(
       `select *, (select count(r) from task."Req" r where r."projectId"= p.id and r.status = 'DONE') as done, (select count(r) from task."Req" r where r."projectId"= p.id) as total from task."Project" p `,
-    )
+    );
     return project;
   }
 

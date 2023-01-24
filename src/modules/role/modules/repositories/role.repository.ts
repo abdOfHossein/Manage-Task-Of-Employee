@@ -1,21 +1,59 @@
 import { BadGatewayException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { AbstractRepositoryClass } from 'src/common/abstract/abstract.repository.class';
 import { PageDto } from 'src/common/dtos/page.dto';
 import { PageMetaDto } from 'src/common/dtos/page.meta.dto';
 import { PublicFunc } from 'src/common/function/public.func';
 import { UserEnt } from 'src/modules/user/modules/entities/user.entity';
+import { HandlerService } from 'src/utility/handler/handler.service';
 import { DataSource, FindOneOptions, QueryRunner } from 'typeorm';
 import { ConfigRoleDto } from '../dtos/config.roele.dto';
 import { CreateRoleDto } from '../dtos/create.role.dto';
+import { UpdateRoleDto } from '../dtos/update.role.dto';
 import { RoleEnt } from '../entities/role.entity';
 import { RoleMapperPagination } from '../mapper/role.mapper.pagination';
 import { RolePageDto } from '../paginations/role.page.dto';
 
-export class RoleRepo {
+export class RoleRepo extends AbstractRepositoryClass<
+  RoleEnt,
+  CreateRoleDto,
+  UpdateRoleDto,
+  RolePageDto
+> {
+
   constructor(
     @InjectRepository(RoleEnt)
-    private dataSource: DataSource,
-  ) {}
+    dataSource: DataSource,
+    handlerService: HandlerService,
+  ) {
+    super(dataSource, handlerService);
+  }
+  
+  _findOneEntity(
+    searchDto: string,
+    options?: FindOneOptions<any>,
+  ): Promise<RoleEnt> {
+    throw new Error('Method not implemented.');
+  }
+  _createEntity(
+    createDto: CreateRoleDto,
+    query?: QueryRunner,
+  ): Promise<RoleEnt> {
+    throw new Error('Method not implemented.');
+  }
+  _updateEntity(
+    entity: RoleEnt,
+    updateDto: UpdateRoleDto,
+    query?: QueryRunner,
+  ): Promise<RoleEnt> {
+    throw new Error('Method not implemented.');
+  }
+  _deleteEntity(entity: RoleEnt, query?: QueryRunner): Promise<RoleEnt> {
+    throw new Error('Method not implemented.');
+  }
+  _paginationEntity(pageDto: RolePageDto): Promise<PageDto<RoleEnt>> {
+    throw new Error('Method not implemented.');
+  }
 
   async createRole(
     createDto: CreateRoleDto,

@@ -1,17 +1,62 @@
 import { Injectable } from '@nestjs/common';
+import { AbstractServiceClass } from 'src/common/abstract/abstract.service.class';
 import { HandlerError } from 'src/common/class/handler.error';
 import { HandlerService } from 'src/utility/handler/handler.service';
-import { DataSource, QueryRunner } from 'typeorm';
+import { DataSource, FindOneOptions, QueryRunner } from 'typeorm';
 import { CreateMessageDto } from '../dtos/create.message.dto';
+import { UpdateMessageDto } from '../dtos/update.message.dto';
+import { MessageEnt } from '../entities/message.entity';
+import { MessagePageDto } from '../paginations/message.page.dto';
 import { MessageRepo } from '../repositories/message.repository';
 
 @Injectable()
-export class MessageService {
-  constructor(
+export class MessageService extends AbstractServiceClass<
+  MessageEnt,
+  CreateMessageDto,
+  UpdateMessageDto,
+  MessagePageDto
+> {
+  public constructor(
     private messageRepo: MessageRepo,
-    private dataSource: DataSource,
-    private handlerService: HandlerService,
-  ) {}
+    handlerService: HandlerService,
+    dataSource: DataSource,
+  ) {
+    super(dataSource, handlerService);
+    this.className = this.constructor.name;
+  }
+  
+  protected _getOne(searchDto: string, options?: FindOneOptions<any>) {
+    throw new Error('Method not implemented.');
+  }
+  _resultGetOneDto(ent: MessageEnt) {
+    throw new Error('Method not implemented.');
+  }
+  protected _create(createDt: CreateMessageDto, query?: QueryRunner) {
+    throw new Error('Method not implemented.');
+  }
+  _resultCreateDto(ent: MessageEnt) {
+    throw new Error('Method not implemented.');
+  }
+  protected _delete(searchDto: string, query?: QueryRunner) {
+    throw new Error('Method not implemented.');
+  }
+  _resultDeleteDto(ent: MessageEnt) {
+    throw new Error('Method not implemented.');
+  }
+  protected _update(
+    role_Id: string,
+    updateDt: UpdateMessageDto,
+    query?: QueryRunner,
+  ) {
+    throw new Error('Method not implemented.');
+  }
+  _resultUpdateDto(ent: MessageEnt) {
+    throw new Error('Method not implemented.');
+  }
+  protected _pagination(pageDto: MessagePageDto) {
+    throw new Error('Method not implemented.');
+  }
+
   //     return await this.MessageRepo.getReportMessage(id_user, reportPage, query);
   //   } catch (e) {
   //     throw e;

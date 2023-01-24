@@ -1,4 +1,5 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { AbstractServiceClass } from 'src/common/abstract/abstract.service.class';
 import { HandlerError } from 'src/common/class/handler.error';
 import { HandlerService } from 'src/utility/handler/handler.service';
 import { DataSource, FindOneOptions, QueryRunner } from 'typeorm';
@@ -9,12 +10,52 @@ import { DepartmentPageDto } from '../paginations/department.page.dto';
 import { DepartmentRepo } from '../repositories/department.repository';
 
 @Injectable()
-export class DepartmentService {
-  constructor(
+export class DepartmentService extends AbstractServiceClass<
+  DepartmentEnt,
+  CreateDepartmentDto,
+  UpdateDepartmentDto,
+  DepartmentPageDto
+> {
+  public constructor(
     private departmentRepo: DepartmentRepo,
-    private dataSource: DataSource,
-    private handlerService: HandlerService,
-  ) {}
+    handlerService: HandlerService,
+    dataSource: DataSource,
+  ) {
+    super(dataSource, handlerService);
+    this.className = this.constructor.name;
+  }
+
+  protected _getOne(searchDto: string, options?: FindOneOptions<any>) {
+    throw new Error('Method not implemented.');
+  }
+  _resultGetOneDto(ent: DepartmentEnt) {
+    throw new Error('Method not implemented.');
+  }
+  protected _create(createDt: CreateDepartmentDto, query?: QueryRunner) {
+    throw new Error('Method not implemented.');
+  }
+  _resultCreateDto(ent: DepartmentEnt) {
+    throw new Error('Method not implemented.');
+  }
+  protected _delete(searchDto: string, query?: QueryRunner) {
+    throw new Error('Method not implemented.');
+  }
+  _resultDeleteDto(ent: DepartmentEnt) {
+    throw new Error('Method not implemented.');
+  }
+  protected _update(
+    role_Id: string,
+    updateDt: UpdateDepartmentDto,
+    query?: QueryRunner,
+  ) {
+    throw new Error('Method not implemented.');
+  }
+  _resultUpdateDto(ent: DepartmentEnt) {
+    throw new Error('Method not implemented.');
+  }
+  protected _pagination(pageDto: DepartmentPageDto) {
+    throw new Error('Method not implemented.');
+  }
 
   async createDepartment(createDt: CreateDepartmentDto, query?: QueryRunner) {
     const queryRunner = this.dataSource.createQueryRunner();

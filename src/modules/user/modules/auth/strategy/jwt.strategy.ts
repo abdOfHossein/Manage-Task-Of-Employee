@@ -9,8 +9,8 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Cache } from 'cache-manager';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { HashService } from 'src/modules/hash/hash.service';
-import { RedisService } from 'src/modules/redis/redis.service';
+import { HashService } from 'src/utility/hash/hash.service';
+import { RedisService } from 'src/utility/redis/redis.service';
 import { DataSource } from 'typeorm';
 import { UserEnt } from '../../entities/user.entity';
 @Injectable()

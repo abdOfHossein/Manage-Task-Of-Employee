@@ -1,4 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
+import { AbstractServiceClass } from 'src/common/abstract/abstract.service.class';
 import { HandlerError } from 'src/common/class/handler.error';
 import { CreateRelTaskDto } from 'src/modules/rel-task/modules/dtos/create.rel-task.dto';
 import { HandlerService } from 'src/utility/handler/handler.service';
@@ -20,15 +21,55 @@ import { TaskTypePageDto } from '../paginations/task.type.page.dto';
 import { TaskRepo } from '../repositories/task.repository';
 
 @Injectable()
-export class TaskService {
-  constructor(
+export class TaskService extends AbstractServiceClass<
+  TaskEnt,
+  CreateTaskDto,
+  UpdateTaskDto,
+  TaskPageDto
+> {
+  public constructor(
+    handlerService: HandlerService,
+    dataSource: DataSource,
     private taskRepo: TaskRepo,
     private projectService: ProjectService,
     private reqService: ReqService,
     private departmentRlService: DepartmentRlService,
-    private dataSource: DataSource,
-    private handlerService: HandlerService,
-  ) {}
+  ) {
+    super(dataSource, handlerService);
+    this.className = this.constructor.name;
+  }
+
+  protected _getOne(searchDto: string, options?: FindOneOptions<any>) {
+    throw new Error('Method not implemented.');
+  }
+  _resultGetOneDto(ent: TaskEnt) {
+    throw new Error('Method not implemented.');
+  }
+  protected _create(createDt: CreateTaskDto, query?: QueryRunner) {
+    throw new Error('Method not implemented.');
+  }
+  _resultCreateDto(ent: TaskEnt) {
+    throw new Error('Method not implemented.');
+  }
+  protected _delete(searchDto: string, query?: QueryRunner) {
+    throw new Error('Method not implemented.');
+  }
+  _resultDeleteDto(ent: TaskEnt) {
+    throw new Error('Method not implemented.');
+  }
+  protected _update(
+    role_Id: string,
+    updateDt: UpdateTaskDto,
+    query?: QueryRunner,
+  ) {
+    throw new Error('Method not implemented.');
+  }
+  _resultUpdateDto(ent: TaskEnt) {
+    throw new Error('Method not implemented.');
+  }
+  protected _pagination(pageDto: TaskPageDto) {
+    throw new Error('Method not implemented.');
+  }
 
   async taskTypePagination(
     id_user: string,

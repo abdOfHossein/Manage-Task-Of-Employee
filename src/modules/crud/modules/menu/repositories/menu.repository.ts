@@ -1,4 +1,5 @@
 import { InjectRepository } from '@nestjs/typeorm';
+import { AbstractRepositoryClass } from 'src/common/abstract/abstract.repository.class';
 import { PageDto } from 'src/common/dtos/page.dto';
 import { PageMetaDto } from 'src/common/dtos/page.meta.dto';
 import { PublicFunc } from 'src/common/function/public.func';
@@ -12,12 +13,19 @@ import { MenuEnt } from '../entities/menu.entity';
 import { MenuMapperPagination } from '../mapper/menu.mapper.pagination';
 import { MenuPageDto } from '../pagination/menu.pagination';
 
-export class MenuRepo {
+export class MenuRepo extends AbstractRepositoryClass<
+  MenuEnt,
+  CreateMenuDto,
+  UpdateMenuDto,
+  MenuPageDto
+> {
   constructor(
     @InjectRepository(MenuEnt)
-    private dataSource: DataSource,
-    private handlerService: HandlerService,
-  ) {}
+    dataSource: DataSource,
+    handlerService: HandlerService,
+  ) {
+    super(dataSource, handlerService);
+  }
 
   async _findOneEntity(
     searchDto: string,

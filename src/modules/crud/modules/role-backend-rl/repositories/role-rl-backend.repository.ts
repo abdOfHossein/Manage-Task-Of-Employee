@@ -1,7 +1,9 @@
-import { PublicEnum } from 'src/common/translate/enums/public.enum';
+import { InjectRepository } from '@nestjs/typeorm';
+import { AbstractRepositoryClass } from 'src/common/abstract/abstract.repository.class';
 import { PageDto } from 'src/common/dtos/page.dto';
 import { PageMetaDto } from 'src/common/dtos/page.meta.dto';
 import { PublicFunc } from 'src/common/function/public.func';
+import { PublicEnum } from 'src/common/translate/enums/public.enum';
 import { HandlerService } from 'src/utility/handler/handler.service';
 import { DataSource, FindOneOptions, QueryRunner } from 'typeorm';
 import { CreateRoleRlBackendDto } from '../dtos/create-role-rl-backend.dto';
@@ -9,14 +11,20 @@ import { UpdateRoleRlBackendDto } from '../dtos/update-role-rl-backend.dto';
 import { RoleRlBackendEnt } from '../entities/role-rl-backend.entity';
 import { CountryMapperPagination } from '../mapper/country.mapper.pagination';
 import { RoleRlBackendPageDto } from '../pagination/country.page.dto';
-import { InjectRepository } from '@nestjs/typeorm';
 
-export class RoleRlBackendRepo {
+export class RoleRlBackendRepo extends AbstractRepositoryClass<
+  RoleRlBackendEnt,
+  CreateRoleRlBackendDto,
+  UpdateRoleRlBackendDto,
+  RoleRlBackendPageDto
+> {
   constructor(
     @InjectRepository(RoleRlBackendEnt)
-    private dataSource: DataSource,
-    private handlerService: HandlerService,
-  ) {}
+     dataSource: DataSource,
+     handlerService: HandlerService,
+  ) {
+    super(dataSource, handlerService);
+  }
 
   async _findOneEntity(
     searchDto: string,

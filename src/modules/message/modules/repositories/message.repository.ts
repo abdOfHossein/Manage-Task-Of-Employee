@@ -1,18 +1,57 @@
 import { InjectRepository } from '@nestjs/typeorm';
+import { AbstractRepositoryClass } from 'src/common/abstract/abstract.repository.class';
+import { PageDto } from 'src/common/dtos/page.dto';
 import { DepartmentEnt } from 'src/modules/department/modules/entities/department.entity';
 import { MessageUserEnt } from 'src/modules/message-user/modules/entities/message-user.entity';
 import { UserEnt } from 'src/modules/user/modules/entities/user.entity';
+import { HandlerService } from 'src/utility/handler/handler.service';
 import { DataSource, FindOneOptions, QueryRunner } from 'typeorm';
 import { CreateMessageDto } from '../dtos/create.message.dto';
+import { UpdateMessageDto } from '../dtos/update.message.dto';
 import { MessageEnt } from '../entities/message.entity';
 import { RecieveTypeMessageEnum } from '../enum/recieve.type.message.enum';
+import { MessagePageDto } from '../paginations/message.page.dto';
 
-export class MessageRepo {
+export class MessageRepo extends AbstractRepositoryClass<
+  MessageEnt,
+  CreateMessageDto,
+  UpdateMessageDto,
+  MessagePageDto
+> {
   constructor(
     @InjectRepository(MessageEnt)
     @InjectRepository(MessageUserEnt)
-    private dataSource: DataSource,
-  ) {}
+    dataSource: DataSource,
+    handlerService: HandlerService,
+  ) {
+    super(dataSource, handlerService);
+  }
+
+  _findOneEntity(
+    searchDto: string,
+    options?: FindOneOptions<any>,
+  ): Promise<MessageEnt> {
+    throw new Error('Method not implemented.');
+  }
+  _createEntity(
+    createDto: CreateMessageDto,
+    query?: QueryRunner,
+  ): Promise<MessageEnt> {
+    throw new Error('Method not implemented.');
+  }
+  _updateEntity(
+    entity: MessageEnt,
+    updateDto: UpdateMessageDto,
+    query?: QueryRunner,
+  ): Promise<MessageEnt> {
+    throw new Error('Method not implemented.');
+  }
+  _deleteEntity(entity: MessageEnt, query?: QueryRunner): Promise<MessageEnt> {
+    throw new Error('Method not implemented.');
+  }
+  _paginationEntity(pageDto: MessagePageDto): Promise<PageDto<MessageEnt>> {
+    throw new Error('Method not implemented.');
+  }
 
   // async checkExpirationMessage(
   //   user_info: any,

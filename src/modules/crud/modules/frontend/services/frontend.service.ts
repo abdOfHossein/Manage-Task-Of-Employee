@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
+import { AbstractServiceClass } from 'src/common/abstract/abstract.service.class';
 import { HandlerError } from 'src/common/class/handler.error';
-import { SuccessDto } from 'src/common/result/success.dto';
 import { HandlerService } from 'src/utility/handler/handler.service';
 import { DataSource, FindOneOptions, QueryRunner } from 'typeorm';
 import { CreateFrontendDto } from '../dtos/create.frontend.dto';
@@ -8,17 +8,35 @@ import { UpdateFrontendDto } from '../dtos/update.frontend.dto';
 import { FrontendEnt } from '../entities/frontend.entity';
 import { FrontendPageDto } from '../pagination/frontend.page.dto';
 import { FrontendRepo } from '../repositories/frontend.repository';
-import { FrontendCUDto } from '../results/frontend.c.u.dto';
-import { FrontendGDto } from '../results/frontend.g.dto';
 
 @Injectable()
-export class FrontendService {
-  //constructor
-  constructor(
+export class FrontendService extends AbstractServiceClass<
+  FrontendEnt,
+  CreateFrontendDto,
+  UpdateFrontendDto,
+  FrontendPageDto
+> {
+  public constructor(
     private frontendRepo: FrontendRepo,
+    handlerService: HandlerService,
     dataSource: DataSource,
-    private handlerService: HandlerService,
-  ) {}
+  ) {
+    super(dataSource, handlerService);
+    this.className = this.constructor.name;
+  }
+
+  _resultGetOneDto(ent: FrontendEnt) {
+    throw new Error('Method not implemented.');
+  }
+  _resultCreateDto(ent: FrontendEnt) {
+    throw new Error('Method not implemented.');
+  }
+  _resultDeleteDto(ent: FrontendEnt) {
+    throw new Error('Method not implemented.');
+  }
+  _resultUpdateDto(ent: FrontendEnt) {
+    throw new Error('Method not implemented.');
+  }
 
   //pagination
   async _pagination(pageDto: FrontendPageDto) {

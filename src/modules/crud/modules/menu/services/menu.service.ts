@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { AbstractServiceClass } from 'src/common/abstract/abstract.service.class';
 import { HandlerError } from 'src/common/class/handler.error';
 import { MenuEnum } from 'src/common/translate/enums/menu.enum';
 import { RoleService } from 'src/modules/role/modules/services/role.service';
@@ -12,14 +13,34 @@ import { MenuPageDto } from '../pagination/menu.pagination';
 import { MenuRepo } from '../repositories/menu.repository';
 
 @Injectable()
-export class MenuService {
-  constructor(
+export class MenuService extends AbstractServiceClass<
+  MenuEnt,
+  CreateMenuDto,
+  UpdateMenuDto,
+  MenuPageDto
+> {
+  public constructor(
     private menuRepo: MenuRepo,
-    private handlerService: HandlerService,
-    private dataSource: DataSource,
+    handlerService: HandlerService,
+    dataSource: DataSource,
     private frontendService: FrontendService,
     private roleService: RoleService,
-  ) {}
+  ) {
+    super(dataSource, handlerService);
+    this.className = this.constructor.name;
+  }
+  _resultGetOneDto(ent: MenuEnt) {
+    throw new Error('Method not implemented.');
+  }
+  _resultCreateDto(ent: MenuEnt) {
+    throw new Error('Method not implemented.');
+  }
+  _resultDeleteDto(ent: MenuEnt) {
+    throw new Error('Method not implemented.');
+  }
+  _resultUpdateDto(ent: MenuEnt) {
+    throw new Error('Method not implemented.');
+  }
 
   async _getOne(searchDto: string, options?: FindOneOptions<any>) {
     try {
