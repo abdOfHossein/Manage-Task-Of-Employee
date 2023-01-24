@@ -92,7 +92,7 @@ export class TaskController {
     @Query('id_user') id_user: string,
   ): Promise<TaskEnt> {
     createTaskDto.id_project = id_project;
-    createTaskDto.id_user = user;
+    createTaskDto.id_user = user.uid;
     return this.task.createTaskByProject(createTaskDto);
   }
 

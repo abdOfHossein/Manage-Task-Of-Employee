@@ -78,10 +78,10 @@ export class DepartmentRlService extends AbstractServiceClass<
     }
   }
 
-  async findByDepartmentRequest(id_req: string, id_department: string) {
+  async findByDepartmentRequest(id_req: string, id_user: string) {
     return await this.departmentRlRepo.findByDepartmentRequest(
       id_req,
-      id_department,
+      id_user,
     );
   }
 

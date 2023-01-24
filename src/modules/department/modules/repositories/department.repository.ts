@@ -4,6 +4,7 @@ import { AbstractRepositoryClass } from 'src/common/abstract/abstract.repository
 import { PageDto } from 'src/common/dtos/page.dto';
 import { PageMetaDto } from 'src/common/dtos/page.meta.dto';
 import { PublicFunc } from 'src/common/function/public.func';
+import { DepartmentEnum } from 'src/common/translate/enums/department.enum';
 import { DepartmentRlEnt } from 'src/modules/department-rl/modules/entities/department-rl.entity';
 import { ReqEnt } from 'src/modules/req/modules/entities/req.entity';
 import { StatusTaskEnum } from 'src/modules/task/modules/enums/status-task.enum';
@@ -80,14 +81,16 @@ export class DepartmentRepo extends AbstractRepositoryClass<
     }
 
     const reqs = await this.dataSource.manager.find(ReqEnt, {});
-    console.log(reqs);
     for (const req of reqs) {
+      console.log('req', req);
+      console.log('result', result);
       const departmentRl = this.dataSource.manager.create(DepartmentRlEnt, {
         req,
         department: result,
       });
-      await this.dataSource.manager.save(departmentRl);
-      if (query) return await query.manager.save(departmentEnt);
+      console.log('departmentRl', departmentRl);
+      if (query) await query.manager.save(departmentEnt);
+      else await this.dataSource.manager.save(departmentRl);
     }
     await query.commitTransaction();
     return result;
@@ -116,8 +119,14 @@ export class DepartmentRepo extends AbstractRepositoryClass<
     const department = await this.dataSource.manager.findOne(DepartmentEnt, {
       where: { id: searchDto },
     });
-    if (!department)
-      throw new BadGatewayException({ message: 'department does not exits' });
+    if (!department) {
+      throw new Error(
+        `${JSON.stringify({
+          section: 'department',
+          value: DepartmentEnum.DEPARTMENT_NOT_EXISTS,
+        })}`,
+      );
+    }
     return department;
   }
 
@@ -127,6 +136,7 @@ export class DepartmentRepo extends AbstractRepositoryClass<
     query?: QueryRunner,
   ): Promise<DepartmentEnt> {
     entity.header_id = updateDto.header_id;
+    entity.name_department = updateDto.name_department;
     if (query) return await query.manager.save(entity);
     return await this.dataSource.manager.save(entity);
   }

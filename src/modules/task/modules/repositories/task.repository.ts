@@ -2,7 +2,7 @@ import {
   BadGatewayException,
   BadRequestException,
   HttpException,
-  HttpStatus
+  HttpStatus,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AbstractRepositoryClass } from 'src/common/abstract/abstract.repository.class';
@@ -50,7 +50,7 @@ export class TaskRepo extends AbstractRepositoryClass<
   ) {
     super(dataSource, handlerService);
   }
-  
+
   _findOneEntity(
     searchDto: string,
     options?: FindOneOptions<any>,
@@ -320,11 +320,17 @@ export class TaskRepo extends AbstractRepositoryClass<
     if (!createDto.id_req)
       createDto.reqEnt = await this.reqService.findDefaultReq();
     else createDto.reqEnt = await this.reqService.findOneReq(createDto.id_req);
-    createDto.departmentRlEnt =
-      await this.departmentRlService.findByDepartmentRequest(
-        createDto.id_req,
-        createDto.id_user.uid,
-      );
+
+    createDto.departmentRlEnt = await this.dataSource.manager
+      .createQueryBuilder(DepartmentRlEnt, 'departmentRl')
+      .innerJoinAndSelect('departmentRl.req', 'req')
+      .innerJoinAndSelect('departmentRl.department', 'department')
+      .innerJoinAndSelect('department.users', 'users')
+      .where('users.id = :id_user AND req.id = :id_req', {
+        id_req: createDto.reqEnt.id,
+        id_user: createDto.id_user,
+      })
+      .getOne();
 
     const queryBuilder = await this.dataSource.manager
       .createQueryBuilder(TaskEnt, 'task')
@@ -335,7 +341,10 @@ export class TaskRepo extends AbstractRepositoryClass<
       })
       .getOne();
 
-    if (queryBuilder.department_rl.req.status !== StatusReqEnum.OPEN) {
+    if (
+      queryBuilder &&
+      queryBuilder.department_rl.req.status !== StatusReqEnum.OPEN
+    ) {
       queryBuilder.department_rl.req.status = StatusReqEnum.OPEN;
       await this.dataSource.manager.save(queryBuilder.department_rl.req);
     }
@@ -351,9 +360,9 @@ export class TaskRepo extends AbstractRepositoryClass<
     taskEnt.type = createDto.type;
     let result: TaskEnt;
     if (query) {
-      let result = await query.manager.save(taskEnt);
+      result = await query.manager.save(taskEnt);
     } else {
-      let result = await this.dataSource.manager.save(taskEnt);
+      result = await this.dataSource.manager.save(taskEnt);
     }
     await query.commitTransaction();
     return result;
@@ -569,7 +578,10 @@ export class TaskRepo extends AbstractRepositoryClass<
       })
       .getOne();
 
-    if (queryBuilder.department_rl.req.status !== StatusReqEnum.OPEN) {
+    if (
+      queryBuilder &&
+      queryBuilder.department_rl.req.status !== StatusReqEnum.OPEN
+    ) {
       queryBuilder.department_rl.req.status = StatusReqEnum.OPEN;
       await this.dataSource.manager.save(queryBuilder.department_rl.req);
     }
@@ -619,7 +631,10 @@ export class TaskRepo extends AbstractRepositoryClass<
       })
       .getOne();
 
-    if (queryBuilder.department_rl.req.status !== StatusReqEnum.OPEN) {
+    if (
+      queryBuilder &&
+      queryBuilder.department_rl.req.status !== StatusReqEnum.OPEN
+    ) {
       queryBuilder.department_rl.req.status = StatusReqEnum.OPEN;
       await this.dataSource.manager.save(queryBuilder.department_rl.req);
     }
@@ -724,7 +739,10 @@ export class TaskRepo extends AbstractRepositoryClass<
       })
       .getOne();
 
-    if (queryBuilder.department_rl.req.status !== StatusReqEnum.OPEN) {
+    if (
+      queryBuilder &&
+      queryBuilder.department_rl.req.status !== StatusReqEnum.OPEN
+    ) {
       queryBuilder.department_rl.req.status = StatusReqEnum.OPEN;
       await this.dataSource.manager.save(queryBuilder.department_rl.req);
     }
@@ -733,19 +751,20 @@ export class TaskRepo extends AbstractRepositoryClass<
       where: { id: id_user },
     });
 
-    const departments = await this.dataSource.manager
+    const userWithDepartment = await this.dataSource.manager
       .createQueryBuilder(UserEnt, 'user')
       .where('user.id = :id', { id: id_user })
       .leftJoinAndSelect('user.department', 'department')
       .getMany();
-    console.log('departments=>', departments);
+    console.log('userWithDepartment=>', userWithDepartment);
     var department_rl = await this.dataSource.manager
       .createQueryBuilder(DepartmentRlEnt, 'department_rl')
       .where(
         'department_rl.req = :id_req AND department_rl.department = :department',
-        { id_req, department: departments[0].department.id },
+        { id_req, department: userWithDepartment[0].department.id },
       )
       .getOne();
+
     const taskEnt = new TaskEnt();
     taskEnt.head_id = createDto.head_id;
     taskEnt.priority = createDto.priority;
