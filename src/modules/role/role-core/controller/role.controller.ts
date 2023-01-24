@@ -5,6 +5,7 @@ import { PageDto } from 'src/common/dtos/page.dto';
 import { UserEnt } from 'src/modules/user/modules/entities/user.entity';
 import { ConfigRoleDto } from '../../modules/dtos/config.roele.dto';
 import { CreateRoleDto } from '../../modules/dtos/create.role.dto';
+import { UpdateRoleDto } from '../../modules/dtos/update.role.dto';
 import { RoleEnt } from '../../modules/entities/role.entity';
 import { RolePageDto } from '../../modules/paginations/role.page.dto';
 import { RoleService } from '../../modules/services/role.service';
@@ -18,6 +19,16 @@ export class RoleController {
   @Post()
   createRole(@Body() createRoleDto: CreateRoleDto): Promise<RoleEnt> {
     return this.role.createRole(createRoleDto);
+  }
+
+  @ApiOperation({ summary: 'create Role' })
+  @Put()
+  updateRole(
+    @Query('id_role') id_role: string,
+    @Body() updateRoleDto: UpdateRoleDto,
+  ): Promise<RoleEnt> {
+    updateRoleDto.id_role = id_role;
+    return this.role.updateRole(updateRoleDto);
   }
 
   @ApiOperation({ summary: 'findOne Role' })
@@ -55,19 +66,28 @@ export class RoleController {
 
   @ApiOperation({ summary: 'pagination Role of a User' })
   @Post('/page/ofUser')
-  paginationRoleUser(@Query('id_user') id_user:string ,@Body() rolePageDto: RolePageDto):Promise<PageDto<RoleEnt>>  {
-    return this.role.paginationRoleUser(id_user,rolePageDto);
+  paginationRoleUser(
+    @Query('id_user') id_user: string,
+    @Body() rolePageDto: RolePageDto,
+  ): Promise<PageDto<RoleEnt>> {
+    return this.role.paginationRoleUser(id_user, rolePageDto);
   }
 
   @ApiOperation({ summary: 'delete specific Role of a User' })
   @Delete('/specificRoel')
-  deleteSpecificRole(@Query('id_user') id_user:string ,@Query('id_role') id_role:string):Promise<RoleEnt>  {
-    return this.role.deleteSpecificRole(id_user,id_role);
+  deleteSpecificRole(
+    @Query('id_user') id_user: string,
+    @Query('id_role') id_role: string,
+  ): Promise<RoleEnt> {
+    return this.role.deleteSpecificRole(id_user, id_role);
   }
 
   @ApiOperation({ summary: 'add specific Role to a User' })
   @Post('/addRole')
-  addRole(@Query('id_user') id_user:string ,@Query('id_role') id_role:string):Promise<UserEnt>  {
-    return this.role.addRole(id_user,id_role);
+  addRole(
+    @Query('id_user') id_user: string,
+    @Query('id_role') id_role: string,
+  ): Promise<UserEnt> {
+    return this.role.addRole(id_user, id_role);
   }
 }
