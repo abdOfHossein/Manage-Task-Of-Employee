@@ -67,6 +67,18 @@ export class RoleService extends AbstractServiceClass<
       await this.handlerService.handlerException400('FA', result);
     }
   }
+  async updateRole(updateRoleDto: UpdateRoleDto, query?: QueryRunner) {
+    try {
+      const roleEnt = await this.dataSource.manager.findOne(RoleEnt, {
+        where: { id: updateRoleDto.id_role },
+      });
+      return await this.roleRepo.updateRole(roleEnt, updateRoleDto, query);
+    } catch (e) {
+      console.log(e);
+      const result = await HandlerError.errorHandler(e);
+      await this.handlerService.handlerException400('FA', result);
+    }
+  }
 
   async findOneRole(searchDto: string, options?: FindOneOptions) {
     try {

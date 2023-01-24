@@ -20,7 +20,6 @@ export class RoleRepo extends AbstractRepositoryClass<
   UpdateRoleDto,
   RolePageDto
 > {
-
   constructor(
     @InjectRepository(RoleEnt)
     dataSource: DataSource,
@@ -28,7 +27,7 @@ export class RoleRepo extends AbstractRepositoryClass<
   ) {
     super(dataSource, handlerService);
   }
-  
+
   _findOneEntity(
     searchDto: string,
     options?: FindOneOptions<any>,
@@ -65,6 +64,15 @@ export class RoleRepo extends AbstractRepositoryClass<
     return await this.dataSource.manager.save(roleEnt);
   }
 
+  async updateRole(
+    entity: RoleEnt,
+    updateRoleDto: UpdateRoleDto,
+    query: QueryRunner | undefined,
+  ): Promise<RoleEnt> {
+    entity.role_type = updateRoleDto.role_type;
+    if (query) return await query.manager.save(entity);
+    return await this.dataSource.manager.save(entity);
+  }
   async findOneRole(
     searchDto: string,
     options?: FindOneOptions,
