@@ -43,7 +43,7 @@ export class MenuService {
           })}`,
         );
       }
-      if (createDt.frontend) {
+      if (createDt.id_front) {
         createDt.frontend = await this.frontendService._getOne(
           createDt.id_front,
         );
