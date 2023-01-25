@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { AbstractServiceClass } from 'src/common/abstract/abstract.service.class';
 import { HandlerError } from 'src/common/class/handler.error';
+import { CrudFrontendEnum } from 'src/common/translate/enums/crud-frontend.enum';
 import { HandlerService } from 'src/utility/handler/handler.service';
 import { DataSource, FindOneOptions, QueryRunner } from 'typeorm';
 import { CreateFrontendDto } from '../dtos/create.frontend.dto';
@@ -73,6 +74,13 @@ export class FrontendService extends AbstractServiceClass<
   ) {
     try {
       const frontendEnt = await this._getOne(id_frontend);
+      if (!frontendEnt)
+        throw new Error(
+          `${JSON.stringify({
+            section: 'crud_frontend',
+            value: CrudFrontendEnum.CRUD_FRONTEND_NOT_EXISTS,
+          })}`,
+        );
       return await this.frontendRepo._updateEntity(
         frontendEnt,
         updateDt,

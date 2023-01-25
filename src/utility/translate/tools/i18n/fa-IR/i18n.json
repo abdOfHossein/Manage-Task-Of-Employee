@@ -38,7 +38,8 @@
   },
   "department": {
     "DEPARTMENT_NOT_EXISTS": "دپارتمان وجود ندارد",
-    "DEPARTMENT_ALREADY_EXISTS": "دپارتمان از قبل تعریف شده است "
+    "DEPARTMENT_ALREADY_EXISTS": "دپارتمان از قبل تعریف شده است ",
+    "DEPARTMENT_HAS_USER": " دپارتمان شامل یوزر میباشد ابتدا یوزرهارا به دپارتمان دیگری انتقال دهید"
   },
   "event": {
     "EVENT_NOT_EXISTS": "ایونت وجود ندارد",
@@ -87,6 +88,6 @@
   "user": {
     "USER_NOT_EXISTS": "یوزر وجود ندارد",
     "USER_ALREADY_EXISTS": "یوزر از قبل تعریف شده است ",
-    "USER_DOES_NOT_HAVE_THIS_ROLE":"این یوزر رول وارد شده را ندارد"
+    "USER_DOES_NOT_HAVE_THIS_ROLE": "این یوزر رول وارد شده را ندارد"
   }
 }

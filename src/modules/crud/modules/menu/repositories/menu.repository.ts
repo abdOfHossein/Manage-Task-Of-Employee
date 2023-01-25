@@ -3,6 +3,7 @@ import { AbstractRepositoryClass } from 'src/common/abstract/abstract.repository
 import { PageDto } from 'src/common/dtos/page.dto';
 import { PageMetaDto } from 'src/common/dtos/page.meta.dto';
 import { PublicFunc } from 'src/common/function/public.func';
+import { CrudMenuEnum } from 'src/common/translate/enums/crud-menu.enum';
 import { PublicEnum } from 'src/common/translate/enums/public.enum';
 import { FindRoleDto } from 'src/modules/role/modules/dtos/find.role.dto';
 import { HandlerService } from 'src/utility/handler/handler.service';
@@ -31,9 +32,18 @@ export class MenuRepo extends AbstractRepositoryClass<
     searchDto: string,
     options?: FindOneOptions<any>,
   ): Promise<MenuEnt> {
-    return await this.dataSource.manager.findOne(MenuEnt, {
+    const result = await this.dataSource.manager.findOne(MenuEnt, {
       where: { id: searchDto },
     });
+    if (!result)
+      throw new Error(
+        `${JSON.stringify({
+          section: 'crud_menu',
+          value: CrudMenuEnum.CRUD_MENU_NOT_EXISTS,
+        })}`,
+      );
+
+    return result;
   }
   async _createEntity(
     createDto: CreateMenuDto,
@@ -63,10 +73,15 @@ export class MenuRepo extends AbstractRepositoryClass<
     if (query) return await query.manager.save(entity);
     return await this.dataSource.manager.save(entity);
   }
-  async _deleteEntity(
-    entity: MenuEnt,
-    query?: QueryRunner,
-  ): Promise<MenuEnt | any> {
+  async _deleteEntity(entity: MenuEnt, query?: QueryRunner): Promise<MenuEnt> {
+    console.log('entity', entity);
+    if (!entity)
+      throw new Error(
+        `${JSON.stringify({
+          section: 'crud_menu',
+          value: CrudMenuEnum.CRUD_MENU_NOT_EXISTS,
+        })}`,
+      );
     await this.dataSource.manager.softDelete(MenuEnt, entity[0].children);
     await this.dataSource.manager.softDelete(MenuEnt, entity);
     return entity;
@@ -108,11 +123,11 @@ export class MenuRepo extends AbstractRepositoryClass<
           id_role: pageDto.filter.id_role,
         });
       }
-       
-      if (pageDto.filter.parent == null || pageDto.filter.parent.length==0) {
+
+      if (pageDto.filter.parent == null || pageDto.filter.parent.length == 0) {
         queryBuilder.andWhere('(menu.parent IS NULL)');
       }
-      if (pageDto.filter.parent != null && pageDto.filter.parent.length>0) {
+      if (pageDto.filter.parent != null && pageDto.filter.parent.length > 0) {
         queryBuilder.andWhere('(menu.parent = :parent)', {
           parent: pageDto.filter.parent,
         });
@@ -121,7 +136,6 @@ export class MenuRepo extends AbstractRepositoryClass<
       // queryBuilder.andWhere('(:parent=null or Length(:parent)=0  or (menu.parent = :parent)', {
       //   parent: pageDto.filter!.parent!,
       // });
-
     } else {
       queryBuilder.andWhere('menu.parent IS NULL');
     }

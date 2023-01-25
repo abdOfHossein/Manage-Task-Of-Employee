@@ -11,5 +11,9 @@ export default {
       key: 100001,
       value: DepartmentEnum.DEPARTMENT_ALREADY_EXISTS,
     },
+    DEPARTMENT_HAS_USER: {
+      key: 100002,
+      value: DepartmentEnum.DEPARTMENT_HAS_USER,
+    },
   },
 };

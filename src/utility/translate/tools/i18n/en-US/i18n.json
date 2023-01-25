@@ -38,7 +38,8 @@
   },
   "department": {
     "DEPARTMENT_NOT_EXISTS": "Department does not exists",
-    "DEPARTMENT_ALREADY_EXISTS": "Department already exist"
+    "DEPARTMENT_ALREADY_EXISTS": "Department already exist",
+    "DEPARTMENT_HAS_USER": "Department has users, first transfer them to another department"
   },
   "event": {
     "EVENT_NOT_EXISTS": "Event does not exists",

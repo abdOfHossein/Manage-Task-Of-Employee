@@ -44,20 +44,35 @@ export class HandlerError {
             value: CrudFrontendEnum.CRUD_FRONTEND_ALREADY_EXISTS,
           };
         if (
-          err.driverError.detail.indexOf(
-            'already exists',
-          ) != -1 &&
+          err.driverError.detail.indexOf('already exists') != -1 &&
           err.driverError.table === 'user'
         ) {
-          console.log('hereeeeeeeeeeeeeeee');
-
           return {
             section: 'user',
             value: UserEnum.USER_ALREADY_EXISTS,
           };
         }
+        if (
+          err.driverError.detail.indexOf('Key ("fileId")') != -1 &&
+          err.driverError.detail.indexOf('already exists') != -1 &&
+          err.driverError.table === 'Project'
+        ) {
+          return {
+            section: 'public',
+            value: PublicEnum.DUPLICATE_VALUE_IN_UNIQUE_COLUMN,
+          };
+        }
+        if (
+          err.driverError.detail.indexOf('Key ("refId")') != -1 &&
+          err.driverError.detail.indexOf('already exists') != -1 &&
+          err.driverError.table === 'rel_task'
+        ) {
+          return {
+            section: 'public',
+            value: PublicEnum.DUPLICATE_VALUE_IN_UNIQUE_COLUMN,
+          };
+        }
       }
-
       if (err.driverError.code == '23503') {
         return {
           section: 'public',

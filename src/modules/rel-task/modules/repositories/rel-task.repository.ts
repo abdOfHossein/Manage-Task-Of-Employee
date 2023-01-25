@@ -1,9 +1,9 @@
-import { BadGatewayException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AbstractRepositoryClass } from 'src/common/abstract/abstract.repository.class';
 import { PageDto } from 'src/common/dtos/page.dto';
 import { PageMetaDto } from 'src/common/dtos/page.meta.dto';
 import { PublicFunc } from 'src/common/function/public.func';
+import { RelTaskEnum } from 'src/common/translate/enums/rel-task.enum';
 import { TaskEnt } from 'src/modules/task/modules/entities/task.entity';
 import { StatusTaskEnum } from 'src/modules/task/modules/enums/status-task.enum';
 import { HandlerService } from 'src/utility/handler/handler.service';
@@ -81,7 +81,12 @@ export class RelTaskRepo extends AbstractRepositoryClass<
       where: { id: searchDto },
     });
     if (!RelTask)
-      throw new BadGatewayException({ message: 'RelTask does not exits' });
+      throw new Error(
+        `${JSON.stringify({
+          section: 'rel_task',
+          value: RelTaskEnum.REL_TASK_NOT_EXISTS,
+        })}`,
+      );
     return RelTask;
   }
 

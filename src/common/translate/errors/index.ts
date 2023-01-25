@@ -8,7 +8,6 @@ import departmentError from './department.error';
 import eventError from './event.error';
 import fileManagerError from './file-manager.error';
 import fileError from './file.error';
-import menuErrors from './menu.errors';
 import messageUserError from './message-user.error';
 import messageError from './message.error';
 import projectError from './project.error';
@@ -29,7 +28,6 @@ export default {
   event: eventError,
   file_manager: fileManagerError,
   file: fileError,
-  menu: menuErrors,
   message_user: messageUserError,
   message: messageError,
   project: projectError,

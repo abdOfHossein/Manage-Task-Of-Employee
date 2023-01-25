@@ -1,9 +1,9 @@
-import { BadGatewayException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AbstractRepositoryClass } from 'src/common/abstract/abstract.repository.class';
 import { PageDto } from 'src/common/dtos/page.dto';
 import { PageMetaDto } from 'src/common/dtos/page.meta.dto';
 import { PublicFunc } from 'src/common/function/public.func';
+import { RoleEnum } from 'src/common/translate/enums/role.enum';
 import { UserEnt } from 'src/modules/user/modules/entities/user.entity';
 import { HandlerService } from 'src/utility/handler/handler.service';
 import { DataSource, FindOneOptions, QueryRunner } from 'typeorm';
@@ -81,7 +81,12 @@ export class RoleRepo extends AbstractRepositoryClass<
       where: { id: searchDto },
     });
     if (!result)
-      throw new BadGatewayException({ message: 'Role does not exits' });
+      throw new Error(
+        `${JSON.stringify({
+          section: 'role',
+          value: RoleEnum.ROLE_NOT_EXISTS,
+        })}`,
+      );
     return result;
   }
 
@@ -145,7 +150,7 @@ export class RoleRepo extends AbstractRepositoryClass<
     const user = await this.dataSource.manager
       .createQueryBuilder(UserEnt, 'user')
       .leftJoinAndSelect('user.role', 'role')
-      .where('users.id = :id_user', { id_user })
+      .where('user.id = :id_user', { id_user })
       .getOne();
     user.role = roles;
     if (query) return await query.manager.save(user);

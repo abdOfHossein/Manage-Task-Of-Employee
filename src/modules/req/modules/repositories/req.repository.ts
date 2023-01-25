@@ -149,6 +149,7 @@ export class ReqRepo extends AbstractRepositoryClass<
     if (!req) throw new BadRequestException({ message: 'Req does not exits' });
     return req;
   }
+
   async findAllReq(): Promise<ReqEnt[]> {
     return await this.dataSource.manager.find(ReqEnt, {});
   }
@@ -235,11 +236,11 @@ export class ReqRepo extends AbstractRepositoryClass<
       queryBuilder.skip(skip).take(row);
     }
     if (pageDto.filter) {
-      if (pageDto.filter.status) {
-        queryBuilder.andWhere('req.status LIKE :status', {
-          status: `%${pageDto.filter.status}%`,
-        });
-      }
+      // if (pageDto.filter.status) {
+      //   queryBuilder.andWhere('req.status LIKE :status', {
+      //     status: `%${pageDto.filter.status}%`,
+      //   });
+      // }k,iikikikikikiikikikikik
     }
     if (pageDto.field) {
       const mapper = ReqMapperPagination[pageDto.field];
@@ -275,14 +276,13 @@ export class ReqRepo extends AbstractRepositoryClass<
       .leftJoinAndSelect('department_rls.tasks', 'tasks');
 
     console.log(await queryBuilder.getMany());
-
     if (pageDto.base) {
       const row = pageDto.base.row;
       const skip = PublicFunc.skipRow(pageDto.base.page, pageDto.base.row);
       queryBuilder.skip(skip).take(row);
     }
 
-    if (pageDto.filter) {
+    if (pageDto.filter) { 
     }
 
     if (pageDto.field) {

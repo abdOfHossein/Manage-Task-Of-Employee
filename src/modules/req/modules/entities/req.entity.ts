@@ -11,19 +11,19 @@ import {
 } from 'typeorm';
 import { StatusReqEnum } from '../enums/req.enum';
 
-@Entity({ schema:SchemaEntityEnum.TASK,name: 'Req' })
+@Entity({ schema: SchemaEntityEnum.TASK, name: 'Req' })
 export class ReqEnt extends BasicEnt {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ type:"enum",enum:StatusReqEnum,nullable:true})
+  @Column({ type: 'enum', enum: StatusReqEnum, nullable: true })
   status: StatusReqEnum;
 
-  @Column({nullable:true})
+  @Column({ nullable: true })
   name: string;
 
-  @Column({nullable:true})
-  description:string
+  @Column({ nullable: true })
+  description: string;
 
   @Column({ default: false })
   isDefault: boolean;
@@ -33,5 +33,4 @@ export class ReqEnt extends BasicEnt {
 
   @OneToMany(() => DepartmentRlEnt, (department_rls) => department_rls.req)
   department_rls: DepartmentRlEnt[];
-  
 }

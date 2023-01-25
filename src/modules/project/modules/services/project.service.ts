@@ -63,6 +63,8 @@ export class ProjectService extends AbstractServiceClass<
       const file = await this.dataSource.manager.findOne(FileEnt, {
         where: { unq_file: createDt.unq_file, type_file: TypeFileEnum.PROJECT },
       });
+      console.log('file',file);
+      
       if (!file) {
         throw new Error(
           `${JSON.stringify({

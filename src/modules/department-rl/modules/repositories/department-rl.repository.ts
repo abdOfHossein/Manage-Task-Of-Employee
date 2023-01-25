@@ -4,6 +4,8 @@ import { AbstractRepositoryClass } from 'src/common/abstract/abstract.repository
 import { PageDto } from 'src/common/dtos/page.dto';
 import { PageMetaDto } from 'src/common/dtos/page.meta.dto';
 import { PublicFunc } from 'src/common/function/public.func';
+import { DepartmentEnum } from 'src/common/translate/enums/department.enum';
+import { ReqEnum } from 'src/common/translate/enums/req.enum';
 import { DepartmentEnt } from 'src/modules/department/modules/entities/department.entity';
 import { ReqEnt } from 'src/modules/req/modules/entities/req.entity';
 import { HandlerService } from 'src/utility/handler/handler.service';
@@ -113,13 +115,29 @@ export class DepartmentRlRepo extends AbstractRepositoryClass<
     updateDto: UpdateDepartmentRlDto,
     query?: QueryRunner,
   ): Promise<DepartmentRlEnt> {
-    updateDto.reqEnt = await this.dataSource.manager.findOne(ReqEnt, {
+    const reqEnt = await this.dataSource.manager.findOne(ReqEnt, {
       where: { id: updateDto.req_id },
     });
-    updateDto.departmentEnt = await this.dataSource.manager.findOne(
-      DepartmentEnt,
-      { where: { id: updateDto.department_id } },
-    );
+    if (!reqEnt)
+      throw new Error(
+        `${JSON.stringify({
+          section: 'department',
+          value: ReqEnum.REQ_NOT_EXISTS,
+        })}`,
+      );
+    updateDto.reqEnt = reqEnt;
+    const departmentEnt = await this.dataSource.manager.findOne(DepartmentEnt, {
+      where: { id: updateDto.department_id },
+    });
+    if (!departmentEnt) {
+      throw new Error(
+        `${JSON.stringify({
+          section: 'department',
+          value: DepartmentEnum.DEPARTMENT_NOT_EXISTS,
+        })}`,
+      );
+    }
+    updateDto.departmentEnt = departmentEnt;
     entity.req = updateDto.reqEnt;
     entity.department = updateDto.departmentEnt;
     if (query) return await query.manager.save(entity);

@@ -1,10 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { AbstractServiceClass } from 'src/common/abstract/abstract.service.class';
 import { HandlerError } from 'src/common/class/handler.error';
-import { MenuEnum } from 'src/common/translate/enums/menu.enum';
+import { CrudFrontendEnum } from 'src/common/translate/enums/crud-frontend.enum';
+import { CrudMenuEnum } from 'src/common/translate/enums/crud-menu.enum';
+import { RoleEnum } from 'src/common/translate/enums/role.enum';
+import { RoleEnt } from 'src/modules/role/modules/entities/role.entity';
 import { RoleService } from 'src/modules/role/modules/services/role.service';
 import { HandlerService } from 'src/utility/handler/handler.service';
 import { DataSource, FindOneOptions, QueryRunner } from 'typeorm';
+import { FrontendEnt } from '../../frontend/entities/frontend.entity';
 import { FrontendService } from '../../frontend/services/frontend.service';
 import { CreateMenuDto } from '../dtos/create.menu';
 import { UpdateMenuDto } from '../dtos/update.menu';
@@ -60,7 +64,7 @@ export class MenuService extends AbstractServiceClass<
         throw new Error(
           `${JSON.stringify({
             section: 'menu',
-            value: MenuEnum.MENU_ALREADY_EXISTS,
+            value: CrudMenuEnum.CRUD_MENU_NOT_EXISTS,
           })}`,
         );
       }
@@ -83,13 +87,11 @@ export class MenuService extends AbstractServiceClass<
 
   async _delete(searchDto: string, query?: QueryRunner) {
     try {
-      const menuEnt:any = await this.dataSource.manager
+      const menuEnt: any = await this.dataSource.manager
         .createQueryBuilder(MenuEnt, 'menu')
         .leftJoinAndSelect('menu.children', 'children')
         .where('menu.id = :menu_id', { menu_id: searchDto })
-        .getMany();
-        console.log(menuEnt);
-        
+        .getOne();
       return await this.menuRepo._deleteEntity(menuEnt, query);
     } catch (e) {
       console.log(e);
@@ -102,6 +104,30 @@ export class MenuService extends AbstractServiceClass<
   async _update(menu_Id: string, updateDt: UpdateMenuDto, query?: QueryRunner) {
     try {
       const menuEnt = await this._getOne(menu_Id);
+      const frontendEnt = await this.dataSource.manager.findOne(FrontendEnt, {
+        where: {
+          id: updateDt.id_front,
+        },
+      });
+      if (!frontendEnt)
+        throw new Error(
+          `${JSON.stringify({
+            section: 'crud_frontend',
+            value: CrudFrontendEnum.CRUD_FRONTEND_NOT_EXISTS,
+          })}`,
+        );
+      const roleEnt = await this.dataSource.manager.findOne(RoleEnt, {
+        where: { id: updateDt.id_role },
+      });
+      if (!roleEnt)
+        throw new Error(
+          `${JSON.stringify({
+            section: 'role',
+            value: RoleEnum.ROLE_NOT_EXISTS,
+          })}`,
+        );
+      updateDt.role = roleEnt;
+      updateDt.frontend = frontendEnt;
       return await this.menuRepo._updateEntity(menuEnt, updateDt, query);
     } catch (e) {
       console.log(e);

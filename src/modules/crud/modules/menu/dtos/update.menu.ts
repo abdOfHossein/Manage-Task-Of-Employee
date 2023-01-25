@@ -1,6 +1,5 @@
 import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
-import { Allow, IsNotEmpty } from 'class-validator';
-import { i18nValidationMessage } from 'nestjs-i18n';
+import { Allow, IsNotEmpty, IsUUID } from 'class-validator';
 import { RoleEnt } from 'src/modules/role/modules/entities/role.entity';
 import { FrontendEnt } from '../../frontend/entities/frontend.entity';
 import { MenuEnt } from '../entities/menu.entity';
@@ -8,7 +7,7 @@ import { MenuEnt } from '../entities/menu.entity';
 export class UpdateMenuDto {
   @ApiProperty()
   @Allow()
-  @IsNotEmpty({ message: i18nValidationMessage('i18n.public.NOT_EMPTY') })
+  @IsNotEmpty()
   slug_name: string;
 
   @ApiProperty()
@@ -22,16 +21,17 @@ export class UpdateMenuDto {
 
   @ApiProperty()
   @IsNotEmpty()
+  @IsUUID()
   @Allow()
   id_front: string;
 
   @ApiProperty()
   @IsNotEmpty()
+  @IsUUID()
   @Allow()
   id_role: string;
 
   @ApiHideProperty()
-  @IsNotEmpty()
   frontend: FrontendEnt;
 
   @ApiHideProperty()

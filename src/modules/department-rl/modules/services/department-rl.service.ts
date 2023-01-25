@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { AbstractServiceClass } from 'src/common/abstract/abstract.service.class';
+import { HandlerError } from 'src/common/class/handler.error';
 import { HandlerService } from 'src/utility/handler/handler.service';
 import { DataSource, FindOneOptions, QueryRunner } from 'typeorm';
 import { CreateDepartmentRlDto } from '../dtos/create.department-rl.dto';
@@ -63,7 +64,9 @@ export class DepartmentRlService extends AbstractServiceClass<
     try {
       return await this.departmentRlRepo.createDepartmentRl(createDt, query);
     } catch (e) {
-      throw e;
+      console.log(e);
+      const result = await HandlerError.errorHandler(e);
+      await this.handlerService.handlerException400('FA', result);
     }
   }
 
@@ -74,15 +77,23 @@ export class DepartmentRlService extends AbstractServiceClass<
         options,
       );
     } catch (e) {
-      throw e;
+      console.log(e);
+      const result = await HandlerError.errorHandler(e);
+      await this.handlerService.handlerException400('FA', result);
     }
   }
 
   async findByDepartmentRequest(id_req: string, id_user: string) {
-    return await this.departmentRlRepo.findByDepartmentRequest(
-      id_req,
-      id_user,
-    );
+    try {
+      return await this.departmentRlRepo.findByDepartmentRequest(
+        id_req,
+        id_user,
+      );
+    } catch (e) {
+      console.log(e);
+      const result = await HandlerError.errorHandler(e);
+      await this.handlerService.handlerException400('FA', result);
+    }
   }
 
   async updateDepartmentRl(
@@ -105,7 +116,9 @@ export class DepartmentRlService extends AbstractServiceClass<
         query,
       );
     } catch (e) {
-      throw e;
+      console.log(e);
+      const result = await HandlerError.errorHandler(e);
+      await this.handlerService.handlerException400('FA', result);
     }
   }
 
@@ -113,7 +126,9 @@ export class DepartmentRlService extends AbstractServiceClass<
     try {
       return await this.departmentRlRepo.paginationDepartmentRl(pageDto);
     } catch (e) {
-      throw e;
+      console.log(e);
+      const result = await HandlerError.errorHandler(e);
+      await this.handlerService.handlerException400('FA', result);
     }
   }
 }

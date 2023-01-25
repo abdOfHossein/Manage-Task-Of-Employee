@@ -1,14 +1,10 @@
-import {
-  BadGatewayException,
-  BadRequestException,
-  HttpException,
-  HttpStatus,
-} from '@nestjs/common';
+import { BadRequestException, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AbstractRepositoryClass } from 'src/common/abstract/abstract.repository.class';
 import { PageDto } from 'src/common/dtos/page.dto';
 import { PageMetaDto } from 'src/common/dtos/page.meta.dto';
 import { PublicFunc } from 'src/common/function/public.func';
+import { TaskEnum } from 'src/common/translate/enums/task.enum';
 import { DepartmentRlEnt } from 'src/modules/department-rl/modules/entities/department-rl.entity';
 import { DepartmentRlService } from 'src/modules/department-rl/modules/services/department-rl.service';
 import { DepartmentEnt } from 'src/modules/department/modules/entities/department.entity';
@@ -274,23 +270,21 @@ export class TaskRepo extends AbstractRepositoryClass<
       })
       .getOne();
 
-    if (queryBuilder) {
-      if (queryBuilder.department_rl.req.status !== StatusReqEnum.OPEN) {
-        queryBuilder.department_rl.req.status = StatusReqEnum.OPEN;
-        await this.dataSource.manager.save(queryBuilder.department_rl.req);
-      }
+    if (
+      queryBuilder &&
+      queryBuilder.department_rl.req.status !== StatusReqEnum.OPEN
+    ) {
+      queryBuilder.department_rl.req.status = StatusReqEnum.OPEN;
+      await this.dataSource.manager.save(queryBuilder.department_rl.req);
     }
 
     const department_rl = await this.dataSource.manager.findOne(
       DepartmentRlEnt,
       { where: { id: createDto.id_department_rl } },
     );
-    console.log(department_rl);
-
     const user = await this.dataSource.manager.findOne(UserEnt, {
       where: { id: createDto.id_user },
     });
-    console.log(user);
     const taskEnt = new TaskEnt();
     taskEnt.head_id = createDto.head_id;
     taskEnt.priority = createDto.priority;
@@ -303,10 +297,13 @@ export class TaskRepo extends AbstractRepositoryClass<
     let result: TaskEnt;
     if (query) {
       result = await query.manager.save(taskEnt);
+      console.log('hereeeee');
+      console.log(result);
     } else {
       result = await this.dataSource.manager.save(taskEnt);
     }
     await query.commitTransaction();
+    console.log('result', result);
     return result;
   }
 
@@ -376,7 +373,12 @@ export class TaskRepo extends AbstractRepositoryClass<
       where: { id: searchDto },
     });
     if (!task)
-      throw new BadGatewayException({ message: 'Task does not exits' });
+      throw new Error(
+        `${JSON.stringify({
+          section: 'task',
+          value: TaskEnum.TASK_NOT_EXISTS,
+        })}`,
+      );
     return task;
   }
 

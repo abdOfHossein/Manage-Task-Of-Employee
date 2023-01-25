@@ -3,6 +3,8 @@ import { AbstractRepositoryClass } from 'src/common/abstract/abstract.repository
 import { PageDto } from 'src/common/dtos/page.dto';
 import { PageMetaDto } from 'src/common/dtos/page.meta.dto';
 import { PublicFunc } from 'src/common/function/public.func';
+import { MessageUserEnum } from 'src/common/translate/enums/message-user.enum';
+import { PublicEnum } from 'src/common/translate/enums/public.enum';
 import { HandlerService } from 'src/utility/handler/handler.service';
 import { DataSource, FindOneOptions, QueryRunner } from 'typeorm';
 import { CreateMessageUserDto } from '../dtos/create.message-user.dto';
@@ -63,9 +65,18 @@ export class MessageUserRepo extends AbstractRepositoryClass<
         where: { id: id_message_user },
       },
     );
-    messageUserEnt.delete_at = new Date();
-    // messageUserEnt.title = 'deleted' + '_' + messageUserEnt.title;
-    return await this.dataSource.manager.save(messageUserEnt);
+    console.log('messageUserEnt', messageUserEnt);
+    if (!messageUserEnt)
+      throw new Error(
+        `${JSON.stringify({
+          section: 'message_user',
+          value: MessageUserEnum.MESSAGE_USER_NOT_EXISTS,
+        })}`,
+      );
+    else {
+      await this.dataSource.manager.softDelete(MessageUserEnt, messageUserEnt);
+      return messageUserEnt;
+    }
   }
 
   async paginationMessageUser(

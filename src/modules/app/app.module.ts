@@ -45,10 +45,6 @@ import { AppService } from './app.service';
         entities: ['dist/**/*.entity.js', '**/*.entity.js'],
         migrations: ['dist/migrations/*{.ts,.js}'],
         synchronize: true,
-        autoLoadEntities: true,
-
-
-        
       }),
       dataSourceFactory: async (options) => {
         const dataSource = await new DataSource(options).initialize();

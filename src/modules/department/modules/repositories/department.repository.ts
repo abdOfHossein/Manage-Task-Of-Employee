@@ -1,4 +1,3 @@
-import { BadGatewayException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AbstractRepositoryClass } from 'src/common/abstract/abstract.repository.class';
 import { PageDto } from 'src/common/dtos/page.dto';
@@ -326,9 +325,19 @@ export class DepartmentRepo extends AbstractRepositoryClass<
   }
 
   async deleteDepartmen(id_department: string) {
-    const department = await this.dataSource.manager.findOne(DepartmentEnt, {
-      where: { id: id_department },
-    });
+    const department = await this.dataSource.manager
+      .createQueryBuilder(DepartmentEnt, 'department')
+      .leftJoinAndSelect('department.users', 'users')
+      .where('department.id = :id_department', { id_department })
+      .getOne();
+    if (department.users) {
+      throw new Error(
+        `${JSON.stringify({
+          section: 'department',
+          value: DepartmentEnum.DEPARTMENT_HAS_USER,
+        })}`,
+      );
+    }
     department.delete_at = new Date();
     department.name_department = 'deleted' + '_' + department.name_department;
     return await this.dataSource.manager.save(department);

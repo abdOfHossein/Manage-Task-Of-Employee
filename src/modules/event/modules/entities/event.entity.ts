@@ -8,7 +8,7 @@ export class EventEnt extends BasicEnt {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ nullable: true })
+  @Column({ enum: PriorityEventEnum, type: 'enum', nullable: true })
   priority: PriorityEventEnum;
 
   @Column({ nullable: true })
